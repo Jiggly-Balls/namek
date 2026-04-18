@@ -1,6 +1,6 @@
 [project]
 name = "namek"
-version = "0.1.0"
+version = "0.1.0b"
 description = "An open source music bot for discord."
 readme = "README.md"
 requires-python = ">=3.12"

@@ -411,7 +411,7 @@ wheels = [
 
 [[package]]
 name = "namek"
-version = "0.1.0"
+version = "0.1.0b0"
 source = { virtual = "." }
 dependencies = [
     { name = "discord-py" },
