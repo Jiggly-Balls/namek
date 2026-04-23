@@ -8,10 +8,3 @@ ruff:
 
 check:
 	uv run --dev basedpyright .
-
-venv:
-	py -m venv .venv
-
-run:
-	.venv\Scripts\Activate.ps1
-	py -m namek
