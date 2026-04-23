@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from typing import ClassVar
 
 __all__ = (
-    "Settings",
+    "SETTINGS",
     "BASE_DIR",
     "COG_DIRECTORIES",
 )
@@ -24,9 +24,10 @@ class _Settings(BaseSettings):
     )
 
     BOT_TOKEN: SecretStr = MISSING
+    DEV_GUILD_ID: int = MISSING
 
 
-Settings = _Settings()
+SETTINGS: _Settings = _Settings()
 
 BASE_DIR: Path = pathlib.Path(__file__).parent.parent
 COG_DIRECTORIES: list[Path] = [
