@@ -25,7 +25,7 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    intents = discord.Intents(guilds=True, members=True)
+    intents = discord.Intents(guilds=True, members=True, voice_states=True)
     bot = Bot(intents=intents)
 
     await load_extensions(bot)
