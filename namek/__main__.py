@@ -8,10 +8,9 @@ import discord
 from discord.ext import commands
 from discord.utils import setup_logging
 
-from namek.core.bot import Bot
+from namek.core import Bot
 from namek.core.settings import BASE_DIR, COG_DIRECTORIES, Settings
 
-discord.VoiceClient.warn_nacl = False
 logging.basicConfig(
     filename="bot.log",
     filemode="w",
