@@ -5,7 +5,7 @@ from disckit.cogs import BaseCog
 from disckit.utils import ErrorEmbed, SuccessEmbed
 from discord import Interaction, app_commands
 
-from namek.core.bot import Bot
+from namek.core import Bot
 
 _logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class MusicCog(BaseCog, name="Music Commands"):
         self.bot: Bot = bot
 
     @music_commands.command()
-    async def connect(self, interaction: Interaction) -> None:
+    async def connect(self, interaction: Interaction[Bot]) -> None:
         assert interaction.guild
         assert isinstance(interaction.user, discord.Member)
 
