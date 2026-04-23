@@ -56,3 +56,7 @@ class MusicCog(BaseCog, name="Music Commands"):
                 f"Successfully joined `{interaction.user.voice.channel.name}` VC."
             )
         )
+
+
+async def setup(bot: Bot) -> None:
+    await bot.add_cog(MusicCog(bot))
