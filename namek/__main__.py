@@ -9,7 +9,7 @@ from discord.ext import commands
 from discord.utils import setup_logging
 
 from namek.core import Bot
-from namek.core.settings import BASE_DIR, COG_DIRECTORIES, Settings
+from namek.core.settings import BASE_DIR, COG_DIRECTORIES, SETTINGS
 
 logging.basicConfig(
     filename="bot.log",
@@ -30,7 +30,7 @@ async def main() -> None:
 
     await load_extensions(bot)
 
-    await bot.start(Settings.BOT_TOKEN.get_secret_value())
+    await bot.start(SETTINGS.BOT_TOKEN.get_secret_value())
 
 
 async def load_extensions(bot: Bot) -> None:
