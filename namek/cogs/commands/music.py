@@ -10,7 +10,7 @@ from namek.core import Bot
 _logger = logging.getLogger(__name__)
 
 
-class MusicCog(BaseCog, name="Music Commands"):
+class MusicCog(BaseCog, name="Music Cog"):
     """
     Music Commands for the bot.
 
