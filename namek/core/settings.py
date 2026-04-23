@@ -1,9 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
+import pathlib
+from typing import TYPE_CHECKING
 
+from discord.utils import MISSING
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+if TYPE_CHECKING:
+    from pathlib import Path
+    from typing import ClassVar
 
 __all__ = (
     "Settings",
@@ -12,16 +18,18 @@ __all__ = (
 )
 
 
-class _Settings(BaseSettings, env_file=".env"):
-    model_config: SettingsConfigDict = SettingsConfigDict(env_file=".env")
+class _Settings(BaseSettings):
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_file=".env"
+    )
 
-    BOT_TOKEN: SecretStr
+    BOT_TOKEN: SecretStr = MISSING
 
 
 Settings = _Settings()
 
-BASE_DIR = Path(__file__).parent.parent
-COG_DIRECTORIES = [
-    BASE_DIR / "namek" / "cogs" / "commands",
-    BASE_DIR / "namek" / "cogs" / "workers",
+BASE_DIR: Path = pathlib.Path(__file__).parent.parent
+COG_DIRECTORIES: list[Path] = [
+    BASE_DIR / "cogs" / "commands",
+    BASE_DIR / "cogs" / "workers",
 ]
