@@ -26,6 +26,11 @@ class _Settings(BaseSettings):
     BOT_TOKEN: SecretStr = MISSING
     DEV_GUILD_ID: int = MISSING
 
+    LAVALINK_NAME: str = MISSING
+    LAVALINK_URI: SecretStr = MISSING
+    LAVALINK_PASSWORD: SecretStr = MISSING
+    LAVALINK_TRACK_CACHE: int = MISSING
+
 
 SETTINGS: _Settings = _Settings()
 
