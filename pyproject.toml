@@ -18,18 +18,6 @@ dev = [
     "ruff>=0.15.11",
 ]
 
-[tool.ruff]
-line-length = 79
-lint.extend-select = ["ANN", "I"]
-lint.ignore = ["ANN401"]
-lint.fixable = ["I", "F401"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-docstring-code-format = true
-docstring-code-line-length = 72
-
 [tool.basedpyright]
 exclude = [
     "**/node_modules",
