@@ -42,7 +42,9 @@ class Bot(commands.Bot):
         )
         self.tree: MentionTree
 
-    async def connect_wavelink_node(self, *, identifier: str, uri: str, password: str) -> None:
+    async def connect_wavelink_node(
+        self, *, identifier: str, uri: str, password: str
+    ) -> None:
         node = wavelink.Node(
             identifier=identifier,
             uri=uri,
