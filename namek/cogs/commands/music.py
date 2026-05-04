@@ -50,12 +50,47 @@ class MusicCog(BaseCog, name="Music Cog"):
             return
 
         await interaction.response.defer()
+
+        channel_name = interaction.user.voice.channel.name
         await interaction.user.voice.channel.connect()
         await interaction.followup.send(
             embed=SuccessEmbed(
-                f"Successfully joined `{interaction.user.voice.channel.name}` VC."
+                f"Successfully joined `{channel_name}` voice channel."
             )
         )
+
+    @music_commands.command()
+    async def disconnect(self, interaction: Interaction[Bot]) -> None:
+        assert interaction.guild
+        assert isinstance(interaction.user, discord.Member)
+
+        if interaction.guild.voice_client is None:
+            await interaction.response.send_message(
+                embed=ErrorEmbed("I'm not in a voice channel to disconnect.")
+            )
+            return
+        if not (interaction.user.voice and interaction.user.voice.channel):
+            await interaction.response.send_message(
+                embed=ErrorEmbed(
+                    "You need to be within a voice channel to use this command."
+                )
+            )
+            return
+
+        await interaction.response.defer()
+
+        channel_name = interaction.user.voice.channel.name
+        await interaction.guild.voice_client.disconnect(force=False)
+        await interaction.followup.send(
+            embed=SuccessEmbed(
+                f"Disconnected from voice channel `{channel_name}`."
+            )
+        )
+
+    @music_commands.command()
+    async def play(self, interaction: Interaction[Bot], query: str) -> None:
+        assert interaction.guild
+        assert isinstance(interaction.user, discord.Member)
 
 
 async def setup(bot: Bot) -> None:
