@@ -24,7 +24,7 @@ class WavelinkHealth(BaseCog, name="Wavelink Health"):
         self, payload: wavelink.NodeDisconnectedEventPayload
     ) -> None:
         _logger.info(
-            f"Node {payload.node!r} has disconnected. After {payload.node._retries=}"  # pyright: ignore[reportPrivateUsage]
+            f"Node {payload.node.identifier} has disconnected. After {payload.node._retries=}"  # pyright: ignore[reportPrivateUsage]
         )
 
 
