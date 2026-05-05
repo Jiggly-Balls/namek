@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from discord import Intents
 
 
+__all__ = ("Bot",)
 _logger: logging.Logger = logging.getLogger(__name__)
 
 
