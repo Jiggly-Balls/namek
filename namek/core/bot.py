@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import logging
 from typing import TYPE_CHECKING
 
@@ -69,19 +68,6 @@ class Bot(commands.Bot):
                 "The Lavalink Node failed to connect properly. "
                 "Please check that your Lavalink version is version 4.",
                 stack_info=True,
-            )
-
-        await asyncio.sleep(3)
-
-        if node.status == wavelink.NodeStatus.CONNECTED:
-            _logger.info(
-                "Successfully connected to Lavalink Node: %s", node.identifier
-            )
-        else:
-            _logger.warning(
-                "Failed to connect to node: %s (Status: %s)",
-                node.uri,
-                node.status,
             )
 
     async def __temp_sync(self) -> None:  # pyright: ignore[reportUnusedFunction]
