@@ -34,11 +34,6 @@ async def main() -> None:
 
 
 async def load_extensions(bot: Bot) -> None:
-    """
-    Load all cogs from the specified directories.
-    Cogs are expected to be Python files with a setup() function.
-    """
-
     cogs_loaded = 0
     cogs_failed = 0
 
