@@ -90,3 +90,6 @@ class Bot(commands.Bot):
             password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
             retries=SETTINGS.LAVALINK_RETRIES,
         )
+
+        name = self.user.name if self.user else "Namek Bot"
+        _logger.info(f"{name} has successfully logged in.")
