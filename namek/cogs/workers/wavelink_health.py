@@ -22,13 +22,15 @@ class WavelinkHealth(BaseCog, name="Wavelink Health"):
     async def on_wavelink_node_ready(
         self, payload: NodeReadyEventPayload
     ) -> None:
-        _logger.info(f"Wavelink Node {payload.node.identifier} is ready")
+        _logger.info(f'Wavelink Node "{payload.node.identifier}" is ready')
 
     @commands.Cog.listener()
     async def on_wavelink_node_disconnected(
         self, payload: NodeDisconnectedEventPayload
     ) -> None:
-        _logger.info(f"Node {payload.node.identifier} has disconnected.")
+        _logger.info(
+            f'Wavelink Node "{payload.node.identifier}" has disconnected.'
+        )
 
 
 async def setup(bot: Bot) -> None:
