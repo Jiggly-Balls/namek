@@ -8,3 +8,6 @@ ruff:
 
 check:
 	uv run --dev basedpyright .
+
+run:
+	uv run namek
