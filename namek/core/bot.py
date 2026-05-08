@@ -43,14 +43,13 @@ class Bot(commands.Bot):
         self.tree: MentionTree
 
     async def connect_wavelink_node(
-        self, *, identifier: str, uri: str, password: str
+        self, *, identifier: str, uri: str, password: str, retries: int
     ) -> None:
         node = wavelink.Node(
             identifier=identifier,
             uri=uri,
             password=password,
-            retries=5,
-            resume_timeout=600,
+            retries=retries,
         )
 
         try:
@@ -88,4 +87,5 @@ class Bot(commands.Bot):
             identifier=SETTINGS.LAVALINK_NAME,
             uri=SETTINGS.LAVALINK_URI.get_secret_value(),
             password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
+            retries=SETTINGS.LAVALINK_RETRIES,
         )
