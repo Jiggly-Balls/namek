@@ -7,6 +7,7 @@ import discord
 import wavelink
 from disckit.utils import MentionTree
 from discord.ext import commands
+from discord.utils import MISSING
 
 from namek.core.settings import SETTINGS
 
@@ -33,7 +34,7 @@ class Bot(commands.Bot):
             The intents to be used by the bot for interacting with Discord.
         """
         super().__init__(
-            command_prefix="/",
+            command_prefix=MISSING,
             intents=intents,
             help_command=None,
             tree_cls=MentionTree,
