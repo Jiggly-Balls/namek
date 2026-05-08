@@ -24,7 +24,9 @@ class _Settings(BaseSettings):
     )
 
     BOT_TOKEN: SecretStr = MISSING
+
     DEV_GUILD_ID: int = MISSING
+    BUG_REPORT_CHANNEL_ID: int = MISSING
     OWNER_IDS: list[int] = MISSING
 
     LAVALINK_NAME: str = MISSING
