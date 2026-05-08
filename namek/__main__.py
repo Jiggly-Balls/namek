@@ -5,6 +5,7 @@ import logging
 import os
 
 import discord
+import wavelink
 from discord.ext import commands
 from discord.utils import setup_logging
 
@@ -26,11 +27,13 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 async def main() -> None:
     intents = discord.Intents(guilds=True, members=True, voice_states=True)
-    bot = Bot(intents=intents, owner_ids=SETTINGS.OWNER_IDS)
 
-    await load_extensions(bot)
-
-    await bot.start(SETTINGS.BOT_TOKEN.get_secret_value())
+    try:
+        bot = Bot(intents=intents, owner_ids=SETTINGS.OWNER_IDS)
+        await load_extensions(bot)
+        await bot.start(SETTINGS.BOT_TOKEN.get_secret_value())
+    finally:
+        await wavelink.Pool.close()
 
 
 async def load_extensions(bot: Bot) -> None:
@@ -74,4 +77,7 @@ async def load_extensions(bot: Bot) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        _logger.info("Exited due to Keyboard Interrupt.")
