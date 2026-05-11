@@ -43,3 +43,16 @@ COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "commands",
     BASE_DIR / "cogs" / "workers",
 ]
+
+ALLOWED_MUSIC_SOURCES: set[str] = {
+    "www.youtube.com",
+    "www.music.youtube.com",
+    "youtube.com",
+    "music.youtube.com",
+    "soundcloud.com",
+    "www.soundcloud.com",
+    "music.apple.com",
+    "www.music.apple.com",
+    "youtu.be",
+    "www.youtu.be",
+}
