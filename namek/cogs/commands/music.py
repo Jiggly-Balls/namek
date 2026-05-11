@@ -1,6 +1,5 @@
 import logging
 from typing import cast
-from urllib.parse import urlparse
 
 import discord
 import wavelink
@@ -9,7 +8,7 @@ from disckit.utils import ErrorEmbed, SuccessEmbed
 from discord import Interaction, app_commands
 
 from namek.core import Bot
-from namek.core.utils import safe_defer
+from namek.utils.helper import safe_defer
 
 _logger = logging.getLogger(__name__)
 
