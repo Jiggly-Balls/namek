@@ -7,6 +7,7 @@ from disckit.cogs import BaseCog
 from disckit.utils import ErrorEmbed, SuccessEmbed
 from discord import Interaction, app_commands
 
+from namek.backend.cache import Cache
 from namek.core import Bot
 from namek.utils.helper import safe_defer
 
@@ -40,7 +41,6 @@ class MusicCog(BaseCog, name="Music Cog"):
         self.bot: Bot = bot
 
     async def _vc_check(self, interaction: Interaction[Bot]) -> bool:
-        assert interaction.guild
         assert isinstance(interaction.user, discord.Member)
 
         if not (interaction.user.voice and interaction.user.voice.channel):
@@ -103,6 +103,7 @@ class MusicCog(BaseCog, name="Music Cog"):
     @music_commands.command()
     async def play(self, interaction: Interaction[Bot], query: str) -> None:
         assert isinstance(interaction.user, discord.Member)
+        assert interaction.channel
         assert interaction.guild
 
         if interaction.guild.voice_client is None:
@@ -135,7 +136,8 @@ class MusicCog(BaseCog, name="Music Cog"):
         # disabled = AutoPlay will do nothing...
         player.autoplay = wavelink.AutoPlayMode.enabled
 
-        # Lock the player to this channel...
+        Cache.vc_players[player] = interaction.channel
+
         if not hasattr(player, "home"):
             player.home = interaction.channel
         elif player.home != interaction.channel:
