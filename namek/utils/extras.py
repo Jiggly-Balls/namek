@@ -4,11 +4,13 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from discord import Message
-    from discord.interactions import InteractionChannel
+    from discord import Message, TextChannel
+
+
+__all__ = ("VCState",)
 
 
 @dataclass(slots=True, kw_only=True)
 class VCState:
-    channel: InteractionChannel
+    channel: TextChannel
     message: None | Message = None
