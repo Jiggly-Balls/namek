@@ -1,14 +1,17 @@
 import logging
 from typing import cast
+from urllib.parse import urlparse
 
 import discord
 import wavelink
 from disckit.cogs import BaseCog
-from disckit.utils import ErrorEmbed, SuccessEmbed
+from disckit.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from discord import Interaction, app_commands
 
-from namek.backend.cache import Cache
+from namek.backend.cache import CACHE
 from namek.core import Bot
+from namek.core.settings import ALLOWED_MUSIC_SOURCES
+from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer
 
 _logger = logging.getLogger(__name__)
@@ -132,39 +135,55 @@ class MusicCog(BaseCog, name="Music Cog"):
 
         player.autoplay = wavelink.AutoPlayMode.enabled
 
-        Cache.vc_players[player] = interaction.channel
-
-        if not hasattr(player, "home"):
-            player.home = interaction.channel
-
-        elif player.home != interaction.channel:
+        if (
+            vc_state := CACHE.vc_states.get(player)
+        ) and vc_state.channel != interaction.channel:
             await interaction.followup.send(
-                f"You can only play songs in {player.home.mention}, as the player has already started there."
+                f"You can only play songs in {vc_state.channel.mention}, as the player has already started there."
             )
             return
 
+        parsed_url = urlparse(query)
+        if (
+            parsed_url.scheme
+            and parsed_url.netloc not in ALLOWED_MUSIC_SOURCES
+        ):
+            embed = ErrorEmbed(
+                title="Error",
+                description="This source is not supported. Please use YouTube, YouTube Music, Spotify, SoundCloud or Apple Music.",
+            )
+            await interaction.followup.send(embed=embed)
+            return
+
+        CACHE.vc_states[player] = VCState(
+            channel=cast(discord.TextChannel, interaction.channel)
+        )
+
         tracks: wavelink.Search = await wavelink.Playable.search(query)
+
         if not tracks:
             await interaction.followup.send(
-                f"{interaction.user.mention} - Could not find any tracks with that query. Please try again."
+                embed=ErrorEmbed(
+                    f"{interaction.user.mention} - Could not find any tracks with that query. Please try again."
+                )
             )
             return
 
         if isinstance(tracks, wavelink.Playlist):
-            # tracks is a playlist...
             added: int = await player.queue.put_wait(tracks)
             await interaction.followup.send(
-                f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue."
+                embed=MainEmbed(
+                    f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue."
+                )
             )
         else:
             track: wavelink.Playable = tracks[0]
             await player.queue.put_wait(track)
             await interaction.followup.send(
-                f"Added **`{track}`** to the queue."
+                embed=MainEmbed(f"Added **`{track}`** to the queue.")
             )
 
         if not player.playing:
-            # Play now since we aren't playing anything...
             await player.play(player.queue.get(), volume=50)
 
 
