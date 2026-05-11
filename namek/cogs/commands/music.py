@@ -123,33 +123,25 @@ class MusicCog(BaseCog, name="Music Cog"):
                     f"Successfully joined `{channel_name}` voice channel."
                 )
             )
-        
+
         await safe_defer(interaction)
 
         player: wavelink.Player = cast(
             "wavelink.Player", interaction.guild.voice_client
         )
 
-        # Turn on AutoPlay to enabled mode.
-        # enabled = AutoPlay will play songs for us and fetch recommendations...
-        # partial = AutoPlay will play songs for us, but WILL NOT fetch recommendations...
-        # disabled = AutoPlay will do nothing...
         player.autoplay = wavelink.AutoPlayMode.enabled
 
         Cache.vc_players[player] = interaction.channel
 
         if not hasattr(player, "home"):
             player.home = interaction.channel
+
         elif player.home != interaction.channel:
             await interaction.followup.send(
                 f"You can only play songs in {player.home.mention}, as the player has already started there."
             )
             return
-
-        # This will handle fetching Tracks and Playlists...
-        # Seed the doc strings for more information on this method...
-        # If spotify is enabled via LavaSrc, this will automatically fetch Spotify tracks if you pass a URL...
-        # Defaults to YouTube for non URL based queries...
 
         tracks: wavelink.Search = await wavelink.Playable.search(query)
         if not tracks:
@@ -167,11 +159,13 @@ class MusicCog(BaseCog, name="Music Cog"):
         else:
             track: wavelink.Playable = tracks[0]
             await player.queue.put_wait(track)
-            await interaction.followup.send(f"Added **`{track}`** to the queue.")
+            await interaction.followup.send(
+                f"Added **`{track}`** to the queue."
+            )
 
         if not player.playing:
             # Play now since we aren't playing anything...
-            await player.play(player.queue.get(), volume=30)
+            await player.play(player.queue.get(), volume=50)
 
 
 async def setup(bot: Bot) -> None:
