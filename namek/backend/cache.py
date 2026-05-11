@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import ClassVar
-
-    from discord.interactions import InteractionChannel 
+ 
     from wavelink import Player
+
+    from namek.utils.extras import VCState
 
 
 __all__ = ("Cache",)
@@ -14,7 +15,7 @@ __all__ = ("Cache",)
 
 class Cache:
     """
-    The bot's shared internal cache.
+    The bot's shared external cache.
 
     These attributes can be accessed globally but should be used sparingly,
     as there is no explicit way to track their usage across the codebase.
@@ -26,4 +27,4 @@ class Cache:
         A dictionary mapping guild IDs to their respective voice channel states.
     """
 
-    vc_players: ClassVar[dict[Player, InteractionChannel]] = {}
+    vc_states: ClassVar[dict[Player, VCState]] = {}
