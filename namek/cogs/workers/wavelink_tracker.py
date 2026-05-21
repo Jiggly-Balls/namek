@@ -12,7 +12,7 @@ from namek.core import Bot
 
 if TYPE_CHECKING:
     from discord import Embed
-    from wavelink import TrackStartEventPayload, TrackEndEventPayload
+    from wavelink import TrackEndEventPayload, TrackStartEventPayload
 
 
 _logger = logging.getLogger(__name__)
@@ -31,10 +31,10 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
 
         embed = MainEmbed(
             "Playing Music",
-            f"Playing `{payload.track.title}` by " + artist,
+            f"Playing `{payload.track.title}` by {artist}",
             url=payload.track.uri,
         )
-        embed.set_thumbnail(url=payload.track.artwork)
+        embed.set_image(url=payload.track.artwork)
         return embed
 
     @commands.Cog.listener()
@@ -60,8 +60,9 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
         CACHE.vc_states[payload.player].message = message
 
     @commands.Cog.listener()
-    async def on_wavelink_track_end(self, payload: TrackEndEventPayload) -> None:
-        ...
+    async def on_wavelink_track_end(
+        self, payload: TrackEndEventPayload
+    ) -> None: ...
 
 
 async def setup(bot: Bot) -> None:
