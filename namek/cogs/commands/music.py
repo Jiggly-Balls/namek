@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import logging
-from typing import cast
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urlparse
 
 import discord
@@ -13,6 +15,10 @@ from namek.core import Bot
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer
+
+if TYPE_CHECKING:
+    from discord.voice_client import VocalGuildChannel
+
 
 _logger = logging.getLogger(__name__)
 
@@ -43,7 +49,9 @@ class MusicCog(BaseCog, name="Music Cog"):
         super().__init__(logger=_logger)
         self.bot: Bot = bot
 
-    async def _vc_check(self, interaction: Interaction[Bot]) -> bool:
+    async def _vc_check(
+        self, interaction: Interaction[Bot]
+    ) -> None | VocalGuildChannel:
         assert isinstance(interaction.user, discord.Member)
 
         if not (interaction.user.voice and interaction.user.voice.channel):
@@ -52,27 +60,24 @@ class MusicCog(BaseCog, name="Music Cog"):
                     "You need to be within a voice channel to use this command."
                 )
             )
-            return False
-        return True
+            return None
+        return interaction.user.voice.channel
 
     @music_commands.command()
     async def connect(self, interaction: Interaction[Bot]) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
-        assert interaction.user.voice
-        assert interaction.user.voice.channel
 
-        in_vc = await self._vc_check(interaction)
-        if not in_vc:
+        channel = await self._vc_check(interaction)
+        if not channel:
             return
 
         await interaction.response.defer()
 
-        channel_name: str = interaction.user.voice.channel.name
-        await interaction.user.voice.channel.connect()
+        await channel.connect(cls=wavelink.Player, self_deaf=True)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                f"Successfully joined `{channel_name}` voice channel."
+                f"Successfully joined `{channel.name}` voice channel."
             )
         )
 
@@ -80,26 +85,27 @@ class MusicCog(BaseCog, name="Music Cog"):
     async def disconnect(self, interaction: Interaction[Bot]) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
-        assert interaction.user.voice
-        assert interaction.user.voice.channel
 
-        if interaction.guild.voice_client is None:
+        if not (
+            interaction.user.voice
+            and interaction.user.voice.channel
+            and interaction.guild.voice_client
+        ):
             await interaction.response.send_message(
                 embed=ErrorEmbed("I'm not in a voice channel to disconnect.")
             )
             return
 
-        in_vc = await self._vc_check(interaction)
-        if not in_vc:
+        channel = await self._vc_check(interaction)
+        if not channel:
             return
 
         await interaction.response.defer()
 
-        channel_name = interaction.user.voice.channel.name
         await interaction.guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                f"Disconnected from voice channel `{channel_name}`."
+                f"Disconnected from voice channel `{channel.name}`."
             )
         )
 
@@ -110,20 +116,16 @@ class MusicCog(BaseCog, name="Music Cog"):
         assert interaction.guild
 
         if interaction.guild.voice_client is None:
-            in_vc = await self._vc_check(interaction)
-            if not in_vc:
+            channel = await self._vc_check(interaction)
+            if not channel:
                 return
 
             await interaction.response.defer()
 
-            assert interaction.user.voice
-            assert interaction.user.voice.channel
-
-            channel_name: str = interaction.user.voice.channel.name
-            await interaction.user.voice.channel.connect(cls=wavelink.Player)
+            await channel.connect(cls=wavelink.Player, self_deaf=True)
             await interaction.followup.send(
                 embed=SuccessEmbed(
-                    f"Successfully joined `{channel_name}` voice channel."
+                    f"Successfully joined `{channel.name}` voice channel."
                 )
             )
 
@@ -179,10 +181,11 @@ class MusicCog(BaseCog, name="Music Cog"):
                 embed=MainEmbed(f"Added **`{track}`** to the queue.")
             )
 
-        CACHE.vc_states[player] = VCState(
-            channel=cast(discord.TextChannel, interaction.channel),
-            message=await interaction.original_response(),
-        )
+        if player not in CACHE.vc_states:
+            CACHE.vc_states[player] = VCState(
+                channel=cast(discord.TextChannel, interaction.channel),
+                message=await interaction.original_response(),
+            )
 
         if not player.playing:
             await player.play(player.queue.get(), volume=50)
