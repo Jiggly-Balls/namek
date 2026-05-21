@@ -11,6 +11,8 @@ if TYPE_CHECKING:
 __all__ = ("safe_defer",)
 
 
-async def safe_defer(interaction: Interaction[Bot]) -> None | InteractionCallbackResponse[Bot]:
+async def safe_defer(
+    interaction: Interaction[Bot],
+) -> None | InteractionCallbackResponse[Bot]:
     if not interaction.response.is_done():
         return await interaction.response.defer()
