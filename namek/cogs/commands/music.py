@@ -155,10 +155,6 @@ class MusicCog(BaseCog, name="Music Cog"):
             await interaction.followup.send(embed=embed)
             return
 
-        CACHE.vc_states[player] = VCState(
-            channel=cast(discord.TextChannel, interaction.channel)
-        )
-
         tracks: wavelink.Search = await wavelink.Playable.search(query)
 
         if not tracks:
@@ -182,6 +178,11 @@ class MusicCog(BaseCog, name="Music Cog"):
             await interaction.followup.send(
                 embed=MainEmbed(f"Added **`{track}`** to the queue.")
             )
+
+        CACHE.vc_states[player] = VCState(
+            channel=cast(discord.TextChannel, interaction.channel),
+            message=await interaction.original_response(),
+        )
 
         if not player.playing:
             await player.play(player.queue.get(), volume=50)
