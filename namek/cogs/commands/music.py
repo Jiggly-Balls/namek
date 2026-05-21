@@ -8,16 +8,18 @@ import discord
 import wavelink
 from disckit.cogs import BaseCog
 from disckit.utils import ErrorEmbed, MainEmbed, SuccessEmbed
-from discord import Interaction, app_commands
+from discord import app_commands
 
 from namek.backend.cache import CACHE
-from namek.core import Bot
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer
 
 if TYPE_CHECKING:
+    from discord import Interaction
     from discord.voice_client import VocalGuildChannel
+
+    from namek.core import Bot
 
 
 _logger = logging.getLogger(__name__)
@@ -194,6 +196,9 @@ class MusicCog(BaseCog, name="Music Cog"):
 
         if not player.playing:
             await player.play(player.queue.get(), volume=50)
+
+    @music_commands.command()
+    async def queue(self, interaction: Interaction[Bot]) -> None: ...
 
 
 async def setup(bot: Bot) -> None:
