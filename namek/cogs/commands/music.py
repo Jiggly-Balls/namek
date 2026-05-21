@@ -102,6 +102,11 @@ class MusicCog(BaseCog, name="Music Cog"):
 
         await interaction.response.defer()
 
+        player: wavelink.Player = cast(
+            "wavelink.Player", interaction.guild.voice_client
+        )
+        CACHE.delete_vc_state(player)
+
         await interaction.guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
