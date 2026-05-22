@@ -58,12 +58,9 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
 
         embed = self._generate_embed(payload)
 
-        if not vc_state.message:
-            message = await vc_state.channel.send(embed=embed, silent=True)
-            CACHE.vc_states[payload.player].message = message
-            return
+        if vc_state.message:
+            await vc_state.message.delete()
 
-        await vc_state.message.delete()
         message = await vc_state.channel.send(embed=embed, silent=True)
         CACHE.vc_states[payload.player].message = message
 
