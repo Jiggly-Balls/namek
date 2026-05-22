@@ -10,6 +10,7 @@ from disckit.utils import ErrorEmbed
 from discord.ui import View
 
 from namek.core.settings import SETTINGS
+from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
     from typing import Any
@@ -98,7 +99,7 @@ class BaseView(View):
             return True
 
         await interaction.response.send_message(
-            embed=ErrorEmbed("This interaction is not for you!"),
+            embed=ErrorEmbed(description="This interaction is not for you!"),
             ephemeral=True,
         )
         return False
@@ -116,8 +117,8 @@ class BaseView(View):
         )
         await send_message_func(
             embed=ErrorEmbed(
-                "Sorry :(",
-                "An unexpected error has occurred. The developers have been notified of this.",
+                title="Sorry :(",
+                description="An unexpected error has occurred. The developers have been notified of this.",
             )
         )
 
@@ -139,21 +140,17 @@ class BaseView(View):
             error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
         )
 
-        description = (
-            "```"
-            f"\nError in view-\n{item.view or self}\n"
-            f"\nError in item-\n{item}\n"
-            f"\nError caused by-\nAuthor Name: {interaction.user}"
-            f"\nAuthor ID: {interaction.user.id}\n"
-            f"\nError Type-\n{type(error)}\n"
-            f"\nError Type Description-\n{frame}\n"
-            f"\nCause-\n{error.with_traceback(error.__traceback__)}"
-            "```"
+        embed = ErrorEmbed()
+        embed.add_field(name="Error in View", value=f"{item.view or self}")
+        embed.add_field(
+            name="Error in Item", value=f"Author Name: {interaction.user}"
+        )
+        embed.add_field(name="Error Type", value=f"{type(error)}")
+        embed.add_field(name="Error Type Description", value=str(frame))
+        embed.add_field(
+            name="Cause", value=f"{error.with_traceback(error.__traceback__)}"
         )
 
         await channel.send(  # pyright:ignore[reportAttributeAccessIssue, reportUnknownMemberType]
-            embed=ErrorEmbed(
-                "Error caused in a view",
-                description,
-            )
+            embed=embed
         )
