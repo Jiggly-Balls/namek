@@ -6,7 +6,6 @@ import traceback
 from typing import TYPE_CHECKING
 
 import discord
-from disckit.utils import ErrorEmbed
 from discord.ui import View
 
 from namek.core.settings import SETTINGS
