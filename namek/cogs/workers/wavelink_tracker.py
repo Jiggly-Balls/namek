@@ -8,11 +8,13 @@ from disckit.utils import MainEmbed
 from discord.ext import commands
 
 from namek.backend.cache import CACHE
-from namek.core import Bot
+from namek.core.views.music_views import PlayView
 
 if TYPE_CHECKING:
     from discord import Embed
     from wavelink import TrackEndEventPayload, TrackStartEventPayload
+
+    from namek.core import Bot
 
 
 _logger = logging.getLogger(__name__)
@@ -36,7 +38,7 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
 
         embed = (
             MainEmbed(
-                "Playing Music",
+                title="Playing Music",
                 url=payload.track.uri,
             )
             .add_field(name="Song Name", value=title)
@@ -61,7 +63,9 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
         if vc_state.message:
             await vc_state.message.delete()
 
-        message = await vc_state.channel.send(embed=embed, silent=True)
+        message = await vc_state.channel.send(
+            embed=embed, view=PlayView(payload.player), silent=True
+        )
         CACHE.vc_states[payload.player].message = message
 
     @commands.Cog.listener()
