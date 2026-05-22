@@ -3,6 +3,7 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING
 
+import discord
 from discord.utils import MISSING
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -56,3 +57,7 @@ ALLOWED_MUSIC_SOURCES: set[str] = {
     "youtu.be",
     "www.youtu.be",
 }
+
+MAIN_COLOUR = discord.Colour.blue()
+ERROR_COLOUR = discord.Colour.red()
+SUCCESS_COLOUR = discord.Colour.green()
