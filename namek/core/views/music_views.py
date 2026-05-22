@@ -3,12 +3,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from disckit.utils.ui import BaseView
 from discord import ButtonStyle
 from discord.ui import Button
 
+from namek.backend.cache import CACHE
+from namek.core.views import BaseView
+from namek.utils import ErrorEmbed, MainEmbed
+from namek.utils.helper import vc_check
+
 if TYPE_CHECKING:
     from discord import Interaction
+    from wavelink import Player
 
     from namek.core import Bot
 
@@ -17,19 +22,75 @@ __all__ = ("PlayView",)
 
 
 class PlayView(BaseView):
-    def __init__(self) -> None:
-        self.add_item(Button(style=ButtonStyle.grey))
+    def __init__(self, player: Player) -> None:
         super().__init__(timeout=None)
+
+        self.player: Player = player
+
+    async def interaction_check(self, interaction: Interaction[Bot]) -> bool:
+        channel = await vc_check(interaction)
+        if channel is None:
+            return False
+        return True
+
+    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    async def dud_button_1(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None: ...
 
     @discord.ui.button(emoji="⬅️", style=ButtonStyle.blurple)
     async def previous_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
-    ) -> None: ...
+    ) -> None:
+        await interaction.response.defer(ephemeral=True)
+
+        await vc_check(interaction)
+
+        if self.player.queue.history and len(self.player.queue.history) > 1:
+            current_track = self.player.current
+            if current_track:
+                self.player.queue.put_at(0, current_track)
+
+            previous_track = self.player.queue.history.get_at(-2)
+            await self.player.play(previous_track)
+
+            embed = MainEmbed(
+                title="Track Rewinded",
+                description=f"Rewinded to: **{previous_track}**",
+            )
+        else:
+            embed = ErrorEmbed(
+                title="Error",
+                description="No previous track found in the history.",
+            )
+
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @discord.ui.button(emoji="🗑️", style=ButtonStyle.red)
     async def delete_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
-    ) -> None: ...
+    ) -> None:
+        await interaction.response.defer()
+
+        channel = await vc_check(interaction)
+        if not channel or not interaction.message:
+            return
+
+        assert interaction.guild
+        assert interaction.guild.voice_client
+
+        await self.player.pause(True)
+        CACHE.delete_vc_state(self.player)
+        await interaction.guild.voice_client.disconnect(force=False)
+
+        await interaction.followup.edit_message(
+            interaction.message.id,
+            embed=MainEmbed(
+                description=f"Disconnected from voice channel `{channel.name}`"
+            ),
+            view=None,
+        )
+        self.stop()
 
     @discord.ui.button(emoji="➡️", style=ButtonStyle.blurple)
     async def next_callback(
@@ -37,6 +98,6 @@ class PlayView(BaseView):
     ) -> None: ...
 
     @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
-    async def dud_button(
+    async def dud_button_2(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None: ...
