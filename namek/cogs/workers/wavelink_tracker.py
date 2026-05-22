@@ -26,13 +26,21 @@ class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
         artist = (
             f"[{payload.track.author}]({payload.track.artist.url})"
             if payload.track.artist.url
-            else payload.track.author
+            else f"`{payload.track.author}`"
+        )
+        title = (
+            f"[{payload.track.title}]({payload.track.uri})"
+            if payload.track.uri
+            else f"`{payload.track.title}`"
         )
 
-        embed = MainEmbed(
-            "Playing Music",
-            f"Playing `{payload.track.title}` by {artist}",
-            url=payload.track.uri,
+        embed = (
+            MainEmbed(
+                "Playing Music",
+                url=payload.track.uri,
+            )
+            .add_field(name="Song Name", value=title)
+            .add_field(name="Artist", value=artist)
         )
         embed.set_image(url=payload.track.artwork)
         return embed
