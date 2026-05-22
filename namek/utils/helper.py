@@ -2,8 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import discord
+from disckit.utils import ErrorEmbed
+
 if TYPE_CHECKING:
     from discord import Interaction, InteractionCallbackResponse
+    from discord.voice_client import VocalGuildChannel
 
     from namek.core import Bot
 
@@ -16,3 +20,16 @@ async def safe_defer(
 ) -> None | InteractionCallbackResponse[Bot]:
     if not interaction.response.is_done():
         return await interaction.response.defer()
+
+
+async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
+    assert isinstance(interaction.user, discord.Member)
+
+    if not (interaction.user.voice and interaction.user.voice.channel):
+        await interaction.response.send_message(
+            embed=ErrorEmbed(
+                "You need to be within a voice channel to use this command."
+            )
+        )
+        return None
+    return interaction.user.voice.channel

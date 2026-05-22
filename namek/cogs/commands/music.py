@@ -13,11 +13,10 @@ from discord import app_commands
 from namek.backend.cache import CACHE
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
 from namek.utils.extras import VCState
-from namek.utils.helper import safe_defer
+from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
     from discord import Interaction
-    from discord.voice_client import VocalGuildChannel
 
     from namek.core import Bot
 
@@ -51,26 +50,12 @@ class MusicCog(BaseCog, name="Music Cog"):
         super().__init__(logger=_logger)
         self.bot: Bot = bot
 
-    async def _vc_check(
-        self, interaction: Interaction[Bot]
-    ) -> None | VocalGuildChannel:
-        assert isinstance(interaction.user, discord.Member)
-
-        if not (interaction.user.voice and interaction.user.voice.channel):
-            await interaction.response.send_message(
-                embed=ErrorEmbed(
-                    "You need to be within a voice channel to use this command."
-                )
-            )
-            return None
-        return interaction.user.voice.channel
-
     @music_commands.command()
     async def connect(self, interaction: Interaction[Bot]) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
 
-        channel = await self._vc_check(interaction)
+        channel = await vc_check(interaction)
         if not channel:
             return
 
@@ -98,7 +83,7 @@ class MusicCog(BaseCog, name="Music Cog"):
             )
             return
 
-        channel = await self._vc_check(interaction)
+        channel = await vc_check(interaction)
         if not channel:
             return
 
@@ -123,7 +108,7 @@ class MusicCog(BaseCog, name="Music Cog"):
         assert interaction.guild
 
         if interaction.guild.voice_client is None:
-            channel = await self._vc_check(interaction)
+            channel = await vc_check(interaction)
             if not channel:
                 return
 
