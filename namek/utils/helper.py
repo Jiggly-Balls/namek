@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from namek.core import Bot
 
 
-__all__ = ("safe_defer",)
+__all__ = ("safe_defer", "vc_check")
 
 
 async def safe_defer(
@@ -26,7 +26,13 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
     assert isinstance(interaction.user, discord.Member)
 
     if not (interaction.user.voice and interaction.user.voice.channel):
-        await interaction.response.send_message(
+        send_message_func = (
+            interaction.response.send_message
+            if interaction.response.is_done()
+            else interaction.followup.send
+        )
+
+        await send_message_func(
             embed=ErrorEmbed(
                 "You need to be within a voice channel to use this command."
             )
