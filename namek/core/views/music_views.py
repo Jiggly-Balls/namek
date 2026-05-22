@@ -113,5 +113,6 @@ class PlayView(BaseView):
         await self.player.pause(self.is_pause)
 
         await interaction.followup.send(
-            embed=MainEmbed(description="Paused the current track")
+            embed=MainEmbed(description="Paused the current track"),
+            ephemeral=True,
         )
