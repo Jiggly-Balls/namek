@@ -26,6 +26,7 @@ class PlayView(BaseView):
         super().__init__(timeout=None)
 
         self.player: Player = player
+        self.is_pause: bool = False
 
     async def interaction_check(self, interaction: Interaction[Bot]) -> bool:
         channel = await vc_check(interaction)
@@ -101,3 +102,16 @@ class PlayView(BaseView):
     async def dud_button_2(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None: ...
+
+    @discord.ui.button(label="Play / Pause", style=ButtonStyle.green)
+    async def play_pause(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None:
+        await interaction.response.defer(ephemeral=True)
+
+        self.is_pause = not self.is_pause
+        await self.player.pause(self.is_pause)
+
+        await interaction.followup.send(
+            embed=MainEmbed(description="Paused the current track")
+        )
