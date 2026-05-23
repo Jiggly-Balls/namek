@@ -86,7 +86,9 @@ class Bot(commands.Bot):
     async def init_emojis(self) -> None:
         emojis = await self.fetch_application_emojis()
         application_emoji_set = set(emoji.name.lower() for emoji in emojis)
-        local_emoji_map = {asset.stem.lower(): asset for asset in ASSET_DIR.iterdir()}
+        local_emoji_map = {
+            asset.stem.lower(): asset for asset in ASSET_DIR.iterdir()
+        }
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
 
