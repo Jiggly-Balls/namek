@@ -9,7 +9,7 @@ from disckit.utils import MentionTree
 from discord.ext import commands
 from discord.utils import MISSING
 
-from namek.core.settings import SETTINGS
+from namek.core.settings import ASSET_DIR, EMOJIS, SETTINGS
 
 if TYPE_CHECKING:
     from collections.abc import Collection
@@ -71,6 +71,21 @@ class Bot(commands.Bot):
                 stack_info=True,
             )
 
+    async def init_emojis(self) -> None:
+        emojis = await self.fetch_application_emojis()
+        application_emoji_set = set(emoji.name.lower() for emoji in emojis)
+        local_emoji_map = {asset.stem.lower(): asset for asset in ASSET_DIR.iterdir()}
+
+        missing_emojis = application_emoji_set ^ set(local_emoji_map)
+
+        for emoji in missing_emojis:
+            with open(ASSET_DIR / local_emoji_map[emoji], "rb") as f:
+                emoji_obj = await self.create_application_emoji(
+                    name=emoji, image=f.read()
+                )
+                setattr(EMOJIS, emoji_obj.name.upper(), emoji_obj)
+                _logger.info("Uploaded emoji: %s", emoji)
+
     async def __temp_sync(self) -> None:  # pyright: ignore[reportUnusedFunction]
         synced_global = await self.tree.sync()
         synced_guild = await self.tree.sync(
@@ -92,6 +107,8 @@ class Bot(commands.Bot):
             password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
             retries=SETTINGS.LAVALINK_RETRIES,
         )
+
+        await self.init_emojis()
 
         name = self.user.name if self.user else "Namek Bot"
         _logger.info(f"{name} has successfully logged in.")
