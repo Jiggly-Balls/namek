@@ -33,6 +33,8 @@ class Bot(commands.Bot):
         ----------
         intents : discord.Intents
             The intents to be used by the bot for interacting with Discord.
+        owner_ids : None | collections.abc.Collection[int]
+            A collection of all owner IDs as integers to be passed in. This is optional.
         """
         super().__init__(
             command_prefix=MISSING,
