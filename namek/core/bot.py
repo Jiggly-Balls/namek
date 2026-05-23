@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import TYPE_CHECKING
 
@@ -86,11 +87,25 @@ class Bot(commands.Bot):
     async def init_emojis(self) -> None:
         emojis = await self.fetch_application_emojis()
         for emoji in emojis:
-            setattr(EMOJIS, emoji.name.upper(), emoji)
+            emoji_name = emoji.name.upper()
 
-        application_emoji_set = set(emoji.name.lower() for emoji in emojis)
+            default_value = getattr(EMOJIS, emoji_name, None)
+            # The returned value must be `None` (attr doesn't exist) or
+            # a sentinel value `discord.utils.MISSING` (attr exists).
+
+            if default_value is None:
+                _logger.warning(
+                    "[0] Skipping emoji assignment: Could not find attribute `EMOJIS.%s`. "
+                    "Double check the spelling in the filename and in the `_Emoji` class.",
+                    emoji_name,
+                )
+                continue
+
+            setattr(EMOJIS, emoji_name, emoji)
+
+        application_emoji_set = set(emoji.name.upper() for emoji in emojis)
         local_emoji_map = {
-            asset.stem.lower(): asset for asset in ASSET_DIR.iterdir()
+            asset.stem.upper(): asset for asset in ASSET_DIR.iterdir()
         }
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
@@ -98,14 +113,28 @@ class Bot(commands.Bot):
             _logger.info("All emojis are present.")
             return
 
-        for emoji in missing_emojis:
-            with open(ASSET_DIR / local_emoji_map[emoji], "rb") as f:
-                emoji_obj = await self.create_application_emoji(
-                    name=emoji, image=f.read()
+        for emoji_name in missing_emojis:
+            default_value = getattr(EMOJIS, emoji_name, None)
+            # The returned value must be `None` (attr doesn't exist) or
+            # a sentinel value `discord.utils.MISSING` (attr exists).
+
+            if default_value is None:
+                _logger.warning(
+                    "[1] Skipping emoji assignment: Could not find attribute `EMOJIS.%s`. "
+                    "Double check the spelling in the filename and in the `_Emoji` class.",
+                    emoji_name,
                 )
-                setattr(EMOJIS, emoji_obj.name.upper(), emoji_obj)
-                _logger.info("Uploaded emoji: %s", emoji)
-        _logger.info("Finished uploading all emojis.")
+                continue
+
+            with open(ASSET_DIR / local_emoji_map[emoji_name], "rb") as f:
+                emoji_obj = await self.create_application_emoji(
+                    name=emoji_name, image=f.read()
+                )
+                setattr(EMOJIS, emoji_name, emoji_obj)
+                _logger.info("Uploaded emoji: %s", emoji_name)
+                await asyncio.sleep(0.5)
+
+        _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
         # await self.__temp_sync()
