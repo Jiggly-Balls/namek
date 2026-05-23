@@ -10,7 +10,7 @@ from disckit.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from discord import app_commands
 
 from namek.backend.cache import CACHE
-from namek.cogs import BaseGroupCog, CogEnum
+from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer, vc_check
@@ -27,7 +27,7 @@ _logger = logging.getLogger(__name__)
 @app_commands.guild_only()
 class MusicCog(
     BaseGroupCog,
-    name=CogEnum.MUSIC_COG,
+    name=CogEnums.MUSIC_COG,
     group_name="music",
     group_description="Music related commands.",
 ):

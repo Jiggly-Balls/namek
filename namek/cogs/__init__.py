@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from logging import Logger
 
 
-__all__ = ("BaseGroupCog", "CogEnum")
+__all__ = ("BaseGroupCog", "CogEnums")
 
 
 class BaseGroupCog(GroupCog):
@@ -28,5 +28,5 @@ class BaseGroupCog(GroupCog):
             self.logger.info(f"{self.qualified_name} has been unloaded.")
 
 
-class CogEnum(StrEnum):
+class CogEnums(StrEnum):
     MUSIC_COG = auto()
