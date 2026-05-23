@@ -55,7 +55,7 @@ class Bot(commands.Bot):
         _logger.info("Synced %s global commands.", global_cmds)
         _logger.info("Synced %s guild commands.", guild_cmds)
 
-    async def connect_wavelink_node(
+    async def init_wavelink_node(
         self, *, identifier: str, uri: str, password: str, retries: int
     ) -> None:
         node = wavelink.Node(
@@ -101,7 +101,7 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         # await self.__temp_sync()
 
-        await self.connect_wavelink_node(
+        await self.init_wavelink_node(
             identifier=SETTINGS.LAVALINK_NAME,
             uri=SETTINGS.LAVALINK_URI.get_secret_value(),
             password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
