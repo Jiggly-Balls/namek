@@ -43,6 +43,18 @@ class Bot(commands.Bot):
         )
         self.tree: MentionTree
 
+    async def __temp_sync(self) -> None:  # pyright: ignore[reportUnusedFunction]
+        synced_global = await self.tree.sync()
+        synced_guild = await self.tree.sync(
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+        )
+
+        global_cmds = len(synced_global)
+        guild_cmds = len(synced_guild)
+
+        _logger.info("Synced %s global commands.", global_cmds)
+        _logger.info("Synced %s guild commands.", guild_cmds)
+
     async def connect_wavelink_node(
         self, *, identifier: str, uri: str, password: str, retries: int
     ) -> None:
@@ -85,18 +97,6 @@ class Bot(commands.Bot):
                 )
                 setattr(EMOJIS, emoji_obj.name.upper(), emoji_obj)
                 _logger.info("Uploaded emoji: %s", emoji)
-
-    async def __temp_sync(self) -> None:  # pyright: ignore[reportUnusedFunction]
-        synced_global = await self.tree.sync()
-        synced_guild = await self.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
-        )
-
-        global_cmds = len(synced_global)
-        guild_cmds = len(synced_guild)
-
-        _logger.info("Synced %s global commands.", global_cmds)
-        _logger.info("Synced %s guild commands.", guild_cmds)
 
     async def setup_hook(self) -> None:
         # await self.__temp_sync()
