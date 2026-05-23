@@ -96,7 +96,20 @@ class PlayView(BaseView):
     @discord.ui.button(emoji="➡️", style=ButtonStyle.blurple)
     async def next_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
-    ) -> None: ...
+    ) -> None:
+        await interaction.response.defer(ephemeral=True)
+
+        await self.player.skip(force=True)
+        current_song = self.player.current
+        if not current_song:
+            return
+
+        await interaction.followup.send(
+            embed=MainEmbed(
+                description=f"Skipped current song. Now playing `{current_song.title}`"
+            ),
+            ephemeral=True,
+        )
 
     @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_2(
