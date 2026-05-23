@@ -43,8 +43,17 @@ SETTINGS: _Settings = _Settings()
 
 
 class _Emojis:
+    AUTOPLAY_DISABLED: Emoji = MISSING
+    AUTOPLAY_ENABLED: Emoji = MISSING
+    DISCONNECT: Emoji = MISSING
+    FILTER: Emoji = MISSING
+    NEXT: Emoji = MISSING
     PLAY: Emoji = MISSING
     PAUSE: Emoji = MISSING
+    PREVIOUS: Emoji = MISSING
+    REPEAT_1: Emoji = MISSING
+    REPEAT: Emoji = MISSING
+    SHUFFLE: Emoji = MISSING
 
 
 EMOJIS: _Emojis = _Emojis()
