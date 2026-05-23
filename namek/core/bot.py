@@ -111,4 +111,4 @@ class Bot(commands.Bot):
         await self.init_emojis()
 
         name = self.user.name if self.user else "Namek Bot"
-        _logger.info(f"{name} has successfully logged in.")
+        _logger.info("%s has successfully logged in.", name)
