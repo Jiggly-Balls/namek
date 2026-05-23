@@ -27,9 +27,9 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
 
     if not (interaction.user.voice and interaction.user.voice.channel):
         send_message_func = (
-            interaction.response.send_message
+            interaction.followup.send
             if interaction.response.is_done()
-            else interaction.followup.send
+            else interaction.response.send_message
         )
 
         await send_message_func(
