@@ -12,6 +12,8 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import ClassVar
 
+    from discord import Emoji
+
 __all__ = (
     "SETTINGS",
     "BASE_DIR",
@@ -39,11 +41,21 @@ class _Settings(BaseSettings):
 
 SETTINGS: _Settings = _Settings()
 
+
+class _Emojis:
+    PLAY: Emoji = MISSING
+    PAUSE: Emoji = MISSING
+
+
+EMOJIS: _Emojis = _Emojis()
+
 BASE_DIR: Path = pathlib.Path(__file__).parent.parent
+ASSET_DIR: Path = BASE_DIR.parent / "assets"
 COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "commands",
     BASE_DIR / "cogs" / "workers",
 ]
+
 
 ALLOWED_MUSIC_SOURCES: set[str] = {
     "www.youtube.com",
