@@ -6,11 +6,11 @@ from urllib.parse import urlparse
 
 import discord
 import wavelink
-from disckit.cogs import BaseCog
 from disckit.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from discord import app_commands
 
 from namek.backend.cache import CACHE
+from namek.cogs import BaseGroupCog, CogEnum
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer, vc_check
@@ -24,19 +24,19 @@ if TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 
-class MusicCog(BaseCog, name="Music Cog"):
+@app_commands.guild_only()
+class MusicCog(
+    BaseGroupCog,
+    name=CogEnum.MUSIC_COG,
+    group_name="music",
+    group_description="Music related commands.",
+):
     """
     Music Commands for the bot.
 
     A cog containing music-related commands for playing, controlling, and managing
     audio playback in Discord voice channels using the Wavelink library.
     """
-
-    music_commands: app_commands.Group = app_commands.Group(
-        name="music",
-        description="Music related commands.",
-        guild_only=True,
-    )
 
     def __init__(self, bot: Bot) -> None:
         """
@@ -50,7 +50,7 @@ class MusicCog(BaseCog, name="Music Cog"):
         super().__init__(logger=_logger)
         self.bot: Bot = bot
 
-    @music_commands.command()
+    @app_commands.command()
     async def connect(self, interaction: Interaction[Bot]) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
@@ -68,7 +68,7 @@ class MusicCog(BaseCog, name="Music Cog"):
             )
         )
 
-    @music_commands.command()
+    @app_commands.command()
     async def disconnect(self, interaction: Interaction[Bot]) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
@@ -101,7 +101,7 @@ class MusicCog(BaseCog, name="Music Cog"):
             )
         )
 
-    @music_commands.command()
+    @app_commands.command()
     async def play(self, interaction: Interaction[Bot], query: str) -> None:
         assert isinstance(interaction.user, discord.Member)
         assert interaction.channel
@@ -182,7 +182,7 @@ class MusicCog(BaseCog, name="Music Cog"):
         if not player.playing:
             await player.play(player.queue.get(), volume=50)
 
-    @music_commands.command()
+    @app_commands.command()
     async def queue(self, interaction: Interaction[Bot]) -> None: ...
 
 
