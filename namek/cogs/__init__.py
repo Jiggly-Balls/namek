@@ -1,0 +1,32 @@
+from __future__ import annotations
+
+from enum import StrEnum, auto
+from typing import TYPE_CHECKING
+
+from discord.ext.commands import GroupCog
+
+if TYPE_CHECKING:
+    from logging import Logger
+
+
+__all__ = ("BaseGroupCog", "CogEnum")
+
+
+class BaseGroupCog(GroupCog):
+    """The base group cog which comes along with basic logging."""
+
+    def __init__(self, logger: None | Logger = None) -> None:
+        super().__init__()
+        self.logger: None | Logger = logger
+
+    async def cog_load(self) -> None:
+        if self.logger:
+            self.logger.info(f"{self.qualified_name} has been loaded.")
+
+    async def cog_unload(self) -> None:
+        if self.logger:
+            self.logger.info(f"{self.qualified_name} has been unloaded.")
+
+
+class CogEnum(StrEnum):
+    MUSIC_COG = auto()
