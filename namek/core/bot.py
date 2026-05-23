@@ -85,12 +85,18 @@ class Bot(commands.Bot):
 
     async def init_emojis(self) -> None:
         emojis = await self.fetch_application_emojis()
+        for emoji in emojis:
+            setattr(EMOJIS, emoji.name.upper(), emoji)
+
         application_emoji_set = set(emoji.name.lower() for emoji in emojis)
         local_emoji_map = {
             asset.stem.lower(): asset for asset in ASSET_DIR.iterdir()
         }
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
+        if not missing_emojis:
+            _logger.info("All emojis are present.")
+            return
 
         for emoji in missing_emojis:
             with open(ASSET_DIR / local_emoji_map[emoji], "rb") as f:
@@ -99,6 +105,7 @@ class Bot(commands.Bot):
                 )
                 setattr(EMOJIS, emoji_obj.name.upper(), emoji_obj)
                 _logger.info("Uploaded emoji: %s", emoji)
+        _logger.info("Finished uploading all emojis.")
 
     async def setup_hook(self) -> None:
         # await self.__temp_sync()
