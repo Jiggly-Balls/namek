@@ -7,8 +7,8 @@ from disckit.cogs import BaseCog
 from disckit.utils import MainEmbed
 from discord.ext import commands
 
-from namek.cogs import CogEnums
 from namek.backend.cache import CACHE
+from namek.cogs import CogEnums
 from namek.core.views.music_views import PlayView
 
 if TYPE_CHECKING:

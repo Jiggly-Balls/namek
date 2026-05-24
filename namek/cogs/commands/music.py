@@ -198,8 +198,7 @@ class MusicCog(
             await player.play(player.queue.get(), volume=50)
 
     @app_commands.command()
-    async def queue(self, interaction: Interaction[Bot]) -> None:
-        ...
+    async def queue(self, interaction: Interaction[Bot]) -> None: ...
 
 
 async def setup(bot: Bot) -> None:

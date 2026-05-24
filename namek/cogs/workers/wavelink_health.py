@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from disckit.cogs import BaseCog
 from discord.ext import commands
 
-from namek.core import Bot
 from namek.cogs import CogEnums
+from namek.core import Bot
 
 if TYPE_CHECKING:
     from wavelink import NodeDisconnectedEventPayload, NodeReadyEventPayload
