@@ -7,6 +7,7 @@ from disckit.cogs import BaseCog
 from disckit.utils import MainEmbed
 from discord.ext import commands
 
+from namek.cogs import CogEnums
 from namek.backend.cache import CACHE
 from namek.core.views.music_views import PlayView
 
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 
-class WavelinkTracker(BaseCog, name="Wavelink Tracker"):
+class WavelinkTracker(BaseCog, name=CogEnums.WAVELINK_TRACKER_COG):
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 

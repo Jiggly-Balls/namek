@@ -7,6 +7,7 @@ from disckit.cogs import BaseCog
 from discord.ext import commands
 
 from namek.core import Bot
+from namek.cogs import CogEnums
 
 if TYPE_CHECKING:
     from wavelink import NodeDisconnectedEventPayload, NodeReadyEventPayload
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 
-class WavelinkHealth(BaseCog, name="Wavelink Health"):
+class WavelinkHealth(BaseCog, name=CogEnums.WAVELINK_HEALTH_COG):
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 
