@@ -10,12 +10,14 @@ from disckit.utils import MentionTree
 from discord.ext import commands
 from discord.utils import MISSING
 
+from namek.cogs import CogEnums
 from namek.core.settings import ASSET_DIR, EMOJIS, SETTINGS
 
 if TYPE_CHECKING:
     from collections.abc import Collection
 
     from discord import Intents
+    from discord.app_commands import AppCommand
 
 
 __all__ = ("Bot",)
@@ -57,6 +59,59 @@ class Bot(commands.Bot):
 
         _logger.info("Synced %s global commands.", global_cmds)
         _logger.info("Synced %s guild commands.", guild_cmds)
+
+    async def init_commands_sync(self) -> None:
+        app_commands: list[AppCommand] = await self.tree.fetch_commands()
+
+        if not app_commands:
+            _logger.info("[0] Syncing application commands.")
+
+            global_synced = await self.tree.sync()
+            guild_synced = await self.tree.sync(
+                guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+            )
+
+            _logger.info(
+                "[0] Successfully synced %s global commands.",
+                len(global_synced),
+            )
+            _logger.info(
+                "[0] Successfully synced %s dev commands.",
+                len(guild_synced),
+            )
+            return
+
+        dev_cog = self.get_cog(CogEnums.DEV_COG)
+        if dev_cog is None:
+            _logger.warning('Could not find cog: "%s"', CogEnums.DEV_COG)
+            _logger.warning(
+                "You will not be able to sync or manage commands without this cog.",
+            )
+            return
+
+        found_sync = False
+        for command in app_commands:
+            if command.name == "sync":
+                found_sync = True
+                break
+
+        if not found_sync:
+            _logger.info("[1] Syncing application commands.")
+
+            global_synced = await self.tree.sync()
+            guild_synced = await self.tree.sync(
+                guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+            )
+
+            _logger.info(
+                "[1] Successfully synced %s global commands.",
+                len(global_synced),
+            )
+            _logger.info(
+                "[1] Successfully synced %s dev commands.",
+                len(guild_synced),
+            )
+            return
 
     async def init_wavelink_node(
         self, *, identifier: str, uri: str, password: str, retries: int
@@ -147,8 +202,8 @@ class Bot(commands.Bot):
             password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
             retries=SETTINGS.LAVALINK_RETRIES,
         )
-
         await self.init_emojis()
+        await self.init_commands_sync()
 
         name = self.user.name if self.user else "Namek Bot"
         _logger.info("%s has successfully logged in.", name)
