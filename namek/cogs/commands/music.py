@@ -146,7 +146,8 @@ class MusicCog(
         ):
             embed = ErrorEmbed(
                 title="Error",
-                description="This source is not supported. Please use YouTube, YouTube Music, Spotify, SoundCloud or Apple Music.",
+                description="This source is not supported. "
+                "Please use YouTube, YouTube Music, Spotify, SoundCloud or Apple Music.",
             )
             await interaction.followup.send(embed=embed)
             return
@@ -165,7 +166,8 @@ class MusicCog(
         if not tracks:
             await interaction.followup.send(
                 embed=ErrorEmbed(
-                    description=f"{interaction.user.mention} - Could not find any tracks with that query. Please try again."
+                    description=f"{interaction.user.mention} - Could not find any tracks with that query. "
+                    "Please try again."
                 )
             )
             return
@@ -196,7 +198,8 @@ class MusicCog(
             await player.play(player.queue.get(), volume=50)
 
     @app_commands.command()
-    async def queue(self, interaction: Interaction[Bot]) -> None: ...
+    async def queue(self, interaction: Interaction[Bot]) -> None:
+        ...
 
 
 async def setup(bot: Bot) -> None:
