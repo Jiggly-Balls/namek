@@ -6,12 +6,12 @@ from urllib.parse import urlparse
 
 import discord
 import wavelink
-from disckit.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from discord import app_commands
 
 from namek.backend.cache import CACHE
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import ALLOWED_MUSIC_SOURCES
+from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer, vc_check
 
@@ -64,7 +64,7 @@ class MusicCog(
         await channel.connect(cls=wavelink.Player, self_deaf=True)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                f"Successfully joined `{channel.name}` voice channel."
+                description=f"Successfully joined `{channel.name}` voice channel."
             )
         )
 
@@ -79,7 +79,9 @@ class MusicCog(
             and interaction.guild.voice_client
         ):
             await interaction.response.send_message(
-                embed=ErrorEmbed("I'm not in a voice channel to disconnect.")
+                embed=ErrorEmbed(
+                    description="I'm not in a voice channel to disconnect."
+                )
             )
             return
 
@@ -97,7 +99,7 @@ class MusicCog(
         await interaction.guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                f"Disconnected from voice channel `{channel.name}`."
+                description=f"Disconnected from voice channel `{channel.name}`."
             )
         )
 
@@ -117,7 +119,7 @@ class MusicCog(
             await channel.connect(cls=wavelink.Player, self_deaf=True)
             await interaction.followup.send(
                 embed=SuccessEmbed(
-                    f"Successfully joined `{channel.name}` voice channel."
+                    description=f"Successfully joined `{channel.name}` voice channel."
                 )
             )
 
@@ -149,12 +151,21 @@ class MusicCog(
             await interaction.followup.send(embed=embed)
             return
 
-        tracks: wavelink.Search = await wavelink.Playable.search(query)
+        try:
+            tracks: wavelink.Search = await wavelink.Playable.search(query)
+        except wavelink.exceptions.LavalinkLoadException:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    description="An error occured in looking up the track. "
+                    "Please try again"
+                )
+            )
+            return
 
         if not tracks:
             await interaction.followup.send(
                 embed=ErrorEmbed(
-                    f"{interaction.user.mention} - Could not find any tracks with that query. Please try again."
+                    description=f"{interaction.user.mention} - Could not find any tracks with that query. Please try again."
                 )
             )
             return
@@ -163,14 +174,16 @@ class MusicCog(
             added: int = await player.queue.put_wait(tracks)
             await interaction.followup.send(
                 embed=MainEmbed(
-                    f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue."
+                    description=f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue."
                 )
             )
         else:
             track: wavelink.Playable = tracks[0]
             await player.queue.put_wait(track)
             await interaction.followup.send(
-                embed=MainEmbed(f"Added **`{track}`** to the queue.")
+                embed=MainEmbed(
+                    description=f"Added **`{track}`** to the queue."
+                )
             )
 
         if player not in CACHE.vc_states:
