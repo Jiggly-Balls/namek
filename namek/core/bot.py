@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from typing import TYPE_CHECKING
 
 import discord
@@ -11,7 +12,13 @@ from discord.ext import commands
 from discord.utils import MISSING
 
 from namek.cogs import CogEnums
-from namek.core.settings import ASSET_DIR, EMOJIS, SETTINGS
+from namek.core.settings import (
+    ASSET_DIR,
+    BASE_DIR,
+    COG_DIRECTORIES,
+    EMOJIS,
+    SETTINGS,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Collection
@@ -113,6 +120,49 @@ class Bot(commands.Bot):
             )
             return
 
+    async def init_extensions(self) -> None:
+        cogs_loaded = 0
+        cogs_failed = 0
+
+        for directory in COG_DIRECTORIES:
+            if not directory.exists():
+                _logger.warning("Directory not found: %s", directory)
+                continue
+
+            _logger.info(
+                "Loading cogs from: %s", directory.relative_to(BASE_DIR)
+            )
+
+            for python_file in directory.rglob("*.py"):
+                if python_file.name.startswith("_"):
+                    continue
+
+                relative_path = python_file.relative_to(BASE_DIR)
+                module_name = (
+                    str(relative_path).replace(os.sep, ".").replace(".py", "")
+                )
+
+                try:
+                    await self.load_extension(module_name)
+                    _logger.info(f"Loaded: {module_name}")
+                    cogs_loaded += 1
+                except commands.ExtensionAlreadyLoaded:
+                    _logger.warning(f"Already loaded: {module_name}")
+                except commands.ExtensionFailed as e:
+                    _logger.warning(f"Failed to load {module_name}: {e}")
+                    cogs_failed += 1
+                except commands.NoEntryPointError:
+                    _logger.warning(f"No setup() function in: {module_name}")
+                    cogs_failed += 1
+                except Exception as e:
+                    _logger.warning(
+                        f"Unexpected error loading {module_name}: {e}"
+                    )
+                    cogs_failed += 1
+
+        _logger.info("Cog loading complete!")
+        _logger.info("Loaded: %s | Failed: %s", cogs_loaded, cogs_failed)
+
     async def init_wavelink_node(
         self, *, identifier: str, uri: str, password: str, retries: int
     ) -> None:
@@ -194,8 +244,6 @@ class Bot(commands.Bot):
         _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
-        # await self.__temp_sync()
-
         await self.init_wavelink_node(
             identifier=SETTINGS.LAVALINK_NAME,
             uri=SETTINGS.LAVALINK_URI.get_secret_value(),
@@ -203,7 +251,13 @@ class Bot(commands.Bot):
             retries=SETTINGS.LAVALINK_RETRIES,
         )
         await self.init_emojis()
-        await self.init_commands_sync()
+        await self.init_extensions()
+        # We MUST load the extensions only after loading the emojis for the emojis to be  
+        # actually be present in all the views as python loads all the files eagarly
+        # (including view files) which causes the buttons to having MISSING sentinel
+        # instead of the actual loaded emojis
+        
+        # await self.init_commands_sync()
 
         name = self.user.name if self.user else "Namek Bot"
         _logger.info("%s has successfully logged in.", name)
