@@ -7,6 +7,7 @@ from discord import ButtonStyle
 from discord.ui import Button
 
 from namek.backend.cache import CACHE
+from namek.core.settings import EMOJIS
 from namek.core.views import BaseView
 from namek.utils import ErrorEmbed, MainEmbed
 from namek.utils.helper import vc_check
@@ -39,7 +40,7 @@ class PlayView(BaseView):
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None: ...
 
-    @discord.ui.button(emoji="⬅️", style=ButtonStyle.blurple)
+    @discord.ui.button(emoji=EMOJIS.PREVIOUS, style=ButtonStyle.blurple)
     async def previous_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None:
@@ -67,7 +68,7 @@ class PlayView(BaseView):
 
         await interaction.followup.send(embed=embed, ephemeral=True)
 
-    @discord.ui.button(emoji="🗑️", style=ButtonStyle.red)
+    @discord.ui.button(emoji=EMOJIS.DISCONNECT, style=ButtonStyle.red)
     async def delete_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None:
@@ -93,7 +94,7 @@ class PlayView(BaseView):
         )
         self.stop()
 
-    @discord.ui.button(emoji="➡️", style=ButtonStyle.blurple)
+    @discord.ui.button(emoji=EMOJIS.NEXT, style=ButtonStyle.blurple)
     async def next_callback(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None:
@@ -116,7 +117,7 @@ class PlayView(BaseView):
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None: ...
 
-    @discord.ui.button(label="Play / Pause", style=ButtonStyle.green)
+    @discord.ui.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
     async def play_pause(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None:
@@ -124,6 +125,14 @@ class PlayView(BaseView):
 
         self.is_pause = not self.is_pause
         await self.player.pause(self.is_pause)
+
+        if interaction.message:
+            button.label = (
+                f"{EMOJIS.PAUSE}" if self.is_pause else f"{EMOJIS.PLAY}"
+            )
+            await interaction.followup.edit_message(
+                interaction.message.id, view=self
+            )
 
         await interaction.followup.send(
             embed=MainEmbed(description="Paused the current track"),
