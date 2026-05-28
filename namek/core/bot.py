@@ -67,25 +67,34 @@ class Bot(commands.Bot):
         _logger.info("Synced %s global commands.", global_cmds)
         _logger.info("Synced %s guild commands.", guild_cmds)
 
-    async def init_commands_sync(self) -> None:
+    async def _sync_handle(self) -> None:
+        _logger.info("Syncing application commands.")
+
+        global_synced = await self.tree.sync()
+        guild_synced = await self.tree.sync(
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+        )
+
+        _logger.info(
+            "Successfully synced %s global commands.",
+            len(global_synced),
+        )
+        _logger.info(
+            "Successfully synced %s dev commands.",
+            len(guild_synced),
+        )
+        return
+
+    async def init_commands_sync(self, force_reload: bool = False) -> None:
+        if force_reload:
+            _logger.info("Force syncing enabled.")
+            await self._sync_handle()
+            return
+
         app_commands: list[AppCommand] = await self.tree.fetch_commands()
-
         if not app_commands:
-            _logger.info("[0] Syncing application commands.")
-
-            global_synced = await self.tree.sync()
-            guild_synced = await self.tree.sync(
-                guild=discord.Object(SETTINGS.DEV_GUILD_ID)
-            )
-
-            _logger.info(
-                "[0] Successfully synced %s global commands.",
-                len(global_synced),
-            )
-            _logger.info(
-                "[0] Successfully synced %s dev commands.",
-                len(guild_synced),
-            )
+            _logger.info("No registered commands found.")
+            await self._sync_handle()
             return
 
         dev_cog = self.get_cog(CogEnums.DEV_COG)
@@ -96,28 +105,13 @@ class Bot(commands.Bot):
             )
             return
 
-        found_sync = False
-        for command in app_commands:
-            if command.name == "sync":
-                found_sync = True
-                break
-
+        dev_app_commands: list[AppCommand] = await self.tree.fetch_commands(
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+        )
+        found_sync = any(command.name == "dev" for command in dev_app_commands)
         if not found_sync:
-            _logger.info("[1] Syncing application commands.")
-
-            global_synced = await self.tree.sync()
-            guild_synced = await self.tree.sync(
-                guild=discord.Object(SETTINGS.DEV_GUILD_ID)
-            )
-
-            _logger.info(
-                "[1] Successfully synced %s global commands.",
-                len(global_synced),
-            )
-            _logger.info(
-                "[1] Successfully synced %s dev commands.",
-                len(guild_synced),
-            )
+            _logger.info("Sync registered command not found.")
+            await self._sync_handle()
             return
 
     async def init_extensions(self) -> None:
@@ -252,12 +246,12 @@ class Bot(commands.Bot):
         )
         await self.init_emojis()
         await self.init_extensions()
-        # We MUST load the extensions only after loading the emojis for the emojis to be  
+        # We MUST load the extensions only after loading the emojis for the emojis to be
         # actually be present in all the views as python loads all the files eagarly
         # (including view files) which causes the buttons to having MISSING sentinel
         # instead of the actual loaded emojis
-        
-        # await self.init_commands_sync()
+
+        await self.init_commands_sync()
 
         name = self.user.name if self.user else "Namek Bot"
         _logger.info("%s has successfully logged in.", name)
