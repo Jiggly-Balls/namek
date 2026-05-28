@@ -20,6 +20,7 @@ _logger = logging.getLogger(__name__)
 
 
 @app_commands.guild_only()
+@app_commands.guilds(SETTINGS.DEV_GUILD_ID)
 class DevCog(
     BaseGroupCog,
     name=CogEnums.DEV_COG,
@@ -38,7 +39,6 @@ class DevCog(
         self.bot: Bot = bot
 
     @app_commands.command()
-    @app_commands.guilds(SETTINGS.DEV_GUILD_ID)
     async def sync(self, interaction: Interaction[Bot]) -> None:
         """Developer command to sync the bot's slash commands with discord."""
 
@@ -49,7 +49,10 @@ class DevCog(
             guild=discord.Object(SETTINGS.DEV_GUILD_ID)
         )
 
-        _logger.info("Syncing bot commands via sync command")
+        _logger.info(
+            "Syncing bot commands via sync command. Executed by %s",
+            interaction.user.name,
+        )
         _logger.info(
             "Successfully synced %s global commands.",
             len(global_synced),
