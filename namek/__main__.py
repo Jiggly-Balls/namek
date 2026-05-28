@@ -45,7 +45,6 @@ async def main() -> None:
             bot,
             disckit.CogEnum.ERROR_HANDLER,
             disckit.CogEnum.STATUS_HANDLER,
-            disckit.CogEnum.HELP_COG,
         )
 
         await bot.start(SETTINGS.BOT_TOKEN.get_secret_value())
