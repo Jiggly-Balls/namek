@@ -4,12 +4,12 @@ import logging
 from typing import TYPE_CHECKING
 
 from disckit.cogs import BaseCog
-from disckit.utils import MainEmbed
 from discord.ext import commands
 
 from namek.backend.cache import CACHE
 from namek.cogs import CogEnums
 from namek.core.views.music_views import PlayView
+from namek.utils import MainEmbed
 
 if TYPE_CHECKING:
     from discord import Embed

@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from disckit.utils import ErrorEmbed
+
+from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
     from discord import Interaction, InteractionCallbackResponse
@@ -34,7 +35,7 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
 
         await send_message_func(
             embed=ErrorEmbed(
-                "You need to be within a voice channel to use this command."
+                description="You need to be within a voice channel to use this command."
             )
         )
         return None
