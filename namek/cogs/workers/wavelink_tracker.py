@@ -3,11 +3,10 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from disckit.cogs import BaseCog
 from discord.ext import commands
 
 from namek.backend.cache import CACHE
-from namek.cogs import CogEnums
+from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.views.music_views import PlayView
 from namek.utils import MainEmbed
 
@@ -21,7 +20,11 @@ if TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 
-class WavelinkTracker(BaseCog, name=CogEnums.WAVELINK_TRACKER_COG):
+class WavelinkTracker(
+    BaseGroupCog,
+    name=CogEnums.WAVELINK_TRACKER_COG,
+    group_description="Tracks the songs being played.",
+):
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 
