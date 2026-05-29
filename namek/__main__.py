@@ -29,8 +29,6 @@ async def main() -> None:
     intents = discord.Intents(guilds=True, members=True, voice_states=True)
 
     UtilConfig.BUG_REPORT_CHANNEL = SETTINGS.BUG_REPORT_CHANNEL_ID
-    UtilConfig.STATUS_TYPE = discord.ActivityType.listening
-    UtilConfig.STATUS_COOLDOWN = 600
 
     try:
         bot = Bot(intents=intents, owner_ids=SETTINGS.OWNER_IDS)
