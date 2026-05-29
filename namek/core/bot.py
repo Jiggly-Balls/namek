@@ -225,12 +225,6 @@ class Bot(commands.Bot):
         _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
-        await self.init_wavelink_node(
-            identifier=SETTINGS.LAVALINK_NAME,
-            uri=SETTINGS.LAVALINK_URI.get_secret_value(),
-            password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
-            retries=SETTINGS.LAVALINK_RETRIES,
-        )
         await self.init_emojis()
         await self.init_extensions()
         # We MUST load the extensions only after loading the emojis for the emojis to be
@@ -239,6 +233,12 @@ class Bot(commands.Bot):
         # instead of the actual loaded emojis
 
         await self.init_commands_sync()
+        await self.init_wavelink_node(
+            identifier=SETTINGS.LAVALINK_NAME,
+            uri=SETTINGS.LAVALINK_URI.get_secret_value(),
+            password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
+            retries=SETTINGS.LAVALINK_RETRIES,
+        )
 
         name = self.user.name if self.user else "Namek Bot"
         _logger.info("%s has successfully logged in.", name)
