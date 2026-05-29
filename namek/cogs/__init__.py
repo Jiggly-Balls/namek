@@ -21,11 +21,11 @@ class BaseGroupCog(GroupCog):
 
     async def cog_load(self) -> None:
         if self.logger:
-            self.logger.info(f"{self.qualified_name} has been loaded.")
+            self.logger.info(f"Cog: {self.qualified_name} has been loaded.")
 
     async def cog_unload(self) -> None:
         if self.logger:
-            self.logger.info(f"{self.qualified_name} has been unloaded.")
+            self.logger.info(f"Cog: {self.qualified_name} has been unloaded.")
 
 
 class CogEnums(StrEnum):
