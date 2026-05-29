@@ -65,7 +65,7 @@ COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "workers",
 ]
 
-
+STATUS_COOLDOWN: float = 600.0
 ALLOWED_MUSIC_SOURCES: set[str] = {
     "www.youtube.com",
     "www.music.youtube.com",
