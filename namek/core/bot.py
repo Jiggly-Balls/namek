@@ -55,18 +55,6 @@ class Bot(commands.Bot):
         )
         self.tree: MentionTree
 
-    async def __temp_sync(self) -> None:  # pyright: ignore[reportUnusedFunction]
-        synced_global = await self.tree.sync()
-        synced_guild = await self.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
-        )
-
-        global_cmds = len(synced_global)
-        guild_cmds = len(synced_guild)
-
-        _logger.info("Synced %s global commands.", global_cmds)
-        _logger.info("Synced %s guild commands.", guild_cmds)
-
     async def _sync_handle(self) -> None:
         _logger.info("Syncing application commands.")
 
@@ -138,7 +126,6 @@ class Bot(commands.Bot):
 
                 try:
                     await self.load_extension(module_name)
-                    _logger.info(f"Loaded: {module_name}")
                     cogs_loaded += 1
                 except commands.ExtensionAlreadyLoaded:
                     _logger.warning(f"Already loaded: {module_name}")
