@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 
 import discord
 import wavelink
-from disckit.utils import MentionTree
 from discord.ext import commands
 from discord.utils import MISSING
 
@@ -19,6 +18,7 @@ from namek.core.settings import (
     EMOJIS,
     SETTINGS,
 )
+from namek.utils.mention_tree import MentionTree
 
 if TYPE_CHECKING:
     from collections.abc import Collection
