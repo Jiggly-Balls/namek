@@ -3,10 +3,11 @@ from __future__ import annotations
 import logging
 import sys
 import traceback
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import discord
 from discord.ui import View
+from discord.utils import MISSING
 
 from namek.core.settings import SETTINGS
 from namek.utils import ErrorEmbed
@@ -14,7 +15,14 @@ from namek.utils import ErrorEmbed
 if TYPE_CHECKING:
     from typing import Any
 
-    from discord import Interaction, InteractionMessage, Member, Message, User
+    from discord import (
+        Interaction,
+        InteractionMessage,
+        Member,
+        Message,
+        TextChannel,
+        User,
+    )
     from discord.ui import Item
 
     from namek.core.bot import Bot
@@ -106,7 +114,7 @@ class BaseView(View):
     async def on_error(
         self, interaction: Interaction, error: Exception, item: Item[Any]
     ) -> None:
-        if not SETTINGS.BUG_REPORT_CHANNEL_ID:
+        if SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING:
             return await super().on_error(interaction, error, item)
 
         send_message_func = (
@@ -134,22 +142,22 @@ class BaseView(View):
         ) or await interaction.client.fetch_channel(
             SETTINGS.BUG_REPORT_CHANNEL_ID
         )
+        channel = cast("TextChannel", channel)
 
         frame = (
             error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
         )
 
-        embed = ErrorEmbed()
-        embed.add_field(name="Error in View", value=f"{item.view or self}")
+        embed = ErrorEmbed(title="Error in View")
+        embed.add_field(name="Error in Item", value=f"`{item.view or self}`")
         embed.add_field(
-            name="Error in Item", value=f"Author Name: {interaction.user}"
+            name="Caused by", value=f"Author Name: `{interaction.user}`"
         )
-        embed.add_field(name="Error Type", value=f"{type(error)}")
-        embed.add_field(name="Error Type Description", value=str(frame))
+        embed.add_field(name="Error Type", value=f"`{type(error)}`")
+        embed.add_field(name="Error Frame", value=f"```\n{frame}\n```")
         embed.add_field(
-            name="Cause", value=f"{error.with_traceback(error.__traceback__)}"
+            name="Error Traceback",
+            value=f"```\n{error.with_traceback(error.__traceback__)}\n```",
         )
 
-        await channel.send(  # pyright:ignore[reportAttributeAccessIssue, reportUnknownMemberType]
-            embed=embed
-        )
+        await channel.send(embed=embed)
