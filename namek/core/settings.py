@@ -59,7 +59,7 @@ class _Emojis:
 EMOJIS: _Emojis = _Emojis()
 
 BASE_DIR: Path = pathlib.Path(__file__).parent.parent
-ASSET_DIR: Path = BASE_DIR.parent / "assets"
+ASSET_DIR: Path = BASE_DIR / "assets"
 COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "commands",
     BASE_DIR / "cogs" / "workers",
