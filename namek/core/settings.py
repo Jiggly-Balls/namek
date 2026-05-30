@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import ClassVar
 
-    from discord import Emoji
+    from discord import Colour, Emoji
 
 __all__ = (
     "SETTINGS",
@@ -79,6 +79,6 @@ ALLOWED_MUSIC_SOURCES: set[str] = {
     "www.youtu.be",
 }
 
-MAIN_COLOUR = discord.Colour.blue()
-ERROR_COLOUR = discord.Colour.red()
-SUCCESS_COLOUR = discord.Colour.green()
+MAIN_COLOUR: Colour = discord.Colour.blue()
+ERROR_COLOUR: Colour = discord.Colour.red()
+SUCCESS_COLOUR: Colour = discord.Colour.green()
