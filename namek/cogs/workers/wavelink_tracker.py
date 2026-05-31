@@ -71,7 +71,14 @@ class WavelinkTracker(
         message = await vc_state.channel.send(
             embed=embed, view=PlayView(payload.player), silent=True
         )
-        CACHE.vc_states[payload.player].message = message
+        try:
+            CACHE.vc_states[payload.player].message = message
+        except KeyError:
+            # This can raise when the user disconnects the bot
+            # as soon as a new track is starting which causes
+            # the player pair to get deleted and we get a
+            # KeyError here.
+            pass
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(
@@ -109,8 +116,7 @@ class WavelinkTracker(
 
             track_end_embed = MainEmbed(
                 title="Finished playing your queue",
-                description="All tracks have finished playing from this queue."
-                f"\n{post_text}",
+                description=post_text,
             )
             post_end_embed = (
                 MainEmbed()
