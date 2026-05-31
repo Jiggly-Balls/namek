@@ -127,9 +127,7 @@ class PlayView(BaseView):
         await self.player.pause(self.is_pause)
 
         if interaction.message:
-            button.emoji = (
-                f"{EMOJIS.PAUSE}" if self.is_pause else f"{EMOJIS.PLAY}"
-            )
+            button.emoji = EMOJIS.PAUSE if self.is_pause else EMOJIS.PLAY
             await interaction.followup.edit_message(
                 interaction.message.id, view=self
             )
