@@ -31,7 +31,7 @@ class BaseGroupCog(GroupCog):
 class CogEnums(StrEnum):
     DEV_COG = auto()
     MUSIC_COG = auto()
-    ERROR_HANDLER = auto()
-    STATUS_HANDLER = auto()
+    ERROR_HANDLER_COG = auto()
+    STATUS_HANDLER_COG = auto()
     WAVELINK_HEALTH_COG = auto()
     WAVELINK_TRACKER_COG = auto()

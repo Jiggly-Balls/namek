@@ -37,7 +37,7 @@ UNKNOWN_INTERACTION: set[int] = {10062, 10015}
 
 class ErrorHandler(
     BaseGroupCog,
-    name=CogEnums.ERROR_HANDLER,
+    name=CogEnums.ERROR_HANDLER_COG,
     group_description="Catches and cleanly logs and handles any unhandled errors.",
 ):
     def __init__(self, bot: Bot) -> None:

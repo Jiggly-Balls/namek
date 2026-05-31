@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 
 class StatusHandler(
     BaseGroupCog,
-    name=CogEnums.STATUS_HANDLER,
+    name=CogEnums.STATUS_HANDLER_COG,
     group_description="Handles the bot's status.",
 ):
     """Cog for handling bot's dynamic status."""
