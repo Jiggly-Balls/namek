@@ -111,10 +111,6 @@ class Bot(commands.Bot):
                 _logger.warning("Directory not found: %s", directory)
                 continue
 
-            _logger.info(
-                "Loading cogs from: %s", directory.relative_to(BASE_DIR)
-            )
-
             for python_file in directory.rglob("*.py"):
                 if python_file.name.startswith("_"):
                     continue
