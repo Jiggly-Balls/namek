@@ -172,7 +172,6 @@ class ErrorHandler(
 
         elif isinstance(error, commands.errors.NotOwner):
             error_embed.description = (
-                "You do not have the required permissions to use this command.\n"
                 "This command is only available to owners!"
             )
             await ErrorHandler.send_response(
@@ -182,8 +181,8 @@ class ErrorHandler(
         elif isinstance(error, app_commands.BotMissingPermissions):
             missing_permissions = ", ".join(error.missing_permissions)
             error_embed.description = (
-                f"I don't have the required permissions for this command, "
-                f"I need ``{missing_permissions}`` permission to proceed with this command."
+                f"I don't have the required permissions for this command. "
+                f"I need `{missing_permissions}` permission(s) to proceed with this command."
             )
             await ErrorHandler.send_response(
                 interaction=interaction, embed=error_embed, ephemeral=True
@@ -201,9 +200,10 @@ class ErrorHandler(
 
         elif isinstance(error, app_commands.CommandSignatureMismatch):
             error_embed.description = (
-                f"The signature of the command {error.command.name} seems to be different"
-                " by the one provided by discord. To fix this issue please request the developers"
-                " to sync the commands. If the issue still persists please contact the devs."
+                f"The signature of the command `{error.command.name}` seems to be different"
+                " by the one provided by discord. Please try using the command again later."
+                " If this issue still persists, please contact the bot owners to resync the"
+                " commands."
             )
             await ErrorHandler.send_response(
                 interaction=interaction, embed=error_embed
