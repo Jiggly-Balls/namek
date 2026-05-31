@@ -210,13 +210,20 @@ class Bot(commands.Bot):
                 )
                 continue
 
-            with open(ASSET_DIR / local_emoji_map[emoji_name], "rb") as f:
-                emoji_obj = await self.create_application_emoji(
-                    name=emoji_name, image=f.read()
+            image_file = ASSET_DIR / local_emoji_map[emoji_name]
+            try:
+                with open(image_file, "rb") as f:
+                    emoji_obj = await self.create_application_emoji(
+                        name=emoji_name, image=f.read()
+                    )
+                    setattr(EMOJIS, emoji_name, emoji_obj)
+                    _logger.info("Uploaded emoji: %s", emoji_name)
+                    await asyncio.sleep(0.5)
+            except FileNotFoundError:
+                _logger.warning(
+                    "Could not find image for emoji: %s", image_file
                 )
-                setattr(EMOJIS, emoji_name, emoji_obj)
-                _logger.info("Uploaded emoji: %s", emoji_name)
-                await asyncio.sleep(0.5)
+                setattr(EMOJIS, emoji_name, "❔")
 
         _logger.info("Finished initializing emojis.")
 
