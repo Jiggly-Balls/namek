@@ -149,15 +149,30 @@ class BaseView(View):
         )
 
         embed = ErrorEmbed(title="Error in View")
-        embed.add_field(name="Error in Item", value=f"`{item.view or self}`")
         embed.add_field(
-            name="Caused by", value=f"Author Name: `{interaction.user}`"
+            name="Error in Item",
+            value=f"`{item.view or self}`",
+            inline=False,
         )
-        embed.add_field(name="Error Type", value=f"`{type(error)}`")
-        embed.add_field(name="Error Frame", value=f"```\n{frame}\n```")
+        embed.add_field(
+            name="Caused by",
+            value=f"Author Name: `{interaction.user}`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Error Type",
+            value=f"`{type(error)}`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Error Frame",
+            value=f"```\n{frame}\n```",
+            inline=False,
+        )
         embed.add_field(
             name="Error Traceback",
             value=f"```\n{error.with_traceback(error.__traceback__)}\n```",
+            inline=False,
         )
 
         await channel.send(embed=embed)

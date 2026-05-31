@@ -131,13 +131,24 @@ class ErrorHandler(
 
             log_embed = ErrorEmbed(title=f"Error in Commnd: {command_name}")
             log_embed.add_field(
-                name="Caused by", value=f"Author Name: `{interaction.user}`"
+                name="Caused by",
+                value=f"Author Name: `{interaction.user}`",
+                inline=False,
             )
-            log_embed.add_field(name="Error Type", value=f"`{type(error)}`")
-            log_embed.add_field(name="Error Frame", value=f"```\n{frame}\n```")
+            log_embed.add_field(
+                name="Error Type",
+                value=f"`{type(error)}`",
+                inline=False,
+            )
+            log_embed.add_field(
+                name="Error Frame",
+                value=f"```\n{frame}\n```",
+                inline=False,
+            )
             log_embed.add_field(
                 name="Error Traceback",
                 value=f"```\n{error.with_traceback(error.__traceback__)}\n```",
+                inline=False,
             )
 
             await channel.send(  # pyright:ignore[reportAttributeAccessIssue, reportUnknownMemberType]
