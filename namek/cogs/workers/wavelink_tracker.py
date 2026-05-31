@@ -98,9 +98,9 @@ class WavelinkTracker(
             )
             if payload.player.autoplay is wavelink.AutoPlayMode.disabled:
                 post_text = (
-                    "You can continue listening to more songs by adding tracks to the queue. "
-                    "My autoplay is disabled. "
-                    "I will leave the voice channel in a few minutes if no songs are being played."
+                    "You can continue listening to more songs by adding tracks to the queue."
+                    " Since my autoplay is disabled I will leave the voice channel in a few "
+                    "minutes if no songs are being played."
                 )
 
             track = (
@@ -121,7 +121,8 @@ class WavelinkTracker(
             post_end_embed = (
                 MainEmbed()
                 .add_field(
-                    name="Last played track", value=f"{track}\n\n\\- {artist}"
+                    name="Last played track",
+                    value=f"** **\n{track}\n\n\\- {artist}",
                 )
                 .set_thumbnail(url=payload.track.artwork)
             )
