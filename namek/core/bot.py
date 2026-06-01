@@ -73,7 +73,7 @@ class Bot(commands.Bot):
         )
         return
 
-    async def init_commands_sync(self, force_reload: bool = False) -> None:
+    async def init_commands_sync(self, *, force_reload: bool) -> None:
         if force_reload:
             _logger.info("Force syncing enabled.")
             await self._sync_handle()
@@ -242,7 +242,7 @@ class Bot(commands.Bot):
         # (including view files) which causes the buttons to having MISSING sentinel
         # instead of the actual loaded emojis
 
-        await self.init_commands_sync()
+        await self.init_commands_sync(force_reload=False)
         await self.init_wavelink_node(
             identifier=SETTINGS.LAVALINK_NAME,
             uri=SETTINGS.LAVALINK_URI.get_secret_value(),
