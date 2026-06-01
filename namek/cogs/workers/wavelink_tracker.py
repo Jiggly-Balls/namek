@@ -30,15 +30,31 @@ class WavelinkTracker(
         super().__init__(logger=_logger)
 
     def _generate_embed(self, payload: TrackStartEventPayload) -> Embed:
+        assert payload.player
+
         artist = (
             f"[{payload.track.author}]({payload.track.artist.url})"
             if payload.track.artist.url
-            else f"`{payload.track.author}`"
+            else f"**{payload.track.author}**"
         )
         title = (
             f"[{payload.track.title}]({payload.track.uri})"
             if payload.track.uri
-            else f"`{payload.track.title}`"
+            else f"**{payload.track.title}**"
+        )
+        hours, rem = divmod(payload.track.length // 1000, 3600)
+        minutes, seconds = divmod(rem, 60)
+        if hours:
+            duration_text = f"**{hours}**h **{minutes}**m **{seconds}**s"
+        elif minutes:
+            duration_text = f"**{minutes}**m **{seconds}**s"
+        else:
+            duration_text = f"**{seconds}**s"
+
+        auto_play = (
+            "**Enabled**"
+            if payload.player.autoplay is wavelink.AutoPlayMode.enabled
+            else "**Disabled**"
         )
 
         embed = (
@@ -46,8 +62,10 @@ class WavelinkTracker(
                 title="Playing Music",
                 url=payload.track.uri,
             )
-            .add_field(name="Song Name", value=title)
-            .add_field(name="Artist", value=artist)
+            .add_field(name="Song Name", value=title, inline=False)
+            .add_field(name="Artist", value=artist, inline=False)
+            .add_field(name="Duration", value=duration_text, inline=False)
+            .add_field(name="Autoplay Status", value=auto_play, inline=False)
         )
         embed.set_image(url=payload.track.artwork)
         return embed
@@ -74,10 +92,9 @@ class WavelinkTracker(
         try:
             CACHE.vc_states[payload.player].message = message
         except KeyError:
-            # This can raise when the user disconnects the bot
-            # as soon as a new track is starting which causes
-            # the player pair to get deleted and we get a
-            # KeyError here.
+            # This can raise when the user disconnects the bot as soon
+            # as a new track is starting which causes the player pair
+            # to get deleted and we get a KeyError here.
             pass
 
     @commands.Cog.listener()
