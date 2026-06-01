@@ -22,6 +22,7 @@ from namek.utils.mention_tree import MentionTree
 
 if TYPE_CHECKING:
     from collections.abc import Collection
+    from pathlib import Path
 
     from discord import Intents
     from discord.app_commands import AppCommand
@@ -102,11 +103,13 @@ class Bot(commands.Bot):
             await self._sync_handle()
             return
 
-    async def init_extensions(self) -> None:
+    async def init_extensions(
+        self, cogs_dir: list[Path], base_dir: Path
+    ) -> None:
         cogs_loaded = 0
         cogs_failed = 0
 
-        for directory in COG_DIRECTORIES:
+        for directory in cogs_dir:
             if not directory.exists():
                 _logger.warning("Directory not found: %s", directory)
                 continue
@@ -115,7 +118,7 @@ class Bot(commands.Bot):
                 if python_file.name.startswith("_"):
                     continue
 
-                relative_path = python_file.relative_to(BASE_DIR)
+                relative_path = python_file.relative_to(base_dir)
                 module_name = (
                     str(relative_path).replace(os.sep, ".").replace(".py", "")
                 )
@@ -168,7 +171,7 @@ class Bot(commands.Bot):
                 stack_info=True,
             )
 
-    async def init_emojis(self) -> None:
+    async def init_emojis(self, path: Path) -> None:
         emojis = await self.fetch_application_emojis()
         for emoji in emojis:
             emoji_name = emoji.name.upper()
@@ -189,7 +192,7 @@ class Bot(commands.Bot):
 
         application_emoji_set = set(emoji.name.upper() for emoji in emojis)
         local_emoji_map = {
-            asset.stem.upper(): asset for asset in GRAPHICS_DIR.iterdir()
+            asset.stem.upper(): asset for asset in path.iterdir()
         }
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
@@ -211,7 +214,7 @@ class Bot(commands.Bot):
                 continue
 
             try:
-                image_file = GRAPHICS_DIR / local_emoji_map[emoji_name]
+                image_file = path / local_emoji_map[emoji_name]
                 with open(image_file, "rb") as f:
                     emoji_obj = await self.create_application_emoji(
                         name=emoji_name, image=f.read()
@@ -235,8 +238,8 @@ class Bot(commands.Bot):
         _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
-        await self.init_emojis()
-        await self.init_extensions()
+        await self.init_emojis(GRAPHICS_DIR)
+        await self.init_extensions(COG_DIRECTORIES, BASE_DIR)
         # We MUST load the extensions only after loading the emojis for the emojis to be
         # actually be present in all the views as python loads all the files eagarly
         # (including view files) which causes the buttons to having MISSING sentinel
