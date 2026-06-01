@@ -12,10 +12,10 @@ from discord.utils import MISSING
 
 from namek.cogs import CogEnums
 from namek.core.settings import (
-    ASSET_DIR,
     BASE_DIR,
     COG_DIRECTORIES,
     EMOJIS,
+    GRAPHICS_DIR,
     SETTINGS,
 )
 from namek.utils.mention_tree import MentionTree
@@ -189,7 +189,7 @@ class Bot(commands.Bot):
 
         application_emoji_set = set(emoji.name.upper() for emoji in emojis)
         local_emoji_map = {
-            asset.stem.upper(): asset for asset in ASSET_DIR.iterdir()
+            asset.stem.upper(): asset for asset in GRAPHICS_DIR.iterdir()
         }
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
@@ -211,7 +211,7 @@ class Bot(commands.Bot):
                 continue
 
             try:
-                image_file = ASSET_DIR / local_emoji_map[emoji_name]
+                image_file = GRAPHICS_DIR / local_emoji_map[emoji_name]
                 with open(image_file, "rb") as f:
                     emoji_obj = await self.create_application_emoji(
                         name=emoji_name, image=f.read()

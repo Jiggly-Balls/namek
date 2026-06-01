@@ -60,10 +60,14 @@ EMOJIS: _Emojis = _Emojis()
 
 BASE_DIR: Path = pathlib.Path(__file__).parent.parent
 ASSET_DIR: Path = BASE_DIR / "assets"
+GRAPHICS_DIR: Path = ASSET_DIR / "graphics"
+FONTS_DIR: Path = ASSET_DIR / "fonts"
 COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "commands",
     BASE_DIR / "cogs" / "workers",
 ]
+
+DEFAULT_FONT: str = "BebasNeue-Regular.ttf"
 
 STATUS_COOLDOWN: float = 600.0
 ALLOWED_MUSIC_SOURCES: set[str] = {
