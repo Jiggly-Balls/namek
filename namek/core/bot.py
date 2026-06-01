@@ -224,6 +224,13 @@ class Bot(commands.Bot):
                     "Could not find image for emoji: %s", image_file
                 )
                 setattr(EMOJIS, emoji_name, "❔")
+            except Exception as error:
+                _logger.error(
+                    "An error occured trying to upload emoji: %s",
+                    emoji_name,
+                    exc_info=error,
+                )
+                setattr(EMOJIS, emoji_name, "❔")
 
         _logger.info("Finished initializing emojis.")
 
