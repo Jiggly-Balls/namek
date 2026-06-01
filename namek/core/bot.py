@@ -210,8 +210,8 @@ class Bot(commands.Bot):
                 )
                 continue
 
-            image_file = ASSET_DIR / local_emoji_map[emoji_name]
             try:
+                image_file = ASSET_DIR / local_emoji_map[emoji_name]
                 with open(image_file, "rb") as f:
                     emoji_obj = await self.create_application_emoji(
                         name=emoji_name, image=f.read()
@@ -219,9 +219,9 @@ class Bot(commands.Bot):
                     setattr(EMOJIS, emoji_name, emoji_obj)
                     _logger.info("Uploaded emoji: %s", emoji_name)
                     await asyncio.sleep(0.5)
-            except FileNotFoundError:
+            except (FileNotFoundError, KeyError):
                 _logger.warning(
-                    "Could not find image for emoji: %s", image_file
+                    "Could not find image for emoji: %s", emoji_name
                 )
                 setattr(EMOJIS, emoji_name, "❔")
             except Exception as error:
