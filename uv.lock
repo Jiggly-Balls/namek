@@ -678,7 +678,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=12.2.0" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "wavelink", specifier = ">=3.5.1" },
+    { name = "wavelink", specifier = ">=3.5.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -1046,7 +1046,7 @@ wheels = [
 
 [[package]]
 name = "wavelink"
-version = "3.5.1"
+version = "3.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1055,9 +1055,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/f7/9b7ddab7bb66ac6dfdcd88e0142663fbf359cf5e9568a7b4594e928600d9/wavelink-3.5.1.tar.gz", hash = "sha256:8f014d8229041a531fece00a9feeb3187ecb09f7c6ea7e6727f551f30e233a58", size = 50584, upload-time = "2026-04-11T09:18:46.364Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e9/88/869b1ed13c121b4ec339fa73043946cada306e3a610032275b96dca4fd16/wavelink-3.5.2.tar.gz", hash = "sha256:a4ee03fd43e9cc246e2659f57c278d562c8e1889e99514358aebf0d164d45f85", size = 50901, upload-time = "2026-04-23T11:20:54.318Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/29/f9/972b19fe46dd46cbd0f1519680341421cd0d543049b43df688bd0228ae3f/wavelink-3.5.1-py3-none-any.whl", hash = "sha256:4d6dddef1c109e528460b2ed1d1fc51a7fdd14b44290229eb1985ab372eaf073", size = 66695, upload-time = "2026-04-11T09:18:45.117Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/19/c25d9fdf4a80c161aaf6f646464abed25d9c4e68170585d2db357a53666f/wavelink-3.5.2-py3-none-any.whl", hash = "sha256:21cb33b9002c90a9ce4ece6ce05825101ff8d9363275cd01bda6d6261307444a", size = 66856, upload-time = "2026-04-23T11:20:52.488Z" },
 ]
 
 [[package]]

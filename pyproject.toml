@@ -10,7 +10,7 @@ dependencies = [
     "pillow>=12.2.0",
     "pydantic-settings>=2.13.1",
     "python-dotenv>=1.2.2",
-    "wavelink>=3.5.1",
+    "wavelink>=3.5.2",
 ]
 
 [dependency-groups]
