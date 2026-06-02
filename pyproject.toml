@@ -13,8 +13,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "basedpyright>=1.39.3",
-    "ruff>=0.15.12",
+    "basedpyright>=1.39.6",
+    "ruff>=0.15.15",
 ]
 
 [tool.basedpyright]
