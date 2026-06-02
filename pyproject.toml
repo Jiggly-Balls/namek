@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "discord-py[voice]>=2.7.1",
+    "googletrans>=4.0.2",
+    "pillow>=12.2.0",
     "pydantic-settings>=2.13.1",
     "python-dotenv>=1.2.2",
     "wavelink>=3.5.1",
