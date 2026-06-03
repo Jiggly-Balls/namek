@@ -8,11 +8,11 @@ from discord.ext import commands
 
 from namek.backend.cache import CACHE
 from namek.cogs import BaseGroupCog, CogEnums
-from namek.core.views.music_views import PlayView
+from namek.core.views.music_views import PlayLayoutView
 from namek.utils import MainEmbed
+from namek.utils.helper import make_song_media
 
 if TYPE_CHECKING:
-    from discord import Embed
     from wavelink import TrackEndEventPayload, TrackStartEventPayload
 
     from namek.core import Bot
@@ -29,47 +29,6 @@ class WavelinkTracker(
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 
-    def _generate_embed(self, payload: TrackStartEventPayload) -> Embed:
-        assert payload.player
-
-        artist = (
-            f"[{payload.track.author}]({payload.track.artist.url})"
-            if payload.track.artist.url
-            else f"**{payload.track.author}**"
-        )
-        title = (
-            f"[{payload.track.title}]({payload.track.uri})"
-            if payload.track.uri
-            else f"**{payload.track.title}**"
-        )
-        hours, rem = divmod(payload.track.length // 1000, 3600)
-        minutes, seconds = divmod(rem, 60)
-        if hours:
-            duration_text = f"**{hours}**h **{minutes}**m **{seconds}**s"
-        elif minutes:
-            duration_text = f"**{minutes}**m **{seconds}**s"
-        else:
-            duration_text = f"**{seconds}**s"
-
-        auto_play = (
-            "**Enabled**"
-            if payload.player.autoplay is wavelink.AutoPlayMode.enabled
-            else "**Disabled**"
-        )
-
-        embed = (
-            MainEmbed(
-                title="Playing Music",
-                url=payload.track.uri,
-            )
-            .add_field(name="Song Name", value=title, inline=False)
-            .add_field(name="Artist", value=artist, inline=False)
-            .add_field(name="Duration", value=duration_text, inline=False)
-            .add_field(name="Autoplay Status", value=auto_play, inline=False)
-        )
-        embed.set_image(url=payload.track.artwork)
-        return embed
-
     @commands.Cog.listener()
     async def on_wavelink_track_start(
         self, payload: TrackStartEventPayload
@@ -81,14 +40,41 @@ class WavelinkTracker(
         if not vc_state:
             return
 
-        embed = self._generate_embed(payload)
+        artist = (
+            f"[{payload.track.author}]({payload.track.artist.url})"
+            if payload.track.artist.url
+            else f"**{payload.track.author}**"
+        )
+        title = (
+            f"[{payload.track.title}]({payload.track.uri})"
+            if payload.track.uri
+            else f"**{payload.track.title}**"
+        )
+
+        hours, rem = divmod(payload.track.length // 1000, 3600)
+        minutes, seconds = divmod(rem, 60)
+        if hours:
+            duration_text = f"**{hours}**h **{minutes}**m **{seconds}**s"
+        elif minutes:
+            duration_text = f"**{minutes}**m **{seconds}**s"
+        else:
+            duration_text = f"**{seconds}**s"
 
         if vc_state.message:
             await vc_state.message.delete()
 
-        message = await vc_state.channel.send(
-            embed=embed, view=PlayView(payload.player), silent=True
+        song_media = await make_song_media(
+            title, artist, payload.player.client.loop
         )
+        view = PlayLayoutView(
+            player=payload.player,
+            song_title=title,
+            song_author=artist,
+            duration=duration_text,
+            media_file=song_media,
+            thumbnail_url=payload.track.artwork,
+        )
+        message = await vc_state.channel.send(view=view, silent=True)
         try:
             CACHE.vc_states[payload.player].message = message
         except KeyError:
