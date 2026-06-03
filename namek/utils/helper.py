@@ -36,7 +36,8 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
         await send_message_func(
             embed=ErrorEmbed(
                 description="You need to be within a voice channel to use this command."
-            )
+            ),
+            ephemeral=True,
         )
         return None
     return interaction.user.voice.channel
