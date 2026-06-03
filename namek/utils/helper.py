@@ -1,10 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import discord
 import googletrans
+from PIL import Image, ImageDraw
 
+from namek.core.settings import (
+    ANTI_ALIAS_TOLERANCE,
+    AUTHOR_FONT,
+    BACKGROUND_COLOUR,
+    DEFAULT_GRADIENT,
+    IMAGE_SIZE,
+    OTHER_DIR,
+    TITLE_FONT,
+)
 from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
@@ -16,7 +26,7 @@ if TYPE_CHECKING:
     from namek.core import Bot
 
 
-__all__ = ("safe_defer", "vc_check")
+__all__ = ("safe_defer", "vc_check", "make_song_media")
 
 
 async def safe_defer(
@@ -54,7 +64,63 @@ def _cleanup_text(text: str) -> str:
     return new_text
 
 
-def _pil_media_handle(tite: str, author: str) -> File: ...
+def _pil_media_handle(title: str, author: str) -> File:
+    background = Image.open(OTHER_DIR / DEFAULT_GRADIENT).convert("RGBA")
+    background = background.resize(IMAGE_SIZE)  # pyright: ignore[reportUnknownMemberType]
+    image = Image.new("RGBA", size=IMAGE_SIZE, color=BACKGROUND_COLOUR)
+
+    colour_target: tuple[int, int, int] = (0, 0, 0)  # Black
+
+    draw = ImageDraw.Draw(image)
+    draw.text(
+        (15, 15),
+        title,
+        font=TITLE_FONT,
+        fill=colour_target,
+    )
+    draw.text(
+        (15, 75),
+        text=f"— {author}",
+        font=AUTHOR_FONT,
+        fill=colour_target,
+    )
+
+    new_image_data: list[tuple[int, int, int, int]] = []
+    pixel_data = image.get_flattened_data()
+    pixel_data = cast("tuple[tuple[int, ...], ...]", pixel_data)
+
+    for r, g, b, a in pixel_data:
+        if r == g == b == 0:
+            new_image_data.append((r, g, b, 0))
+
+        elif (
+            abs(r - colour_target[0]) <= ANTI_ALIAS_TOLERANCE
+            and abs(g - colour_target[1]) <= ANTI_ALIAS_TOLERANCE
+            and abs(b - colour_target[2]) <= ANTI_ALIAS_TOLERANCE
+        ):
+            new_image_data.append(
+                (r, g, b, int(0.30 * r) + int(0.59 * g) + int(0.11 * b))
+            )
+        else:
+            new_image_data.append((r, g, b, a))
+
+    image.putdata(new_image_data)  # pyright: ignore[reportUnknownMemberType]
+    background.paste(image, mask=image)
+
+    x, y = 300, 0
+    block_width, block_height = IMAGE_SIZE[1] - x, IMAGE_SIZE[1]
+    fade_out_colour = BACKGROUND_COLOUR + (255,)
+
+    overlay = Image.new("RGBA", (block_width, block_height), fade_out_colour)
+
+    for px in range(block_width):
+        a = int(255 * px / (block_width - 1))
+        for py in range(block_height):
+            overlay.putpixel((px, py), (43, 43, 43, a))
+
+    background.paste(overlay, (x, y), overlay)
+
+    return discord.File(background.tobytes())
 
 
 async def make_song_media(
