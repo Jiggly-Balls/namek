@@ -84,6 +84,7 @@ AUTHOR_FONT: FreeTypeFont = ImageFont.truetype(
 )
 
 DEFAULT_GRADIENT: str = "gradient.png"
+IMAGE_SIZE: tuple[int, int] = (500, 150)
 BACKGROUND_COLOUR: tuple[int, int, int] = (43, 43, 43)
 ANTI_ALIAS_TOLERANCE: int = 40
 
