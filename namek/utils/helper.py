@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 from typing import TYPE_CHECKING, cast
 
 import discord
@@ -108,7 +109,7 @@ def _pil_media_handle(title: str, author: str) -> File:
     background.paste(image, mask=image)
 
     x, y = 300, 0
-    block_width, block_height = IMAGE_SIZE[1] - x, IMAGE_SIZE[1]
+    block_width, block_height = IMAGE_SIZE[0] - x, IMAGE_SIZE[1]
     fade_out_colour = BACKGROUND_COLOUR + (255,)
 
     overlay = Image.new("RGBA", (block_width, block_height), fade_out_colour)
@@ -120,7 +121,12 @@ def _pil_media_handle(title: str, author: str) -> File:
 
     background.paste(overlay, (x, y), overlay)
 
-    return discord.File(background.tobytes())
+    with io.BytesIO() as image_binary:
+        background.save(image_binary, "PNG")
+        image_binary.seek(0)
+        file = discord.File(fp=image_binary, filename="image.png")
+
+    return file
 
 
 async def make_song_media(

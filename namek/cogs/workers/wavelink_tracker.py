@@ -74,7 +74,7 @@ class WavelinkTracker(
             media_file=song_media,
             thumbnail_url=payload.track.artwork,
         )
-        message = await vc_state.channel.send(view=view, silent=True)
+        message = await vc_state.channel.send(view=view, file=song_media, silent=True)
         try:
             CACHE.vc_states[payload.player].message = message
         except KeyError:

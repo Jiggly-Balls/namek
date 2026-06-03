@@ -15,7 +15,7 @@ from namek.core.settings import (
     BASE_DIR,
     COG_DIRECTORIES,
     EMOJIS,
-    GRAPHICS_DIR,
+    EMOJIS_DIR,
     SETTINGS,
 )
 from namek.utils.mention_tree import MentionTree
@@ -238,7 +238,7 @@ class Bot(commands.Bot):
         _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
-        await self.init_emojis(GRAPHICS_DIR)
+        await self.init_emojis(EMOJIS_DIR)
         await self.init_extensions(COG_DIRECTORIES, BASE_DIR)
         # We MUST load the extensions only after loading the emojis for the emojis to be
         # actually be present in all the views as python loads all the files eagarly
