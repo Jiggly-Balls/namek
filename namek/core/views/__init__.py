@@ -1,3 +1,3 @@
-from namek.core.views.base import BaseView
+from namek.core.views.base import BaseLayoutView, BaseView
 
-__all__ = ("BaseView",)
+__all__ = ("BaseView", "BaseLayoutView")
