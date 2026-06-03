@@ -117,6 +117,16 @@ class PlayView(BaseView):
         self, interaction: Interaction[Bot], button: Button["PlayView"]
     ) -> None: ...
 
+    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    async def dud_button_3(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None: ...
+
+    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    async def dud_button_4(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None: ...
+
     @discord.ui.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
     async def play_pause(
         self, interaction: Interaction[Bot], button: Button["PlayView"]
@@ -127,7 +137,7 @@ class PlayView(BaseView):
         await self.player.pause(self.is_pause)
 
         if interaction.message:
-            button.emoji = EMOJIS.PAUSE if self.is_pause else EMOJIS.PLAY
+            button.emoji = EMOJIS.PLAY if self.is_pause else EMOJIS.PAUSE
             await interaction.followup.edit_message(
                 interaction.message.id, view=self
             )
@@ -136,3 +146,13 @@ class PlayView(BaseView):
             embed=MainEmbed(description="Paused the current track"),
             ephemeral=True,
         )
+
+    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    async def dud_button_5(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None: ...
+
+    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    async def dud_button_6(
+        self, interaction: Interaction[Bot], button: Button["PlayView"]
+    ) -> None: ...
