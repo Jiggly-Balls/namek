@@ -3,11 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
+import googletrans
 
 from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
-    from discord import Interaction, InteractionCallbackResponse
+    from asyncio import AbstractEventLoop
+
+    from discord import File, Interaction, InteractionCallbackResponse
     from discord.voice_client import VocalGuildChannel
 
     from namek.core import Bot
@@ -41,3 +44,44 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
         )
         return None
     return interaction.user.voice.channel
+
+
+def _cleanup_text(text: str) -> str:
+    new_text = ""
+    for char in text:
+        if 31 < ord(char) < 127:
+            new_text += char
+    return new_text
+
+
+def _pil_media_handle(tite: str, author: str) -> File: ...
+
+
+async def make_song_media(
+    song_title: str,
+    song_author: str,
+    event_loop: AbstractEventLoop,
+) -> File:
+    async with googletrans.Translator() as translator:
+        title_result = await translator.translate(song_title)
+        author_result = await translator.translate(song_author)
+
+    normalized_title = (
+        title_result.pronunciation
+        or title_result.text
+        or _cleanup_text(song_title)
+    )
+    normalized_author = (
+        author_result.pronunciation
+        or author_result.text
+        or _cleanup_text(song_author)
+    )
+
+    media_file = await event_loop.run_in_executor(
+        None,
+        _pil_media_handle,
+        normalized_title,
+        normalized_author,
+    )
+
+    return media_file
