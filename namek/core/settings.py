@@ -62,12 +62,17 @@ BASE_DIR: Path = pathlib.Path(__file__).parent.parent
 ASSET_DIR: Path = BASE_DIR / "assets"
 GRAPHICS_DIR: Path = ASSET_DIR / "graphics"
 FONTS_DIR: Path = ASSET_DIR / "fonts"
+
+EMOJIS_DIR: Path = GRAPHICS_DIR / "emojis"
+OTHER_DIR: Path = GRAPHICS_DIR / "other"
+
 COG_DIRECTORIES: list[Path] = [
     BASE_DIR / "cogs" / "commands",
     BASE_DIR / "cogs" / "workers",
 ]
 
 DEFAULT_FONT: str = "BebasNeue-Regular.ttf"
+DEFAULT_GRADIENT: str = "gradient.png"
 
 STATUS_COOLDOWN: float = 600.0
 ALLOWED_MUSIC_SOURCES: set[str] = {
