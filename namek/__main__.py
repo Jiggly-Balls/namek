@@ -16,7 +16,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
-logging.getLogger("discord").setLevel(logging.WARNING)
+logging.getLogger("googletrans").setLevel(logging.WARNING)
 setup_logging()
 
 _logger: logging.Logger = logging.getLogger(__name__)
