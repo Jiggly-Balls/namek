@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.utils import MISSING
+from PIL import ImageFont
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
     from typing import ClassVar
 
     from discord import Colour, Emoji
+    from PIL.ImageFont import FreeTypeFont
 
 __all__ = (
     "SETTINGS",
@@ -72,7 +74,18 @@ COG_DIRECTORIES: list[Path] = [
 ]
 
 DEFAULT_FONT: str = "BebasNeue-Regular.ttf"
+TITLE_FONT_SIZE: int = 32
+AUTHOR_FONT_SIZE: int = 24
+TITLE_FONT: FreeTypeFont = ImageFont.truetype(
+    FONTS_DIR / DEFAULT_FONT, TITLE_FONT_SIZE
+)
+AUTHOR_FONT: FreeTypeFont = ImageFont.truetype(
+    FONTS_DIR / DEFAULT_FONT, AUTHOR_FONT_SIZE
+)
+
 DEFAULT_GRADIENT: str = "gradient.png"
+BACKGROUND_COLOUR: tuple[int, int, int] = (43, 43, 43)
+ANTI_ALIAS_TOLERANCE: int = 40
 
 STATUS_COOLDOWN: float = 600.0
 ALLOWED_MUSIC_SOURCES: set[str] = {
