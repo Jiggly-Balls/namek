@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from typing import Any
 
     from discord import File, Interaction
+    from discord.ui import ActionRow, Container
     from wavelink import Player
 
     from namek.core import Bot
@@ -161,8 +162,9 @@ class PlayView(BaseView):
 
 
 class PlayLayoutView(BaseLayoutView):
-    row1: discord.ui.ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
-    row2: discord.ui.ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
+    container: Container["PlayLayoutView"] = discord.ui.Container()
+    row1: ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
+    row2: ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
 
     def __init__(
         self,
@@ -185,19 +187,17 @@ class PlayLayoutView(BaseLayoutView):
             ](media=thumbnail_url)
 
         title_section = discord.ui.Section["PlayLayoutView"](
-            discord.ui.TextDisplay(content="# Playing Music"),
+            discord.ui.TextDisplay(
+                content=f"## {song_title}\n**  **—{song_author}"
+            ),
             **_section_kwargs,
         )
         media_section = discord.ui.MediaGallery["PlayLayoutView"](
             discord.MediaGalleryItem(media=media_file),
         )
-        song_detail_section = discord.ui.TextDisplay["PlayLayoutView"](
-            content=f"{song_title}\n**  **—{song_author}",
-        )
 
-        self.add_item(title_section)
-        self.add_item(media_section)
-        self.add_item(song_detail_section)
+        self.container.add_item(title_section)
+        self.container.add_item(media_section)
 
     async def interaction_check(self, interaction: Interaction[Bot]) -> bool:
         channel = await vc_check(interaction)
@@ -257,10 +257,12 @@ class PlayLayoutView(BaseLayoutView):
 
         await interaction.followup.edit_message(
             interaction.message.id,
+            view=None,
+        )
+        await interaction.followup.send(
             embed=MainEmbed(
                 description=f"Disconnected from voice channel `{channel.name}`"
-            ),
-            view=None,
+            )
         )
         self.stop()
 
