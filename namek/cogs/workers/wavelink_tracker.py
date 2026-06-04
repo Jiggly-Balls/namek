@@ -64,7 +64,9 @@ class WavelinkTracker(
             await vc_state.message.delete()
 
         song_media = await make_song_media(
-            title, artist, payload.player.client.loop
+            payload.track.title,
+            payload.track.author,
+            payload.player.client.loop,
         )
         view = PlayLayoutView(
             player=payload.player,
