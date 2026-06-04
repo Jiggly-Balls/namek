@@ -161,6 +161,9 @@ class PlayView(BaseView):
 
 
 class PlayLayoutView(BaseLayoutView):
+    row1: discord.ui.ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
+    row2: discord.ui.ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
+
     def __init__(
         self,
         player: Player,
@@ -170,7 +173,7 @@ class PlayLayoutView(BaseLayoutView):
         media_file: File,
         thumbnail_url: None | str,
     ) -> None:
-        super().__init__()
+        super().__init__(timeout=None)
 
         self.player: Player = player
         self.is_pause: bool = False
@@ -202,14 +205,14 @@ class PlayLayoutView(BaseLayoutView):
             return False
         return True
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row1.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_1(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
 
-    @discord.ui.button(emoji=EMOJIS.PREVIOUS, style=ButtonStyle.blurple)
+    @row1.button(emoji=EMOJIS.PREVIOUS, style=ButtonStyle.blurple)
     async def previous_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -235,9 +238,9 @@ class PlayLayoutView(BaseLayoutView):
 
         await interaction.followup.send(embed=embed, ephemeral=True)
 
-    @discord.ui.button(emoji=EMOJIS.DISCONNECT, style=ButtonStyle.red)
+    @row1.button(emoji=EMOJIS.DISCONNECT, style=ButtonStyle.red)
     async def delete_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None:
         await interaction.response.defer()
 
@@ -261,9 +264,9 @@ class PlayLayoutView(BaseLayoutView):
         )
         self.stop()
 
-    @discord.ui.button(emoji=EMOJIS.NEXT, style=ButtonStyle.blurple)
+    @row1.button(emoji=EMOJIS.NEXT, style=ButtonStyle.blurple)
     async def next_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -279,24 +282,24 @@ class PlayLayoutView(BaseLayoutView):
             ephemeral=True,
         )
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row1.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_2(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_3(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_4(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
 
-    @discord.ui.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
+    @row2.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
     async def play_pause(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -314,12 +317,12 @@ class PlayLayoutView(BaseLayoutView):
             ephemeral=True,
         )
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_5(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
 
-    @discord.ui.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
+    @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_6(
-        self, interaction: Interaction[Bot], button: Button["PlayView"]
+        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
     ) -> None: ...
