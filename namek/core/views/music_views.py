@@ -178,7 +178,7 @@ class PlayLayoutView(BaseLayoutView):
         super().__init__(timeout=None)
 
         self.player: Player = player
-        self.is_pause: bool = False
+        self.is_paused: bool = False
 
         _section_kwargs: dict[str, Any] = {}
         if thumbnail_url:
@@ -305,17 +305,21 @@ class PlayLayoutView(BaseLayoutView):
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
-        self.is_pause = not self.is_pause
-        await self.player.pause(self.is_pause)
+        self.is_paused = not self.is_paused
+        await self.player.pause(self.is_paused)
 
         if interaction.message:
-            button.emoji = EMOJIS.PLAY if self.is_pause else EMOJIS.PAUSE
+            button.emoji = EMOJIS.PLAY if self.is_paused else EMOJIS.PAUSE
             await interaction.followup.edit_message(
                 interaction.message.id, view=self
             )
+        if self.is_paused:
+            message = "Paused the current track."
+        else:
+            message = "Resuming the current track."
 
         await interaction.followup.send(
-            embed=MainEmbed(description="Paused the current track"),
+            embed=MainEmbed(description=message),
             ephemeral=True,
         )
 
