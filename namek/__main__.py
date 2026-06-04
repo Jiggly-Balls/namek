@@ -17,6 +17,7 @@ logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
 logging.getLogger("googletrans").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 setup_logging()
 
 _logger: logging.Logger = logging.getLogger(__name__)
