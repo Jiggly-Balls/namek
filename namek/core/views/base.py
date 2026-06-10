@@ -125,7 +125,8 @@ class BaseView(discord.ui.View):
             embed=ErrorEmbed(
                 title="Sorry :(",
                 description="An unexpected error has occurred. The developers have been notified of this.",
-            )
+            ),
+            ephemeral=True,
         )
 
         print(

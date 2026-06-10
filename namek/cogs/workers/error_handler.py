@@ -72,7 +72,7 @@ class ErrorHandler(
         interaction: Interaction,
         embed: None | Embed = None,
         content: None | str = None,
-        ephemeral: bool = False,
+        ephemeral: bool = True,
     ) -> None:
         """Handles the error response to user."""
 
