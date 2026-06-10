@@ -198,7 +198,35 @@ class MusicCog(
             await player.play(player.queue.get(), volume=50)
 
     @app_commands.command()
-    async def queue(self, interaction: Interaction[Bot]) -> None: ...
+    async def queue(self, interaction: Interaction[Bot]) -> None:
+        assert interaction.guild
+
+        await interaction.response.defer()
+
+        if interaction.guild.voice_client is None:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    description="I'm not in any voice channel playing music."
+                )
+            )
+            return
+
+        player: wavelink.Player = cast(
+            "wavelink.Player", interaction.guild.voice_client
+        )
+
+        vc_state = CACHE.vc_states.get(player)
+        if vc_state is None:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    description="Could not find the music state for this channel."
+                    " Please try again."
+                )
+            )
+            return
+
+        vc_state.view.is_paused = not vc_state.view.is_paused
+        await player.pause(vc_state.view.is_paused)
 
 
 async def setup(bot: Bot) -> None:
