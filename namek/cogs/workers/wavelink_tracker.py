@@ -81,6 +81,7 @@ class WavelinkTracker(
         )
         try:
             CACHE.vc_states[payload.player].message = message
+            CACHE.vc_states[payload.player].view = view
         except KeyError:
             # This can raise when the user disconnects the bot as soon
             # as a new track is starting which causes the player pair
