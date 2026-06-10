@@ -118,13 +118,13 @@ class Bot(commands.Bot):
                 if python_file.name.startswith("_"):
                     continue
 
-                relative_path = python_file.relative_to(base_dir)
+                relative_path = python_file.relative_to(base_dir.parent)
                 module_name = (
                     str(relative_path).replace(os.sep, ".").replace(".py", "")
                 )
 
                 try:
-                    await self.load_extension(f"namek.{module_name}")
+                    await self.load_extension(module_name)
                     cogs_loaded += 1
                 except commands.ExtensionAlreadyLoaded:
                     _logger.warning(f"Already loaded: {module_name}")
