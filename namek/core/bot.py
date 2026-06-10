@@ -124,7 +124,7 @@ class Bot(commands.Bot):
                 )
 
                 try:
-                    await self.load_extension(module_name)
+                    await self.load_extension(f"namek.{module_name}")
                     cogs_loaded += 1
                 except commands.ExtensionAlreadyLoaded:
                     _logger.warning(f"Already loaded: {module_name}")
@@ -240,7 +240,7 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         await self.init_emojis(EMOJIS_DIR)
         await self.init_extensions(COG_DIRECTORIES, BASE_DIR)
-        # We MUST load the extensions only after loading the emojis for the emojis to be
+        # We MUST load the extensions only after loading the emojis for the emojis to
         # actually be present in all the views as python loads all the files eagarly
         # (including view files) which causes the buttons to having MISSING sentinel
         # instead of the actual loaded emojis
