@@ -10,4 +10,4 @@ check:
 	uv run --dev basedpyright .
 
 start:
-	uv run namek
+	uv run python -m namek
