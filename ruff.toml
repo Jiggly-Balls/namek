@@ -1,7 +1,7 @@
 line-length = 79
-lint.extend-select = ["ANN", "I"]
+lint.extend-select = ["ANN", "ASYNC110", "ASYNC210", "ASYNC220", "B", "I"]
 lint.ignore = ["ANN401"]
-lint.fixable = ["I", "F401"]
+lint.fixable = ["I", "F401", "F541", "F632"]
 
 [format]
 quote-style = "double"
