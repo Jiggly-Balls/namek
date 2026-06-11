@@ -10,7 +10,7 @@ from discord import app_commands
 
 from namek.backend.cache import CACHE
 from namek.cogs import BaseGroupCog, CogEnums
-from namek.core.settings import ALLOWED_MUSIC_SOURCES
+from namek.core.settings import ALLOWED_MUSIC_SOURCES, EMOJIS
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from namek.utils.extras import VCState
 from namek.utils.helper import safe_defer, vc_check
@@ -197,8 +197,8 @@ class MusicCog(
         if not player.playing:
             await player.play(player.queue.get(), volume=50)
 
-    @app_commands.command()
-    async def queue(self, interaction: Interaction[Bot]) -> None:
+    @app_commands.command(name="pause-toggle")
+    async def pause_toggle(self, interaction: Interaction[Bot]) -> None:
         assert interaction.guild
 
         await interaction.response.defer()
@@ -227,6 +227,33 @@ class MusicCog(
 
         vc_state.view.is_paused = not vc_state.view.is_paused
         await player.pause(vc_state.view.is_paused)
+
+        if vc_state.message is None:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    title="Sorry, an unexpected error occured :(",
+                    description="Couldn't obtain message object to edit.",
+                ),
+                ephemeral=True,
+            )
+            _logger.warning(
+                "vc_state.view.message was found None for guild: %s",
+                interaction.guild.name,
+            )
+            return
+
+        emoji = EMOJIS.PLAY if vc_state.view.is_paused else EMOJIS.PAUSE
+        if vc_state.view.is_paused:
+            message = "Paused the current track."
+        else:
+            message = "Resuming the current track."
+
+        vc_state.view.play_pause.emoji = emoji
+        await vc_state.message.edit(view=vc_state.view)
+        await interaction.followup.send(
+            embed=MainEmbed(description=message),
+            ephemeral=True,
+        )
 
 
 async def setup(bot: Bot) -> None:
