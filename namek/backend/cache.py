@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -12,7 +11,6 @@ if TYPE_CHECKING:
 __all__ = ("CACHE",)
 
 
-@dataclass(slots=True)
 class _Cache:
     """A singleton for the bot's shared external cache.
 
@@ -23,7 +21,7 @@ class _Cache:
         | message objects.
     """
 
-    vc_states: dict[Player, VCState] = field(default_factory=dict)
+    vc_states: dict[Player, VCState] = {}
 
     def delete_vc_state(self, player: Player) -> None:
         try:
