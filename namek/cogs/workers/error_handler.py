@@ -220,6 +220,11 @@ class ErrorHandler(
                 interaction=interaction, embed=error_embed
             )
 
+        elif isinstance(error, app_commands.CommandNotFound):
+            error_embed.description = (
+                "There seems to be a mismatch in the registered command name and with the command present in the source."
+                " Please contact the bot owners to resync the commands."
+            )
         else:
             await self.throw_err(interaction=interaction, error=error)
 
