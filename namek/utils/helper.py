@@ -157,7 +157,7 @@ async def make_song_media(
             author_result_str = song_author
 
     normalized_title = title_result_str or _cleanup_text(song_title)
-    normalized_author = author_result_str  or _cleanup_text(song_author)
+    normalized_author = author_result_str or _cleanup_text(song_author)
 
     media_file = await event_loop.run_in_executor(
         None,
