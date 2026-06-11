@@ -201,7 +201,7 @@ class MusicCog(
     async def pause_toggle(self, interaction: Interaction[Bot]) -> None:
         assert interaction.guild
 
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         if interaction.guild.voice_client is None:
             await interaction.followup.send(
@@ -227,20 +227,6 @@ class MusicCog(
 
         vc_state.view.is_paused = not vc_state.view.is_paused
         await player.pause(vc_state.view.is_paused)
-
-        if vc_state.message is None:
-            await interaction.followup.send(
-                embed=ErrorEmbed(
-                    title="Sorry, an unexpected error occured :(",
-                    description="Couldn't obtain message object to edit.",
-                ),
-                ephemeral=True,
-            )
-            _logger.warning(
-                "vc_state.view.message was found None for guild: %s",
-                interaction.guild.name,
-            )
-            return
 
         emoji = EMOJIS.PLAY if vc_state.view.is_paused else EMOJIS.PAUSE
         if vc_state.view.is_paused:
