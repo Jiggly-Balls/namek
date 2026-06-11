@@ -148,7 +148,7 @@ async def make_song_media(
         else:
             title_result_str = song_title
 
-        if not all(char in _ALLOWED_CHARS for char in song_title):
+        if not all(char in _ALLOWED_CHARS for char in song_author):
             author_result = await translator.translate(song_author)
             author_result_str = (
                 author_result.pronunciation or author_result.text
