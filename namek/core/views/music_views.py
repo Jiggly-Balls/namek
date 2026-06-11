@@ -115,14 +115,22 @@ class PlayLayoutView(BaseLayoutView):
         assert interaction.guild
         assert interaction.guild.voice_client
 
+        vc_state = CACHE.vc_states.get(self.player)
+        if vc_state is None:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    description="The player has already disconnected."
+                ),
+                ephemeral=True,
+            )
+            return
+
+        await vc_state.message.delete()
+
         await self.player.pause(True)
         CACHE.delete_vc_state(self.player)
         await interaction.guild.voice_client.disconnect(force=False)
 
-        await interaction.followup.edit_message(
-            interaction.message.id,
-            view=None,
-        )
         await interaction.followup.send(
             embed=MainEmbed(
                 description=f"Disconnected from voice channel `{channel.name}`"
