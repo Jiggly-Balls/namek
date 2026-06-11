@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import string
 from typing import TYPE_CHECKING, cast
 
 import discord
@@ -28,6 +29,12 @@ if TYPE_CHECKING:
 
 
 __all__ = ("safe_defer", "vc_check", "make_song_media")
+_ALLOWED_CHARS: str = (
+    string.ascii_letters
+    + string.punctuation
+    + string.whitespace
+    + "0123456789"
+)
 
 
 async def safe_defer(
@@ -135,19 +142,22 @@ async def make_song_media(
     event_loop: AbstractEventLoop,
 ) -> File:
     async with googletrans.Translator() as translator:
-        title_result = await translator.translate(song_title)
-        author_result = await translator.translate(song_author)
+        if not all(char in _ALLOWED_CHARS for char in song_title):
+            title_result = await translator.translate(song_title)
+            title_result_str = title_result.pronunciation or title_result.text
+        else:
+            title_result_str = song_title
 
-    normalized_title = (
-        title_result.pronunciation
-        or title_result.text
-        or _cleanup_text(song_title)
-    )
-    normalized_author = (
-        author_result.pronunciation
-        or author_result.text
-        or _cleanup_text(song_author)
-    )
+        if not all(char in _ALLOWED_CHARS for char in song_title):
+            author_result = await translator.translate(song_author)
+            author_result_str = (
+                author_result.pronunciation or author_result.text
+            )
+        else:
+            author_result_str = song_author
+
+    normalized_title = author_result_str or _cleanup_text(song_title)
+    normalized_author = title_result_str or _cleanup_text(song_author)
 
     media_file = await event_loop.run_in_executor(
         None,
