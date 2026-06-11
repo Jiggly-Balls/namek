@@ -16,5 +16,5 @@ __all__ = ("VCState",)
 @dataclass(slots=True, kw_only=True)
 class VCState:
     channel: TextChannel
-    message: None | Message = None
+    message: Message = MISSING
     view: PlayLayoutView = MISSING
