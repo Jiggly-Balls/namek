@@ -2,7 +2,19 @@ target-version = "py312"
 line-length = 79
 
 [lint]
-select = ["E4", "E7", "E9", "F", "ANN", "ASYNC110", "ASYNC210", "ASYNC220", "B", "I", "W292"]
+select = [
+    "ANN",
+    "ASYNC110",
+    "ASYNC210",
+    "ASYNC220",
+    "B",
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "I",
+    "W292"
+]
 ignore = ["ANN401"]
 fixable = ["I", "F401", "F541", "F632"]
 
