@@ -39,6 +39,7 @@ _ALLOWED_CHARS: str = (
 
 async def safe_defer(
     interaction: Interaction[Bot],
+    /,
 ) -> None | InteractionCallbackResponse[Bot]:
     if not interaction.response.is_done():
         return await interaction.response.defer()
