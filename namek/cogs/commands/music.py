@@ -158,7 +158,7 @@ class MusicCog(
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="An error occured in looking up the track. "
-                    "Please try again"
+                    "Please try again."
                 )
             )
             return
