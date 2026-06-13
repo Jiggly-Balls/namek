@@ -93,10 +93,11 @@ class BaseView(discord.ui.View):
                     else:
                         raise
             else:
-                raise Warning(
+                msg = (
                     f"{traceback.format_exc()}\n\n"
                     f"BaseView.message was not defined in view: {self} to disable the items.",
                 )
+                raise Warning(msg)
 
         if self._stop_on_timeout:
             self.stop()
@@ -245,10 +246,11 @@ class BaseLayoutView(discord.ui.LayoutView):
                     else:
                         raise
             else:
-                raise Warning(
+                msg = (
                     f"{traceback.format_exc()}\n\n"
-                    f"BaseView.message was not defined in view: {self} to disable the items.",
+                    f"BaseView.message was not defined in view: {self} to disable the items."
                 )
+                raise Warning(msg)
 
         if self._stop_on_timeout:
             self.stop()
