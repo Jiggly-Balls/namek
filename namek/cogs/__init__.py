@@ -29,6 +29,8 @@ class BaseGroupCog(GroupCog):
 
 
 class CogEnums(StrEnum):
+    """Enums for representing cog names."""
+
     DEV_COG = auto()
     MUSIC_COG = auto()
     ERROR_HANDLER_COG = auto()
