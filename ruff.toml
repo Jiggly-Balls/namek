@@ -32,6 +32,7 @@ fixable = [
     "I",
     "RUF022",
     "TRY201",
+    "UP037",
 ]
 
 [format]
