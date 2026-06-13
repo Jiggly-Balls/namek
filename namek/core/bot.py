@@ -241,7 +241,7 @@ class Bot(commands.Bot):
                 )
                 setattr(EMOJIS, emoji_name, "❔")
             except Exception as error:
-                _logger.error(
+                _logger.exception(
                     "An error occured trying to upload emoji: %s",
                     emoji_name,
                     exc_info=error,

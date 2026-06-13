@@ -83,11 +83,11 @@ class BaseView(discord.ui.View):
                     pass
                 except discord.errors.HTTPException as e:
                     if e.code == 50027:
-                        logger.error(
+                        logger.exception(
                             "Invalid Webhook Token: Unable to edit the message.",
                         )
                     elif e.code == 10008:
-                        logger.error(
+                        logger.exception(
                             "Unknown Message: The message was deleted.",
                         )
                     else:
@@ -235,7 +235,7 @@ class BaseLayoutView(discord.ui.LayoutView):
                     pass
                 except discord.errors.HTTPException as e:
                     if e.code == 50027:
-                        logger.error(
+                        logger.exception(
                             "Invalid Webhook Token: Unable to edit the message.",
                         )
                     elif e.code == 10008:
