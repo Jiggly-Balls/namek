@@ -64,9 +64,7 @@ class PlayLayoutView(BaseLayoutView):
 
     async def interaction_check(self, interaction: Interaction[Bot]) -> bool:
         channel = await vc_check(interaction)
-        if channel is None:
-            return False
-        return True
+        return channel is not None
 
     @row1.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_1(
