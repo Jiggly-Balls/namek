@@ -226,7 +226,7 @@ class Bot(commands.Bot):
 
             try:
                 image_file = path / local_emoji_map[emoji_name]
-                with open(image_file, "rb") as f:
+                with image_file.open("rb") as f:
                     emoji_obj = await self.create_application_emoji(
                         name=emoji_name,
                         image=f.read(),
