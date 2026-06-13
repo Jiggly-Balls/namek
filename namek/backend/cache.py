@@ -20,6 +20,7 @@ class _Cache:
     vc_states : dict[Player, VCState]
         | A dictionary mapping the player to it's VC state composing of the channel and
         | message objects.
+
     """
 
     def __init__(self) -> None:

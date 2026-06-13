@@ -46,7 +46,7 @@ class DevCog(
 
         global_synced = await self.bot.tree.sync()
         guild_synced = await self.bot.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
         )
 
         _logger.info(
@@ -68,7 +68,7 @@ class DevCog(
                 description=f"Successfully synced `{len(global_synced)}` global commands "
                 f"and `{len(guild_synced)}` dev commands. Restart your discord if you don't"
                 " see the changes.",
-            )
+            ),
         )
 
 

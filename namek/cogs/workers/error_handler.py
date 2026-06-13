@@ -92,21 +92,25 @@ class ErrorHandler(
 
     @staticmethod
     async def throw_err(
-        interaction: Interaction, error: DiscordException
+        interaction: Interaction,
+        error: DiscordException,
     ) -> None:
         print(
             f"Ignoring exception in command {interaction.command}:",
             file=sys.stderr,
         )
         traceback.print_exception(
-            type(error), error, error.__traceback__, file=sys.stderr
+            type(error),
+            error,
+            error.__traceback__,
+            file=sys.stderr,
         )
 
         if SETTINGS.BUG_REPORT_CHANNEL_ID is not MISSING:
             channel = interaction.client.get_channel(
-                SETTINGS.BUG_REPORT_CHANNEL_ID
+                SETTINGS.BUG_REPORT_CHANNEL_ID,
             ) or await interaction.client.fetch_channel(
-                SETTINGS.BUG_REPORT_CHANNEL_ID
+                SETTINGS.BUG_REPORT_CHANNEL_ID,
             )
 
             frame = (
@@ -119,12 +123,13 @@ class ErrorHandler(
                 final_name = []
                 if (
                     not isinstance(
-                        interaction.command, app_commands.ContextMenu
+                        interaction.command,
+                        app_commands.ContextMenu,
                     )
                     and interaction.command.parent
                 ):
                     final_name = ErrorHandler._get_group_names(
-                        interaction.command.parent
+                        interaction.command.parent,
                     )
                 final_name.append(interaction.command.name)
                 command_name = "/" + (" ".join(final_name))
@@ -152,11 +157,11 @@ class ErrorHandler(
             )
 
             await channel.send(  # pyright:ignore[reportAttributeAccessIssue, reportUnknownMemberType]
-                embed=log_embed
+                embed=log_embed,
             )
         else:
             _logger.warning(
-                "SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING. Could not report bug report through discord."
+                "SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING. Could not report bug report through discord.",
             )
 
         response_embed = ErrorEmbed(
@@ -164,7 +169,8 @@ class ErrorHandler(
             description="An unexpected error has occurred.\nThe developers have been notified of it.",
         )
         await ErrorHandler.send_response(
-            interaction=interaction, embed=response_embed
+            interaction=interaction,
+            embed=response_embed,
         )
 
     async def on_error(
@@ -186,7 +192,8 @@ class ErrorHandler(
                 "This command is only available to owners!"
             )
             await ErrorHandler.send_response(
-                interaction=interaction, embed=error_embed
+                interaction=interaction,
+                embed=error_embed,
             )
 
         elif isinstance(error, app_commands.BotMissingPermissions):
@@ -196,7 +203,9 @@ class ErrorHandler(
                 f"I need `{missing_permissions}` permission(s) to proceed with this command."
             )
             await ErrorHandler.send_response(
-                interaction=interaction, embed=error_embed, ephemeral=True
+                interaction=interaction,
+                embed=error_embed,
+                ephemeral=True,
             )
 
         elif isinstance(error, app_commands.MissingPermissions):
@@ -206,7 +215,9 @@ class ErrorHandler(
                 f"you need ``{missing_permissions}`` permission to use this command."
             )
             await ErrorHandler.send_response(
-                interaction=interaction, embed=error_embed, ephemeral=True
+                interaction=interaction,
+                embed=error_embed,
+                ephemeral=True,
             )
 
         elif isinstance(error, app_commands.CommandSignatureMismatch):
@@ -217,7 +228,8 @@ class ErrorHandler(
                 " commands."
             )
             await ErrorHandler.send_response(
-                interaction=interaction, embed=error_embed
+                interaction=interaction,
+                embed=error_embed,
             )
 
         elif isinstance(error, app_commands.CommandNotFound):

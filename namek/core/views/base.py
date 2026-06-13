@@ -48,6 +48,7 @@ class BaseView(discord.ui.View):
         | If set to `True` it will disable all items in the view when it times out.
     stop_on_timeout
         | Stops the view from listening to any further events on timeout.
+
     """
 
     def __init__(
@@ -84,11 +85,11 @@ class BaseView(discord.ui.View):
                 except discord.errors.HTTPException as e:
                     if e.code == 50027:
                         logger.error(
-                            "Invalid Webhook Token: Unable to edit the message."
+                            "Invalid Webhook Token: Unable to edit the message.",
                         )
                     elif e.code == 10008:
                         logger.error(
-                            "Unknown Message: The message was deleted."
+                            "Unknown Message: The message was deleted.",
                         )
                     else:
                         raise e
@@ -112,7 +113,10 @@ class BaseView(discord.ui.View):
         return False
 
     async def on_error(
-        self, interaction: Interaction, error: Exception, item: Item[Any]
+        self,
+        interaction: Interaction,
+        error: Exception,
+        item: Item[Any],
     ) -> None:
         if SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING:
             return await super().on_error(interaction, error, item)
@@ -135,13 +139,16 @@ class BaseView(discord.ui.View):
             file=sys.stderr,
         )
         traceback.print_exception(
-            type(error), error, error.__traceback__, file=sys.stderr
+            type(error),
+            error,
+            error.__traceback__,
+            file=sys.stderr,
         )
 
         channel = interaction.client.get_channel(
-            SETTINGS.BUG_REPORT_CHANNEL_ID
+            SETTINGS.BUG_REPORT_CHANNEL_ID,
         ) or await interaction.client.fetch_channel(
-            SETTINGS.BUG_REPORT_CHANNEL_ID
+            SETTINGS.BUG_REPORT_CHANNEL_ID,
         )
         channel = cast("TextChannel", channel)
 
@@ -194,6 +201,7 @@ class BaseLayoutView(discord.ui.LayoutView):
         | If set to `True` it will disable all items in the view when it times out.
     stop_on_timeout
         | Stops the view from listening to any further events on timeout.
+
     """
 
     def __init__(
@@ -230,11 +238,11 @@ class BaseLayoutView(discord.ui.LayoutView):
                 except discord.errors.HTTPException as e:
                     if e.code == 50027:
                         logger.error(
-                            "Invalid Webhook Token: Unable to edit the message."
+                            "Invalid Webhook Token: Unable to edit the message.",
                         )
                     elif e.code == 10008:
                         logger.exception(
-                            "Unknown Message: The message was deleted."
+                            "Unknown Message: The message was deleted.",
                         )
                     else:
                         raise e
@@ -258,7 +266,10 @@ class BaseLayoutView(discord.ui.LayoutView):
         return False
 
     async def on_error(
-        self, interaction: Interaction, error: Exception, item: Item[Any]
+        self,
+        interaction: Interaction,
+        error: Exception,
+        item: Item[Any],
     ) -> None:
         if SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING:
             return await super().on_error(interaction, error, item)
@@ -272,7 +283,7 @@ class BaseLayoutView(discord.ui.LayoutView):
             embed=ErrorEmbed(
                 title="Sorry :(",
                 description="An unexpected error has occurred. The developers have been notified of this.",
-            )
+            ),
         )
 
         print(
@@ -280,13 +291,16 @@ class BaseLayoutView(discord.ui.LayoutView):
             file=sys.stderr,
         )
         traceback.print_exception(
-            type(error), error, error.__traceback__, file=sys.stderr
+            type(error),
+            error,
+            error.__traceback__,
+            file=sys.stderr,
         )
 
         channel = interaction.client.get_channel(
-            SETTINGS.BUG_REPORT_CHANNEL_ID
+            SETTINGS.BUG_REPORT_CHANNEL_ID,
         ) or await interaction.client.fetch_channel(
-            SETTINGS.BUG_REPORT_CHANNEL_ID
+            SETTINGS.BUG_REPORT_CHANNEL_ID,
         )
         channel = cast("TextChannel", channel)
 

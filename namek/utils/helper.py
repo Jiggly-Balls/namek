@@ -57,7 +57,7 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
 
         await send_message_func(
             embed=ErrorEmbed(
-                description="You need to be within a voice channel to use this command."
+                description="You need to be within a voice channel to use this command.",
             ),
             ephemeral=True,
         )
@@ -108,7 +108,7 @@ def _pil_media_handle(title: str, author: str) -> File:
             and abs(b - colour_target[2]) <= ANTI_ALIAS_TOLERANCE
         ):
             new_image_data.append(
-                (r, g, b, int(0.30 * r) + int(0.59 * g) + int(0.11 * b))
+                (r, g, b, int(0.30 * r) + int(0.59 * g) + int(0.11 * b)),
             )
         else:
             new_image_data.append((r, g, b, a))

@@ -42,7 +42,9 @@ class MentionTree(app_commands.CommandTree):
         self.cache: TreeCache = {}
 
     async def sync(
-        self, *, guild: None | discord.abc.Snowflake = None
+        self,
+        *,
+        guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
 
@@ -54,7 +56,9 @@ class MentionTree(app_commands.CommandTree):
         return ret
 
     async def fetch_commands(
-        self, *, guild: None | discord.abc.Snowflake = None
+        self,
+        *,
+        guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
 
@@ -66,7 +70,9 @@ class MentionTree(app_commands.CommandTree):
         return ret
 
     async def get_or_fetch_commands(
-        self, *, guild: None | discord.abc.Snowflake = None
+        self,
+        *,
+        guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
 
@@ -96,6 +102,7 @@ class MentionTree(app_commands.CommandTree):
         -------
         str | None
             The command mention, if found.
+
         """
 
         guild_id = guild.id if guild else None
@@ -112,12 +119,14 @@ class MentionTree(app_commands.CommandTree):
             # Try and find a command by that name. discord.py does not return children from tree.get_command, but
             # using walk_commands and utils.get is a simple way around that.
             _command = discord.utils.get(
-                self.walk_commands(guild=guild), qualified_name=command
+                self.walk_commands(guild=guild),
+                qualified_name=command,
             )
 
             if check_global and not _command:
                 _command = discord.utils.get(
-                    self.walk_commands(), qualified_name=command
+                    self.walk_commands(),
+                    qualified_name=command,
                 )
 
         else:
@@ -128,13 +137,15 @@ class MentionTree(app_commands.CommandTree):
 
         local_commands = await self.get_or_fetch_commands(guild=guild)
         app_command_found = discord.utils.get(
-            local_commands, name=(_command.root_parent or _command).name
+            local_commands,
+            name=(_command.root_parent or _command).name,
         )
 
         if check_global and not app_command_found:
             global_commands = await self.get_or_fetch_commands(guild=None)
             app_command_found = discord.utils.get(
-                global_commands, name=(_command.root_parent or _command).name
+                global_commands,
+                name=(_command.root_parent or _command).name,
             )
 
         if not app_command_found:
@@ -156,7 +167,9 @@ class MentionTree(app_commands.CommandTree):
                 yield command
 
     async def walk_mentions(
-        self, *, guild: None | discord.abc.Snowflake = None
+        self,
+        *,
+        guild: None | discord.abc.Snowflake = None,
     ) -> AsyncIterator[tuple[Command[Any, Any, Any], str]]:
         """
         Gets all valid mentions for app commands in a specific guild.
@@ -170,12 +183,14 @@ class MentionTree(app_commands.CommandTree):
         Yields
         ------
         Tuple[Union[:class:`app_commands.Command`, :class:`commands.HybridCommand[Any, Any, Any]`], :class:`str`]
+
         """
 
         for command in self._walk_children(
             self.get_commands(
-                guild=guild, type=discord.AppCommandType.chat_input
-            )
+                guild=guild,
+                type=discord.AppCommandType.chat_input,
+            ),
         ):
             mention = await self.find_mention_for(command, guild=guild)
             if mention:
@@ -183,8 +198,9 @@ class MentionTree(app_commands.CommandTree):
         if guild and self.fallback_to_global is True:
             for command in self._walk_children(
                 self.get_commands(
-                    guild=None, type=discord.AppCommandType.chat_input
-                )
+                    guild=None,
+                    type=discord.AppCommandType.chat_input,
+                ),
             ):
                 mention = await self.find_mention_for(command, guild=guild)
                 if mention:

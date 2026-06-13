@@ -54,8 +54,9 @@ class StatusHandler(
 
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.playing, name=current_status
-            )
+                type=discord.ActivityType.playing,
+                name=current_status,
+            ),
         )
 
     async def _get_status_iter(self) -> Iterator[str]:

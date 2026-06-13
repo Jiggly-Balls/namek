@@ -34,7 +34,10 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 class Bot(commands.Bot):
     def __init__(
-        self, *, intents: Intents, owner_ids: None | Collection[int] = None
+        self,
+        *,
+        intents: Intents,
+        owner_ids: None | Collection[int] = None,
     ) -> None:
         """
         Initialize the bot instance.
@@ -45,6 +48,7 @@ class Bot(commands.Bot):
             The intents to be used by the bot for interacting with Discord.
         owner_ids : None | collections.abc.Collection[int]
             A collection of all owner IDs as integers to be passed in. This is optional.
+
         """
         super().__init__(
             command_prefix=MISSING,
@@ -61,7 +65,7 @@ class Bot(commands.Bot):
 
         global_synced = await self.tree.sync()
         guild_synced = await self.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
         )
 
         _logger.info(
@@ -95,7 +99,7 @@ class Bot(commands.Bot):
             return
 
         dev_app_commands: list[AppCommand] = await self.tree.fetch_commands(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
         )
         found_sync = any(command.name == "dev" for command in dev_app_commands)
         if not found_sync:
@@ -104,7 +108,9 @@ class Bot(commands.Bot):
             return
 
     async def init_extensions(
-        self, cogs_dir: list[Path], base_dir: Path
+        self,
+        cogs_dir: list[Path],
+        base_dir: Path,
     ) -> None:
         cogs_loaded = 0
         cogs_failed = 0
@@ -136,7 +142,7 @@ class Bot(commands.Bot):
                     cogs_failed += 1
                 except Exception as e:
                     _logger.warning(
-                        f"Unexpected error loading {module_name}: {e}"
+                        f"Unexpected error loading {module_name}: {e}",
                     )
                     cogs_failed += 1
 
@@ -144,7 +150,12 @@ class Bot(commands.Bot):
         _logger.info("Loaded: %s | Failed: %s", cogs_loaded, cogs_failed)
 
     async def init_wavelink_node(
-        self, *, identifier: str, uri: str, password: str, retries: int
+        self,
+        *,
+        identifier: str,
+        uri: str,
+        password: str,
+        retries: int,
     ) -> None:
         node = wavelink.Node(
             identifier=identifier,
@@ -217,14 +228,16 @@ class Bot(commands.Bot):
                 image_file = path / local_emoji_map[emoji_name]
                 with open(image_file, "rb") as f:
                     emoji_obj = await self.create_application_emoji(
-                        name=emoji_name, image=f.read()
+                        name=emoji_name,
+                        image=f.read(),
                     )
                     setattr(EMOJIS, emoji_name, emoji_obj)
                     _logger.info("Uploaded emoji: %s", emoji_name)
                     await asyncio.sleep(0.5)
             except (FileNotFoundError, KeyError):
                 _logger.warning(
-                    "Could not find image for emoji: %s", emoji_name
+                    "Could not find image for emoji: %s",
+                    emoji_name,
                 )
                 setattr(EMOJIS, emoji_name, "❔")
             except Exception as error:

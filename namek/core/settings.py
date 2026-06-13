@@ -45,7 +45,7 @@ __all__ = (
 
 class _Settings(BaseSettings):
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_file=".env"
+        env_file=".env",
     )
 
     BOT_TOKEN: SecretStr = MISSING
@@ -98,10 +98,12 @@ DEFAULT_FONT: str = "BebasNeue-Regular.ttf"
 TITLE_FONT_SIZE: int = 32
 AUTHOR_FONT_SIZE: int = 24
 TITLE_FONT: FreeTypeFont = ImageFont.truetype(
-    FONTS_DIR / DEFAULT_FONT, TITLE_FONT_SIZE
+    FONTS_DIR / DEFAULT_FONT,
+    TITLE_FONT_SIZE,
 )
 AUTHOR_FONT: FreeTypeFont = ImageFont.truetype(
-    FONTS_DIR / DEFAULT_FONT, AUTHOR_FONT_SIZE
+    FONTS_DIR / DEFAULT_FONT,
+    AUTHOR_FONT_SIZE,
 )
 
 DEFAULT_GRADIENT: str = "gradient.png"

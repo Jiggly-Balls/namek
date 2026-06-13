@@ -46,6 +46,7 @@ class MusicCog(
         ----------
         bot : Bot
             The bot instance to which this cog is added.
+
         """
         super().__init__(logger=_logger)
         self.bot: Bot = bot
@@ -64,8 +65,8 @@ class MusicCog(
         await channel.connect(cls=wavelink.Player, self_deaf=True)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                description=f"Successfully joined `{channel.name}` voice channel."
-            )
+                description=f"Successfully joined `{channel.name}` voice channel.",
+            ),
         )
 
     @app_commands.command()
@@ -80,8 +81,8 @@ class MusicCog(
         ):
             await interaction.response.send_message(
                 embed=ErrorEmbed(
-                    description="I'm not in a voice channel to disconnect."
-                )
+                    description="I'm not in a voice channel to disconnect.",
+                ),
             )
             return
 
@@ -92,15 +93,16 @@ class MusicCog(
         await interaction.response.defer()
 
         player: wavelink.Player = cast(
-            "wavelink.Player", interaction.guild.voice_client
+            "wavelink.Player",
+            interaction.guild.voice_client,
         )
         CACHE.delete_vc_state(player)
 
         await interaction.guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
-                description=f"Disconnected from voice channel `{channel.name}`."
-            )
+                description=f"Disconnected from voice channel `{channel.name}`.",
+            ),
         )
 
     @app_commands.command()
@@ -119,14 +121,15 @@ class MusicCog(
             await channel.connect(cls=wavelink.Player, self_deaf=True)
             await interaction.followup.send(
                 embed=SuccessEmbed(
-                    description=f"Successfully joined `{channel.name}` voice channel."
-                )
+                    description=f"Successfully joined `{channel.name}` voice channel.",
+                ),
             )
 
         await safe_defer(interaction)
 
         player: wavelink.Player = cast(
-            "wavelink.Player", interaction.guild.voice_client
+            "wavelink.Player",
+            interaction.guild.voice_client,
         )
 
         player.autoplay = wavelink.AutoPlayMode.enabled
@@ -135,7 +138,7 @@ class MusicCog(
             vc_state := CACHE.vc_states.get(player)
         ) and vc_state.channel != interaction.channel:
             await interaction.followup.send(
-                f"You can only play songs in {vc_state.channel.mention}, as the player has already started there."
+                f"You can only play songs in {vc_state.channel.mention}, as the player has already started there.",
             )
             return
 
@@ -158,8 +161,8 @@ class MusicCog(
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="An error occured in looking up the track. "
-                    "Please try again."
-                )
+                    "Please try again.",
+                ),
             )
             return
 
@@ -167,8 +170,8 @@ class MusicCog(
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description=f"{interaction.user.mention} - Could not find any tracks with that query. "
-                    "Please try again."
-                )
+                    "Please try again.",
+                ),
             )
             return
 
@@ -176,16 +179,16 @@ class MusicCog(
             added: int = await player.queue.put_wait(tracks)
             await interaction.followup.send(
                 embed=MainEmbed(
-                    description=f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue."
-                )
+                    description=f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue.",
+                ),
             )
         else:
             track: wavelink.Playable = tracks[0]
             await player.queue.put_wait(track)
             await interaction.followup.send(
                 embed=MainEmbed(
-                    description=f"Added **`{track}`** to the queue."
-                )
+                    description=f"Added **`{track}`** to the queue.",
+                ),
             )
 
         if player not in CACHE.vc_states:
@@ -210,13 +213,14 @@ class MusicCog(
         if interaction.guild.voice_client is None:
             await interaction.followup.send(
                 embed=ErrorEmbed(
-                    description="I'm not in any voice channel playing music."
-                )
+                    description="I'm not in any voice channel playing music.",
+                ),
             )
             return
 
         player: wavelink.Player = cast(
-            "wavelink.Player", interaction.guild.voice_client
+            "wavelink.Player",
+            interaction.guild.voice_client,
         )
 
         vc_state = CACHE.vc_states.get(player)
@@ -224,8 +228,8 @@ class MusicCog(
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="Could not find the music state for this channel."
-                    " Please try again."
-                )
+                    " Please try again.",
+                ),
             )
             return
 

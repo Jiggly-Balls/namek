@@ -31,7 +31,8 @@ class WavelinkTracker(
 
     @commands.Cog.listener()
     async def on_wavelink_track_start(
-        self, payload: TrackStartEventPayload
+        self,
+        payload: TrackStartEventPayload,
     ) -> None:
         if payload.player is None:
             return
@@ -77,7 +78,9 @@ class WavelinkTracker(
             thumbnail_url=payload.track.artwork,
         )
         message = await vc_state.channel.send(
-            view=view, file=song_media, silent=True
+            view=view,
+            file=song_media,
+            silent=True,
         )
         try:
             CACHE.vc_states[payload.player].message = message
@@ -90,7 +93,8 @@ class WavelinkTracker(
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(
-        self, payload: TrackEndEventPayload
+        self,
+        payload: TrackEndEventPayload,
     ) -> None:
         if payload.player is None:
             return
@@ -136,7 +140,7 @@ class WavelinkTracker(
             )
 
             await vc_state.channel.send(
-                embeds=[track_end_embed, post_end_embed]
+                embeds=[track_end_embed, post_end_embed],
             )
 
 

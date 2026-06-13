@@ -52,7 +52,7 @@ class PlayLayoutView(BaseLayoutView):
 
         title_section = discord.ui.Section["PlayLayoutView"](
             discord.ui.TextDisplay(
-                content=f"## {song_title}\n**  **—{song_author}"
+                content=f"## {song_title}\n**  **—{song_author}",
             ),
             **_section_kwargs,
         )
@@ -71,12 +71,16 @@ class PlayLayoutView(BaseLayoutView):
 
     @row1.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_1(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
 
     @row1.button(emoji=EMOJIS.PREVIOUS, style=ButtonStyle.blurple)
     async def previous_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -104,7 +108,9 @@ class PlayLayoutView(BaseLayoutView):
 
     @row1.button(emoji=EMOJIS.DISCONNECT, style=ButtonStyle.red)
     async def delete_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None:
         await interaction.response.defer()
 
@@ -119,7 +125,7 @@ class PlayLayoutView(BaseLayoutView):
         if vc_state is None:
             await interaction.followup.send(
                 embed=ErrorEmbed(
-                    description="The player has already disconnected."
+                    description="The player has already disconnected.",
                 ),
                 ephemeral=True,
             )
@@ -133,14 +139,16 @@ class PlayLayoutView(BaseLayoutView):
 
         await interaction.followup.send(
             embed=MainEmbed(
-                description=f"Disconnected from voice channel `{channel.name}`"
-            )
+                description=f"Disconnected from voice channel `{channel.name}`",
+            ),
         )
         self.stop()
 
     @row1.button(emoji=EMOJIS.NEXT, style=ButtonStyle.blurple)
     async def next_callback(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -151,29 +159,37 @@ class PlayLayoutView(BaseLayoutView):
 
         await interaction.followup.send(
             embed=MainEmbed(
-                description=f"Skipped current song. Now playing `{current_song.title}`"
+                description=f"Skipped current song. Now playing `{current_song.title}`",
             ),
             ephemeral=True,
         )
 
     @row1.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_2(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_3(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_4(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
 
     @row2.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
     async def play_pause(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -183,7 +199,8 @@ class PlayLayoutView(BaseLayoutView):
         if interaction.message:
             button.emoji = EMOJIS.PLAY if self.is_paused else EMOJIS.PAUSE
             await interaction.followup.edit_message(
-                interaction.message.id, view=self
+                interaction.message.id,
+                view=self,
             )
         if self.is_paused:
             message = "Paused the current track."
@@ -197,10 +214,14 @@ class PlayLayoutView(BaseLayoutView):
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_5(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_6(
-        self, interaction: Interaction[Bot], button: Button["PlayLayoutView"]
+        self,
+        interaction: Interaction[Bot],
+        button: Button["PlayLayoutView"],
     ) -> None: ...
