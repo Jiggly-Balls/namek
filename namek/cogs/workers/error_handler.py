@@ -183,7 +183,7 @@ class ErrorHandler(
         if isinstance(interaction.channel, discord.DMChannel):
             return
 
-        elif isinstance(error, discord.NotFound):
+        if isinstance(error, discord.NotFound):
             if error.code in UNKNOWN_INTERACTION:
                 return
 
