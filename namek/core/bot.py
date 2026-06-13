@@ -201,7 +201,7 @@ class Bot(commands.Bot):
 
             setattr(EMOJIS, emoji_name, emoji)
 
-        application_emoji_set = set(emoji.name.upper() for emoji in emojis)
+        application_emoji_set = {emoji.name.upper() for emoji in emojis}
         local_emoji_map = {
             asset.stem.upper(): asset for asset in path.iterdir()
         }

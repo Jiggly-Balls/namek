@@ -41,7 +41,6 @@ class DevCog(
     @app_commands.command()
     async def sync(self, interaction: Interaction[Bot]) -> None:
         """Developer command to sync the bot's slash commands with discord."""
-
         await interaction.response.defer()
 
         global_synced = await self.bot.tree.sync()

@@ -70,7 +70,6 @@ class BaseView(discord.ui.View):
 
     def disable_all_items(self) -> None:
         """Disables all items in the View when called."""
-
         for item in self.children:
             item.disabled = True  # pyright:ignore[reportAttributeAccessIssue]
 
@@ -92,7 +91,7 @@ class BaseView(discord.ui.View):
                             "Unknown Message: The message was deleted.",
                         )
                     else:
-                        raise e
+                        raise
             else:
                 raise Warning(
                     f"{traceback.format_exc()}\n\n"
@@ -223,7 +222,6 @@ class BaseLayoutView(discord.ui.LayoutView):
 
     def disable_all_items(self) -> None:
         """Disables all items in the View when called."""
-
         for item in self.children:
             item.disabled = True  # pyright:ignore[reportAttributeAccessIssue]
 
@@ -245,7 +243,7 @@ class BaseLayoutView(discord.ui.LayoutView):
                             "Unknown Message: The message was deleted.",
                         )
                     else:
-                        raise e
+                        raise
             else:
                 raise Warning(
                     f"{traceback.format_exc()}\n\n"

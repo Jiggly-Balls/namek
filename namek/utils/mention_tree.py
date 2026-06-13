@@ -47,7 +47,6 @@ class MentionTree(app_commands.CommandTree):
         guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
-
         ret = await super().sync(guild=guild)
         guild_id = guild.id if guild else None
         self.application_commands[guild_id] = ret
@@ -61,7 +60,6 @@ class MentionTree(app_commands.CommandTree):
         guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
-
         ret = await super().fetch_commands(guild=guild)
         guild_id = guild.id if guild else None
         self.application_commands[guild_id] = ret
@@ -75,7 +73,6 @@ class MentionTree(app_commands.CommandTree):
         guild: None | discord.abc.Snowflake = None,
     ) -> list[AppCommand]:
         """Method overwritten to store the commands."""
-
         try:
             return self.application_commands[guild.id if guild else None]
         except KeyError:
@@ -104,7 +101,6 @@ class MentionTree(app_commands.CommandTree):
             The command mention, if found.
 
         """
-
         guild_id = guild.id if guild else None
         try:
             return self.cache[guild_id][command]
@@ -185,7 +181,6 @@ class MentionTree(app_commands.CommandTree):
         Tuple[Union[:class:`app_commands.Command`, :class:`commands.HybridCommand[Any, Any, Any]`], :class:`str`]
 
         """
-
         for command in self._walk_children(
             self.get_commands(
                 guild=guild,

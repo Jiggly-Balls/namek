@@ -75,7 +75,6 @@ class ErrorHandler(
         ephemeral: bool = True,
     ) -> None:
         """Handles the error response to user."""
-
         load: dict[str, Any] = {"ephemeral": ephemeral}
         if embed:
             load["embed"] = embed

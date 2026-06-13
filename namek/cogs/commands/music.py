@@ -202,10 +202,7 @@ class MusicCog(
 
     @app_commands.command(name="pause-toggle")
     async def pause_toggle(self, interaction: Interaction[Bot]) -> None:
-        """
-        Toggles between playing and pausing the track.
-        """
-
+        """Toggles between playing and pausing the track."""
         assert interaction.guild
 
         await interaction.response.defer(ephemeral=True)
