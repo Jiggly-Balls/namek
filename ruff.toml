@@ -5,6 +5,7 @@ line-length = 79
 select = ["ALL"]
 ignore = [
     "ANN401",
+    "ASYNC230", "ASYNC240",
     "B904",
     "BLE001",
     "C901",
@@ -13,6 +14,7 @@ ignore = [
     "DOC501", "DOC502",
     "D401", "D404", "D416", "D417",
     "E501", "E731",
+    "FBT001",
     "G004",
     "PLR",
     "RET504",
@@ -25,6 +27,7 @@ fixable = [
     "COM812",
     "F401", "F541", "F632",
     "I",
+    "RUF022",
     "TRY201",
 ]
 
