@@ -118,7 +118,7 @@ def _pil_media_handle(title: str, author: str) -> File:
 
     x, y = 300, 0
     block_width, block_height = IMAGE_SIZE[0] - x, IMAGE_SIZE[1]
-    fade_out_colour = BACKGROUND_COLOUR + (255,)
+    fade_out_colour = (*BACKGROUND_COLOUR, 255)
 
     overlay = Image.new("RGBA", (block_width, block_height), fade_out_colour)
 
