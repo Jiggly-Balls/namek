@@ -81,7 +81,8 @@ class MentionTree(app_commands.CommandTree):
         *,
         guild: None | discord.abc.Snowflake = None,
     ) -> None | str:
-        """Retrieves the mention of an AppCommand given a specific command name, and optionally, a guild.
+        """
+        Retrieves the mention of an AppCommand given a specific command name, and optionally, a guild.
         Parameters
         ----------
         name: Union[:class:`app_commands.Command`, :class:`commands.HybridCommand[Any, Any, Any]`, str]
@@ -157,7 +158,8 @@ class MentionTree(app_commands.CommandTree):
     async def walk_mentions(
         self, *, guild: None | discord.abc.Snowflake = None
     ) -> AsyncIterator[tuple[Command[Any, Any, Any], str]]:
-        """Gets all valid mentions for app commands in a specific guild.
+        """
+        Gets all valid mentions for app commands in a specific guild.
         This takes into consideration group commands, it will only return mentions for
         the command's children, and not the parent as parents aren't mentionable.
 
