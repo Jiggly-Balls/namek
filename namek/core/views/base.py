@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from namek.core.bot import Bot
 
 
-__all__ = ("BaseView", "BaseLayoutView")
+__all__ = ("BaseLayoutView", "BaseView")
 
 
 logger = logging.getLogger(__name__)

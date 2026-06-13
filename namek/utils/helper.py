@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from namek.core import Bot
 
 
-__all__ = ("safe_defer", "vc_check", "make_song_media")
+__all__ = ("make_song_media", "safe_defer", "vc_check")
 _ALLOWED_CHARS: str = (
     string.ascii_letters
     + string.punctuation

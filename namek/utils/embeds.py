@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from discord import Embed
 
 
-__all__ = ("MainEmbed", "ErrorEmbed", "SuccessEmbed")
+__all__ = ("ErrorEmbed", "MainEmbed", "SuccessEmbed")
 
 
 class MainEmbed(Embed):
