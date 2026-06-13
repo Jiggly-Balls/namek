@@ -231,7 +231,7 @@ class BaseLayoutView(discord.ui.LayoutView):
                             "Invalid Webhook Token: Unable to edit the message."
                         )
                     elif e.code == 10008:
-                        logger.error(
+                        logger.exception(
                             "Unknown Message: The message was deleted."
                         )
                     else:
