@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord import ButtonStyle
-from discord.ui import Button
 
 from namek.backend.cache import CACHE
 from namek.core.settings import EMOJIS
@@ -16,7 +15,7 @@ if TYPE_CHECKING:
     from typing import Any
 
     from discord import File, Interaction
-    from discord.ui import ActionRow, Container
+    from discord.ui import ActionRow, Button, Container
     from wavelink import Player
 
     from namek.core import Bot
