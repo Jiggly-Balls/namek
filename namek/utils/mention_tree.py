@@ -23,16 +23,16 @@ if TYPE_CHECKING:
     from discord.app_commands import AppCommand, Command
     from discord.ext.commands import HybridCommand
 
+    type TreeCache = dict[
+        None | int,
+        dict[
+            Command[Any, Any, Any] | HybridCommand[Any, Any, Any] | str,
+            str,
+        ],
+    ]
+
 __all__ = ("MentionTree",)
 _logger = logging.getLogger(__name__)
-
-type TreeCache = dict[
-    None | int,
-    dict[
-        Command[Any, Any, Any] | HybridCommand[Any, Any, Any] | str,
-        str,
-    ],
-]
 
 
 class MentionTree(app_commands.CommandTree):
