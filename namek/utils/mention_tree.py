@@ -86,6 +86,7 @@ class MentionTree(app_commands.CommandTree):
     ) -> None | str:
         """
         Retrieves the mention of an AppCommand given a specific command name, and optionally, a guild.
+
         Parameters
         ----------
         name: Union[:class:`app_commands.Command`, :class:`commands.HybridCommand[Any, Any, Any]`, str]
@@ -176,6 +177,7 @@ class MentionTree(app_commands.CommandTree):
         ----------
         guild: Optional[discord.Guild]
             The guild to get commands for. If not given, it will only return global commands.
+
         Yields
         ------
         Tuple[Union[:class:`app_commands.Command`, :class:`commands.HybridCommand[Any, Any, Any]`], :class:`str`]
