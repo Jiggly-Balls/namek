@@ -65,17 +65,18 @@ SETTINGS: _Settings = _Settings()
 
 
 class _Emojis:
-    AUTOPLAY_DISABLED: Emoji = MISSING
-    AUTOPLAY_ENABLED: Emoji = MISSING
-    DISCONNECT: Emoji = MISSING
-    FILTER: Emoji = MISSING
-    NEXT: Emoji = MISSING
-    PLAY: Emoji = MISSING
-    PAUSE: Emoji = MISSING
-    PREVIOUS: Emoji = MISSING
-    REPEAT_1: Emoji = MISSING
-    REPEAT: Emoji = MISSING
-    SHUFFLE: Emoji = MISSING
+    def __init__(self) -> None:
+        self.AUTOPLAY_DISABLED: Emoji = MISSING
+        self.AUTOPLAY_ENABLED: Emoji = MISSING
+        self.DISCONNECT: Emoji = MISSING
+        self.FILTER: Emoji = MISSING
+        self.NEXT: Emoji = MISSING
+        self.PLAY: Emoji = MISSING
+        self.PAUSE: Emoji = MISSING
+        self.PREVIOUS: Emoji = MISSING
+        self.REPEAT_1: Emoji = MISSING
+        self.REPEAT: Emoji = MISSING
+        self.SHUFFLE: Emoji = MISSING
 
 
 EMOJIS: _Emojis = _Emojis()

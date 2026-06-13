@@ -12,7 +12,8 @@ __all__ = ("CACHE",)
 
 
 class _Cache:
-    """A singleton for the bot's shared external cache.
+    """
+    A singleton for the bot's shared external cache.
 
     Attributes
     ----------
@@ -21,7 +22,8 @@ class _Cache:
         | message objects.
     """
 
-    vc_states: dict[Player, VCState] = {}
+    def __init__(self) -> None:
+        self.vc_states: dict[Player, VCState] = {}
 
     def delete_vc_state(self, player: Player) -> None:
         try:
