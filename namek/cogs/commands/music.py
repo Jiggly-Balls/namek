@@ -53,6 +53,15 @@ class MusicCog(
 
     @app_commands.command()
     async def connect(self, interaction: Interaction[Bot]) -> None:
+        """
+        Connects to the voice channel you're present in.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
 
@@ -71,6 +80,15 @@ class MusicCog(
 
     @app_commands.command()
     async def disconnect(self, interaction: Interaction[Bot]) -> None:
+        """
+        Disconnects from the voice channel you're present in.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
         assert isinstance(interaction.user, discord.Member)
         assert interaction.guild
 
@@ -107,6 +125,20 @@ class MusicCog(
 
     @app_commands.command()
     async def play(self, interaction: Interaction[Bot], query: str) -> None:
+        """
+        Play a song with the given query.
+
+        Searches for and plays music from sources such as YouTube, Soundcloud, Bandcamp and Twitch.
+        Supports both individual tracks and playlists.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+        query : str
+            The search query or URL to play.
+
+        """
         assert isinstance(interaction.user, discord.Member)
         assert interaction.channel
         assert interaction.guild
@@ -202,7 +234,15 @@ class MusicCog(
 
     @app_commands.command(name="pause-toggle")
     async def pause_toggle(self, interaction: Interaction[Bot]) -> None:
-        """Toggles between playing and pausing the track."""
+        """
+        Toggles between playing and pausing the track from your current session.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
         assert interaction.guild
 
         await interaction.response.defer(ephemeral=True)
