@@ -25,9 +25,9 @@ __all__ = ("PlayLayoutView",)
 
 
 class PlayLayoutView(BaseLayoutView):
-    container: Container["PlayLayoutView"] = discord.ui.Container()
-    row1: ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
-    row2: ActionRow["PlayLayoutView"] = discord.ui.ActionRow()
+    container: Container[PlayLayoutView] = discord.ui.Container()
+    row1: ActionRow[PlayLayoutView] = discord.ui.ActionRow()
+    row2: ActionRow[PlayLayoutView] = discord.ui.ActionRow()
 
     def __init__(
         self,
@@ -70,14 +70,14 @@ class PlayLayoutView(BaseLayoutView):
     async def dud_button_1(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
 
     @row1.button(emoji=EMOJIS.PREVIOUS, style=ButtonStyle.blurple)
     async def previous_callback(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -107,7 +107,7 @@ class PlayLayoutView(BaseLayoutView):
     async def delete_callback(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None:
         await interaction.response.defer()
 
@@ -145,7 +145,7 @@ class PlayLayoutView(BaseLayoutView):
     async def next_callback(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -165,28 +165,28 @@ class PlayLayoutView(BaseLayoutView):
     async def dud_button_2(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_3(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_4(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
 
     @row2.button(emoji=EMOJIS.PAUSE, style=ButtonStyle.green)
     async def play_pause(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
@@ -213,12 +213,12 @@ class PlayLayoutView(BaseLayoutView):
     async def dud_button_5(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
 
     @row2.button(label="\u200b", style=ButtonStyle.grey, disabled=True)
     async def dud_button_6(
         self,
         interaction: Interaction[Bot],
-        button: Button["PlayLayoutView"],
+        button: Button[PlayLayoutView],
     ) -> None: ...
