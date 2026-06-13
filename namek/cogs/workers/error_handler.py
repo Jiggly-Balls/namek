@@ -40,6 +40,8 @@ class ErrorHandler(
     name=CogEnums.ERROR_HANDLER_COG,
     group_description="Catches and cleanly logs and handles any unhandled errors.",
 ):
+    """Worker cog for redirecting & handling all errors raised during it's lifetime."""
+
     def __init__(self, bot: Bot) -> None:
         super().__init__(_logger)
         self.bot: Bot = bot

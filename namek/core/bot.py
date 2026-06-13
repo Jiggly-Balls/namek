@@ -33,6 +33,8 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 
 class Bot(commands.Bot):
+    """The main singleton bot class."""
+
     def __init__(
         self,
         *,

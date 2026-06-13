@@ -26,6 +26,8 @@ class WavelinkTracker(
     name=CogEnums.WAVELINK_TRACKER_COG,
     group_description="Tracks the songs being played.",
 ):
+    """Worker cog for handling new songs and queue ends in the VC."""
+
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 

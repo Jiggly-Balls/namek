@@ -36,6 +36,11 @@ _logger = logging.getLogger(__name__)
 
 
 class MentionTree(app_commands.CommandTree):
+    """
+    A container that holds application command information.
+    This subclass of CommandTree provides mentionable application commands.
+    """
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.application_commands: dict[None | int, list[AppCommand]] = {}
@@ -170,8 +175,8 @@ class MentionTree(app_commands.CommandTree):
     ) -> AsyncIterator[tuple[Command[Any, Any, Any], str]]:
         """
         Gets all valid mentions for app commands in a specific guild.
-        This takes into consideration group commands, it will only return mentions for
-        the command's children, and not the parent as parents aren't mentionable.
+        This takes into consideration group commands, it will only return mentions
+        for the command's children, and not the parent as parents aren't mentionable.
 
         Parameters
         ----------

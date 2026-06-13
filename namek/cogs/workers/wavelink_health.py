@@ -20,6 +20,8 @@ class WavelinkHealth(
     name=CogEnums.WAVELINK_HEALTH_COG,
     group_description="Logs info on the wavelink's connection.",
 ):
+    """Worker cog for monitoring wavelink's connection."""
+
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 

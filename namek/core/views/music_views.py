@@ -25,6 +25,11 @@ __all__ = ("PlayLayoutView",)
 
 
 class PlayLayoutView(BaseLayoutView):
+    """
+    A music view class for any new song about to be played.
+    This view contains various information such as song title, author, thumbnail, etc.
+    """
+
     container: Container[PlayLayoutView] = discord.ui.Container()
     row1: ActionRow[PlayLayoutView] = discord.ui.ActionRow()
     row2: ActionRow[PlayLayoutView] = discord.ui.ActionRow()

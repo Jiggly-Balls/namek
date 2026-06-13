@@ -13,6 +13,8 @@ __all__ = ("ErrorEmbed", "MainEmbed", "SuccessEmbed")
 
 
 class MainEmbed(Embed):
+    """The main embed for when no errors / success specific operations occur."""
+
     def __init__(
         self,
         *,
@@ -31,6 +33,8 @@ class MainEmbed(Embed):
 
 
 class ErrorEmbed(Embed):
+    """An embed to represent error / unexpected output."""
+
     def __init__(
         self,
         *,
@@ -49,6 +53,8 @@ class ErrorEmbed(Embed):
 
 
 class SuccessEmbed(Embed):
+    """An embed to represent success."""
+
     def __init__(
         self,
         *,
