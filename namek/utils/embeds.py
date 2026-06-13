@@ -9,9 +9,6 @@ from namek.core.settings import ERROR_COLOUR, MAIN_COLOUR, SUCCESS_COLOUR
 if TYPE_CHECKING:
     from typing import Any
 
-    from discord import Embed
-
-
 __all__ = ("ErrorEmbed", "MainEmbed", "SuccessEmbed")
 
 

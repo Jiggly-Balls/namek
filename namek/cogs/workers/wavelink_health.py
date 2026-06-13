@@ -6,10 +6,11 @@ from typing import TYPE_CHECKING
 from discord.ext import commands
 
 from namek.cogs import BaseGroupCog, CogEnums
-from namek.core import Bot
 
 if TYPE_CHECKING:
     from wavelink import NodeDisconnectedEventPayload, NodeReadyEventPayload
+
+    from namek.core import Bot
 
 _logger = logging.getLogger(__name__)
 

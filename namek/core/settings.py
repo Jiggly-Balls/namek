@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import discord
 from discord.utils import MISSING
 from PIL import ImageFont
-from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 if TYPE_CHECKING:
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
 
     from discord import Colour, Emoji
     from PIL.ImageFont import FreeTypeFont
+    from pydantic import SecretStr
 
 __all__ = (
     "ALLOWED_MUSIC_SOURCES",

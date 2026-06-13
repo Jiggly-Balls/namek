@@ -193,7 +193,7 @@ class MusicCog(
 
         if player not in CACHE.vc_states:
             CACHE.vc_states[player] = VCState(
-                channel=cast(discord.TextChannel, interaction.channel),
+                channel=cast("discord.TextChannel", interaction.channel),
                 message=await interaction.original_response(),
             )
 
