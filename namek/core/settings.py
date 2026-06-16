@@ -1,20 +1,14 @@
-from __future__ import annotations
-
 import pathlib
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import ClassVar
 
 import discord
+from discord import Colour, Emoji
 from discord.utils import MISSING
 from PIL import ImageFont
+from PIL.ImageFont import FreeTypeFont
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-if TYPE_CHECKING:
-    from pathlib import Path
-    from typing import ClassVar
-
-    from discord import Colour, Emoji
-    from PIL.ImageFont import FreeTypeFont
-    from pydantic import SecretStr
 
 __all__ = (
     "ALLOWED_MUSIC_SOURCES",
