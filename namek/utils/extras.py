@@ -1,35 +1,50 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+import wavelink
 from discord.utils import MISSING
 
 if TYPE_CHECKING:
-    from discord import Message, TextChannel
+    from typing import Any
+
+    from discord import Client, Message, TextChannel
+    from discord.abc import Connectable
+    from wavelink import Node
 
     from namek.core.views.music_views import PlayLayoutView
 
-__all__ = ("VCState",)
+    class NamekPlayer(wavelink.Player):
+        home_channel: TextChannel = MISSING
+        song_message: Message = MISSING
+        song_view: PlayLayoutView = MISSING
+
+        def __init__(
+            self,
+            client: Client = MISSING,
+            channel: Connectable = MISSING,
+            *,
+            nodes: list[Node] | None = None,
+            **kwargs: Any,
+        ) -> None:
+            super().__init__(client=client, channel=channel, nodes=nodes)
 
 
-@dataclass(slots=True, kw_only=True)
-class VCState:
-    """
-    Dataclass to represent every instance of music playing across all VCs.
-    This is used in the bot's singleton cache.
+__all__ = ("namek_player_factory",)
 
-    Parameters
-    ----------
-    channel : TextChannel
-        The channel where the song info message has been sent to.
-    message : Message
-        The message object of the song info.
-    view : PlayLayoutView
-        The view object attached to the message.
 
-    """
-
-    channel: TextChannel
-    message: Message = MISSING
-    view: PlayLayoutView = MISSING
+def namek_player_factory(
+    *,
+    home_channel: TextChannel = MISSING,
+    song_message: Message = MISSING,
+    song_view: PlayLayoutView = MISSING,
+) -> type[NamekPlayer]:
+    return type(
+        "NamekPlayer",
+        (wavelink.Player,),
+        {
+            "home_channel": home_channel,
+            "song_message": song_message,
+            "song_view": song_view,
+        },
+    )  # pyright: ignore[reportReturnType]
