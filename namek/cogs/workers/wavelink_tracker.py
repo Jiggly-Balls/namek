@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import wavelink
 from discord.ext import commands
 
-from namek.backend.cache import CACHE
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.views.music_views import PlayLayoutView
 from namek.utils import MainEmbed
@@ -16,6 +15,7 @@ if TYPE_CHECKING:
     from wavelink import TrackEndEventPayload, TrackStartEventPayload
 
     from namek.core import Bot
+    from namek.utils.extras import NamekPlayer
 
 
 _logger = logging.getLogger(__name__)
@@ -39,9 +39,7 @@ class WavelinkTracker(
         if payload.player is None:
             return
 
-        vc_state = CACHE.vc_states.get(payload.player)
-        if not vc_state:
-            return
+        player = cast("NamekPlayer", payload.player)
 
         artist = (
             f"[{payload.track.author}]({payload.track.artist.url})"
@@ -63,8 +61,8 @@ class WavelinkTracker(
         else:
             duration_text = f"**{seconds}**s"
 
-        if vc_state.message:
-            await vc_state.message.delete()
+        if player.song_message:
+            await player.song_message.delete()
 
         song_media = await make_song_media(
             payload.track.title,
@@ -72,26 +70,20 @@ class WavelinkTracker(
             payload.player.client.loop,
         )
         view = PlayLayoutView(
-            player=payload.player,
+            player=player,
             song_title=title,
             song_author=artist,
             duration=duration_text,
             media_file=song_media,
             thumbnail_url=payload.track.artwork,
         )
-        message = await vc_state.channel.send(
+        message = await player.home_channel.send(
             view=view,
             file=song_media,
             silent=True,
         )
-        try:
-            CACHE.vc_states[payload.player].message = message
-            CACHE.vc_states[payload.player].view = view
-        except KeyError:
-            # This can raise when the user disconnects the bot as soon
-            # as a new track is starting which causes the player pair
-            # to get deleted and we get a KeyError here.
-            pass
+        player.song_message = message
+        player.song_view = view
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(
@@ -101,16 +93,14 @@ class WavelinkTracker(
         if payload.player is None:
             return
 
-        vc_state = CACHE.vc_states.get(payload.player)
-        if not vc_state:
-            return
+        player = cast("NamekPlayer", payload.player)
 
-        if not payload.player.queue and not payload.player.auto_queue:
+        if not player.queue and not player.auto_queue:
             post_text = (
                 "You can continue adding more tracks queue or "
                 "listen to our fine tuned auto recommendation."
             )
-            if payload.player.autoplay is wavelink.AutoPlayMode.disabled:
+            if player.autoplay is wavelink.AutoPlayMode.disabled:
                 post_text = (
                     "You can continue listening to more songs by adding tracks to the queue."
                     " Since my autoplay is disabled I will leave the voice channel in a few "
@@ -141,7 +131,7 @@ class WavelinkTracker(
                 .set_thumbnail(url=payload.track.artwork)
             )
 
-            await vc_state.channel.send(
+            await player.home_channel.send(
                 embeds=[track_end_embed, post_end_embed],
             )
 

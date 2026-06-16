@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import discord
 from discord import ButtonStyle
 
-from namek.backend.cache import CACHE
 from namek.core.settings import EMOJIS
 from namek.core.views import BaseLayoutView
 from namek.utils import ErrorEmbed, MainEmbed
@@ -16,9 +15,9 @@ if TYPE_CHECKING:
 
     from discord import File, Interaction
     from discord.ui import ActionRow, Button, Container
-    from wavelink import Player
 
     from namek.core import Bot
+    from namek.utils.extras import NamekPlayer
 
 
 __all__ = ("PlayLayoutView",)
@@ -36,7 +35,7 @@ class PlayLayoutView(BaseLayoutView):
 
     def __init__(
         self,
-        player: Player,
+        player: NamekPlayer,
         song_title: str,
         song_author: str,
         duration: str,
@@ -45,7 +44,7 @@ class PlayLayoutView(BaseLayoutView):
     ) -> None:
         super().__init__(timeout=None)
 
-        self.player: Player = player
+        self.player: NamekPlayer = player
         self.is_paused: bool = False
 
         _section_kwargs: dict[str, Any] = {}
@@ -123,8 +122,7 @@ class PlayLayoutView(BaseLayoutView):
         assert interaction.guild
         assert interaction.guild.voice_client
 
-        vc_state = CACHE.vc_states.get(self.player)
-        if vc_state is None:
+        if not self.player.connected:
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="The player has already disconnected.",
@@ -133,10 +131,8 @@ class PlayLayoutView(BaseLayoutView):
             )
             return
 
-        await vc_state.message.delete()
-
+        await self.player.song_message.delete()
         await self.player.pause(True)
-        CACHE.delete_vc_state(self.player)
         await interaction.guild.voice_client.disconnect(force=False)
 
         await interaction.followup.send(

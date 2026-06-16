@@ -8,17 +8,17 @@ import discord
 import wavelink
 from discord import app_commands
 
-from namek.backend.cache import CACHE
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import ALLOWED_MUSIC_SOURCES, EMOJIS
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
-from namek.utils.extras import VCState
+from namek.utils.extras import namek_player_factory
 from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
     from discord import Interaction
 
     from namek.core import Bot
+    from namek.utils.extras import NamekPlayer
 
 
 _logger = logging.getLogger(__name__)
@@ -62,8 +62,8 @@ class MusicCog(
             The discord interaction object.
 
         """
-        assert isinstance(interaction.user, discord.Member)
-        assert interaction.guild
+        assert interaction.channel
+        assert isinstance(interaction.channel, discord.TextChannel)
 
         channel = await vc_check(interaction)
         if not channel:
@@ -71,7 +71,8 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        await channel.connect(cls=wavelink.Player, self_deaf=True)
+        player = namek_player_factory(home_channel=interaction.channel)
+        await channel.connect(cls=player, self_deaf=True)
         await interaction.followup.send(
             embed=SuccessEmbed(
                 description=f"Successfully joined `{channel.name}` voice channel.",
@@ -110,12 +111,6 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        player: wavelink.Player = cast(
-            "wavelink.Player",
-            interaction.guild.voice_client,
-        )
-        CACHE.delete_vc_state(player)
-
         await interaction.guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
@@ -139,9 +134,10 @@ class MusicCog(
             The search query or URL to play.
 
         """
-        assert isinstance(interaction.user, discord.Member)
         assert interaction.channel
         assert interaction.guild
+        assert isinstance(interaction.channel, discord.TextChannel)
+        assert isinstance(interaction.user, discord.Member)
 
         if interaction.guild.voice_client is None:
             channel = await vc_check(interaction)
@@ -150,29 +146,42 @@ class MusicCog(
 
             await interaction.response.defer()
 
-            await channel.connect(cls=wavelink.Player, self_deaf=True)
+            player = namek_player_factory()
+            await channel.connect(cls=player, self_deaf=True)
             await interaction.followup.send(
                 embed=SuccessEmbed(
                     description=f"Successfully joined `{channel.name}` voice channel.",
                 ),
             )
+            player.home_channel = interaction.channel
 
         await safe_defer(interaction)
 
-        player: wavelink.Player = cast(
-            "wavelink.Player",
+        player_instance: None | NamekPlayer = cast(
+            "None | NamekPlayer",
             interaction.guild.voice_client,
         )
 
-        player.autoplay = wavelink.AutoPlayMode.enabled
-
-        if (
-            vc_state := CACHE.vc_states.get(player)
-        ) and vc_state.channel != interaction.channel:
+        if player_instance is None:
             await interaction.followup.send(
-                f"You can only play songs in {vc_state.channel.mention}, as the player has already started there.",
+                embed=ErrorEmbed(
+                    title="Sorry :(",
+                    description="An unexpected error occured. Please try again.",
+                )
             )
             return
+
+        if player_instance.home_channel != interaction.channel:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    desciption=f"You can only play songs in {player_instance.home_channel.mention},"
+                    " as the player has already started there."
+                ),
+                ephemeral=True,
+            )
+            return
+
+        player_instance.autoplay = wavelink.AutoPlayMode.enabled
 
         parsed_url = urlparse(query)
         if (
@@ -208,7 +217,7 @@ class MusicCog(
             return
 
         if isinstance(tracks, wavelink.Playlist):
-            added: int = await player.queue.put_wait(tracks)
+            added: int = await player_instance.queue.put_wait(tracks)
             await interaction.followup.send(
                 embed=MainEmbed(
                     description=f"Added the playlist **`{tracks.name}`** ({added} songs) to the queue.",
@@ -216,21 +225,15 @@ class MusicCog(
             )
         else:
             track: wavelink.Playable = tracks[0]
-            await player.queue.put_wait(track)
+            await player_instance.queue.put_wait(track)
             await interaction.followup.send(
                 embed=MainEmbed(
                     description=f"Added **`{track}`** to the queue.",
                 ),
             )
 
-        if player not in CACHE.vc_states:
-            CACHE.vc_states[player] = VCState(
-                channel=cast("discord.TextChannel", interaction.channel),
-                message=await interaction.original_response(),
-            )
-
-        if not player.playing:
-            await player.play(player.queue.get(), volume=50)
+        if not player_instance.playing:
+            await player_instance.play(player_instance.queue.get(), volume=50)
 
     @app_commands.command(name="pause-toggle")
     async def pause_toggle(self, interaction: Interaction[Bot]) -> None:
@@ -255,13 +258,12 @@ class MusicCog(
             )
             return
 
-        player: wavelink.Player = cast(
-            "wavelink.Player",
+        player: None | NamekPlayer = cast(
+            "None | NamekPlayer",
             interaction.guild.voice_client,
         )
 
-        vc_state = CACHE.vc_states.get(player)
-        if vc_state is None:
+        if player is None:
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="Could not find the music state for this channel."
@@ -270,21 +272,33 @@ class MusicCog(
             )
             return
 
-        vc_state.view.is_paused = not vc_state.view.is_paused
-        await player.pause(vc_state.view.is_paused)
+        player.song_view.is_paused = not player.song_view.is_paused
+        await player.pause(player.song_view.is_paused)
 
-        emoji = EMOJIS.PLAY if vc_state.view.is_paused else EMOJIS.PAUSE
-        if vc_state.view.is_paused:
+        emoji = EMOJIS.PLAY if player.song_view.is_paused else EMOJIS.PAUSE
+        if player.song_view.is_paused:
             message = "Paused the current track."
         else:
             message = "Resuming the current track."
 
-        vc_state.view.play_pause.emoji = emoji
-        await vc_state.message.edit(view=vc_state.view)
+        player.song_view.play_pause.emoji = emoji
+        await player.song_message.edit(view=player.song_view)
         await interaction.followup.send(
             embed=MainEmbed(description=message),
             ephemeral=True,
         )
+
+    @app_commands.command()
+    async def queue(self, interaction: Interaction[Bot]) -> None:
+        """
+        Show the list of all queued songs.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
 
 
 async def setup(bot: Bot) -> None:
