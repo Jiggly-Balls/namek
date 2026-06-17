@@ -3,9 +3,11 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+import discord
 from discord import app_commands
 
 from namek.cogs import BaseGroupCog, CogEnums
+from namek.utils import MainEmbed
 
 if TYPE_CHECKING:
     from discord import Interaction
@@ -46,6 +48,33 @@ class MiscCog(
 
         """
         await interaction.response.defer()
+
+        last_reconnect_relative = (
+            f"{discord.utils.format_dt(self.bot.last_reconnect, style='R')}"
+        )
+        latency = round(self.bot.latency * 1000)
+
+        app_info = await self.bot.application_info()
+        guild_count = app_info.approximate_guild_count
+        user_count = len(self.bot.users)
+
+        if app_info.approximate_user_install_count:
+            user_count += app_info.approximate_user_install_count
+
+        description = (
+            f"**Bot Latency:       **`{latency}`ms\n"
+            f"**Last Reconnect:    **{last_reconnect_relative}\n\n"
+            f"**Total Guild Count: **`{guild_count}`\n"
+            f"**Total User Count:  **`{user_count}`"
+        )
+
+        await interaction.followup.send(
+            embed=MainEmbed(
+                title="Namek Status",
+                description=description,
+            )
+        )
+
 
 async def setup(bot: Bot) -> None:
     await bot.add_cog(MiscCog(bot))
