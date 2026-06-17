@@ -9,7 +9,11 @@ import wavelink
 from discord import app_commands
 
 from namek.cogs import BaseGroupCog, CogEnums
-from namek.core.settings import ALLOWED_MUSIC_SOURCES, EMOJIS
+from namek.core.settings import (
+    ALLOWED_NETLOC_SOURCES,
+    ALLOWED_SOURCE_NAMES,
+    EMOJIS,
+)
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from namek.utils.extras import namek_player_factory
 from namek.utils.helper import safe_defer, vc_check
@@ -185,12 +189,16 @@ class MusicCog(
         parsed_url = urlparse(query)
         if (
             parsed_url.scheme
-            and parsed_url.netloc not in ALLOWED_MUSIC_SOURCES
+            and parsed_url.netloc not in ALLOWED_NETLOC_SOURCES
         ):
+            sources = (
+                ", ".join(ALLOWED_SOURCE_NAMES[:-1])
+                + f"or {ALLOWED_SOURCE_NAMES[-1]}"
+            )
             embed = ErrorEmbed(
                 title="Error",
                 description="This source is not supported. "
-                "Please use YouTube, YouTube Music, Spotify, SoundCloud or Apple Music.",
+                f"Please use {sources}.",
             )
             await interaction.followup.send(embed=embed)
             return
