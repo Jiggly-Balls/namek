@@ -80,8 +80,19 @@ class Bot(commands.Bot):
         )
         return
 
-    async def init_commands_sync(self, *, force_reload: bool) -> None:
-        if force_reload:
+    async def init_commands_sync(self, *, force_sync: bool) -> None:
+        """
+        Syncs the command tree of the bot.
+        This method checks if the dev commands are synced to the dev guild
+        or if none of the bot commands are registerd.
+
+        Parameters
+        ----------
+        force_sync : bool
+            Forcibly syncs the command tree of the bot.
+
+        """
+        if force_sync:
             _logger.info("Force syncing enabled.")
             await self._sync_handle()
             return
@@ -111,9 +122,21 @@ class Bot(commands.Bot):
 
     async def init_extensions(
         self,
+        *,
         cogs_dir: list[Path],
         base_dir: Path,
     ) -> None:
+        """
+        Loads the cog extensions into the bot.
+
+        Parameters
+        ----------
+        cog_dir : list[Path]
+            The directories containing extension files.
+        base_dir : Path
+            The base path of the bot running from.
+
+        """
         cogs_loaded = 0
         cogs_failed = 0
 
@@ -159,6 +182,21 @@ class Bot(commands.Bot):
         password: str,
         retries: int,
     ) -> None:
+        """
+        Establishes connection to lavalink nodes through wavelink.
+
+        Parameters
+        ----------
+        identifier : str
+            The identifier name of the node.
+        uri : str
+            The URI of the node to connect.
+        password : str
+            The password of the node.
+        retries : int
+            Number of retries to be made when the connection fails to establish.
+
+        """
         node = wavelink.Node(
             identifier=identifier,
             uri=uri,
@@ -184,7 +222,18 @@ class Bot(commands.Bot):
                 stack_info=True,
             )
 
-    async def init_emojis(self, path: Path) -> None:
+    async def init_emojis(self, *, path: Path) -> None:
+        """
+        Initializes the emojis into discord API.
+        This method uploads the emoji images only once to the API.
+        If the api already exists under the bot's portal, it fetches and reuses that instead.
+
+        Parameters
+        ----------
+        path : Path
+            The directory path where all the emoji images lie.
+
+        """
         emojis = await self.fetch_application_emojis()
         for emoji in emojis:
             emoji_name = emoji.name.upper()
@@ -253,14 +302,14 @@ class Bot(commands.Bot):
         _logger.info("Finished initializing emojis.")
 
     async def setup_hook(self) -> None:
-        await self.init_emojis(EMOJIS_DIR)
-        await self.init_extensions(COG_DIRECTORIES, BASE_DIR)
+        await self.init_emojis(path=EMOJIS_DIR)
+        await self.init_extensions(cogs_dir=COG_DIRECTORIES, base_dir=BASE_DIR)
         # We MUST load the extensions only after loading the emojis for the emojis to
         # actually be present in all the views as python loads all the files eagarly
         # (including view files) which causes the buttons to having MISSING sentinel
         # instead of the actual loaded emojis
 
-        await self.init_commands_sync(force_reload=False)
+        await self.init_commands_sync(force_sync=False)
         await self.init_wavelink_node(
             identifier=SETTINGS.LAVALINK_NAME,
             uri=SETTINGS.LAVALINK_URI.get_secret_value(),
