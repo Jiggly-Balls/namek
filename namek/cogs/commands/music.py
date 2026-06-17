@@ -62,7 +62,6 @@ class MusicCog(
             The discord interaction object.
 
         """
-        assert interaction.channel
         assert isinstance(interaction.channel, discord.TextChannel)
 
         channel = await vc_check(interaction)
@@ -134,10 +133,8 @@ class MusicCog(
             The search query or URL to play.
 
         """
-        assert interaction.channel
         assert interaction.guild
         assert isinstance(interaction.channel, discord.TextChannel)
-        assert isinstance(interaction.user, discord.Member)
 
         if interaction.guild.voice_client is None:
             channel = await vc_check(interaction)
