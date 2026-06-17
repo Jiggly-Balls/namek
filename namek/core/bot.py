@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import logging
 import os
 from typing import TYPE_CHECKING
@@ -60,7 +61,7 @@ class Bot(commands.Bot):
             owner_ids=owner_ids,
             chunk_guilds_at_startup=False,
         )
-        self.tree: MentionTree
+        self.last_reconnect: datetime.datetime = MISSING
 
     async def _sync_handle(self) -> None:
         _logger.info("Syncing application commands.")
@@ -318,4 +319,8 @@ class Bot(commands.Bot):
         )
 
         name = self.user.name if self.user else "Namek Bot"
-        _logger.info("%s has successfully logged in.", name)
+        _logger.info("Logging in as %s.", name)
+
+    async def on_ready(self) -> None:
+        self.last_reconnect = datetime.datetime.now(tz=datetime.UTC)
+        _logger.info("Startup / reconnect detected.")
