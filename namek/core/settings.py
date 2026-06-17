@@ -11,7 +11,9 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 __all__ = (
-    "ALLOWED_MUSIC_SOURCES",
+    "ALLOWED_NETLOC_SOURCES",
+    "ALLOWED_SOURCE_NAMES",
+    "ALLOWED_STREAMING_SOURCES",
     "ANTI_ALIAS_TOLERANCE",
     "ASSET_DIR",
     "AUTHOR_FONT",
@@ -106,16 +108,34 @@ BACKGROUND_COLOUR: tuple[int, int, int] = (43, 43, 43)
 ANTI_ALIAS_TOLERANCE: int = 40
 
 STATUS_COOLDOWN: float = 600.0
-ALLOWED_MUSIC_SOURCES: set[str] = {
-    "music.youtube.com",
-    "www.music.youtube.com",
-    "www.youtube.com",
-    "youtu.be",
-    "youtube.com",
-    "soundcloud.com",
-    "www.soundcloud.com",
-    "bandcamp.com",
+
+ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
+    "Youtube / Youtube Music": (
+        "music.youtube.com",
+        "www.music.youtube.com",
+        "www.youtube.com",
+        "youtu.be",
+        "youtube.com",
+    ),
+    "Sound Cloud": (
+        "soundcloud.com",
+        "www.soundcloud.com",
+    ),
+    "Bandcamp": (
+        "bandcamp.com",
+        "www.bandcamp.com",
+    ),
+    "Vimeo": (
+        "vimeo.com",
+        "www.vimeo.com",
+    ),
 }
+ALLOWED_NETLOC_SOURCES: set[str] = {
+    netloc
+    for source in ALLOWED_STREAMING_SOURCES.values()
+    for netloc in source
+}
+ALLOWED_SOURCE_NAMES: tuple[str, ...] = tuple(ALLOWED_STREAMING_SOURCES)
 
 MAIN_COLOUR: Colour = discord.Colour.blue()
 ERROR_COLOUR: Colour = discord.Colour.red()
