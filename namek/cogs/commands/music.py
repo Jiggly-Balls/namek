@@ -15,7 +15,7 @@ from namek.utils.extras import namek_player_factory
 from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
-    from discord import Interaction
+    from discord import Guild, Interaction, Member, TextChannel
 
     from namek.core import Bot
     from namek.utils.extras import NamekPlayer
@@ -89,13 +89,13 @@ class MusicCog(
             The discord interaction object.
 
         """
-        assert isinstance(interaction.user, discord.Member)
-        assert interaction.guild
+        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
+        interaction_user: Member = cast("discord.Member", interaction.user)
 
         if not (
-            interaction.user.voice
-            and interaction.user.voice.channel
-            and interaction.guild.voice_client
+            interaction_user.voice
+            and interaction_user.voice.channel
+            and interaction_guild.voice_client
         ):
             await interaction.response.send_message(
                 embed=ErrorEmbed(
@@ -110,7 +110,7 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        await interaction.guild.voice_client.disconnect(force=False)
+        await interaction_guild.voice_client.disconnect(force=False)
         await interaction.followup.send(
             embed=SuccessEmbed(
                 description=f"Disconnected from voice channel `{channel.name}`.",
@@ -133,10 +133,12 @@ class MusicCog(
             The search query or URL to play.
 
         """
-        assert interaction.guild
-        assert isinstance(interaction.channel, discord.TextChannel)
+        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
+        interaction_channel: TextChannel = cast(
+            "discord.TextChannel", interaction.channel
+        )
 
-        if interaction.guild.voice_client is None:
+        if interaction_guild.voice_client is None:
             channel = await vc_check(interaction)
             if not channel:
                 return
@@ -150,13 +152,13 @@ class MusicCog(
                     description=f"Successfully joined `{channel.name}` voice channel.",
                 ),
             )
-            player.home_channel = interaction.channel
+            player.home_channel = interaction_channel
 
         await safe_defer(interaction)
 
         player_instance: None | NamekPlayer = cast(
             "None | NamekPlayer",
-            interaction.guild.voice_client,
+            interaction_guild.voice_client,
         )
 
         if player_instance is None:
@@ -243,11 +245,11 @@ class MusicCog(
             The discord interaction object.
 
         """
-        assert interaction.guild
+        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
 
         await interaction.response.defer(ephemeral=True)
 
-        if interaction.guild.voice_client is None:
+        if interaction_guild.voice_client is None:
             await interaction.followup.send(
                 embed=ErrorEmbed(
                     description="I'm not in any voice channel playing music.",
@@ -257,7 +259,7 @@ class MusicCog(
 
         player: None | NamekPlayer = cast(
             "None | NamekPlayer",
-            interaction.guild.voice_client,
+            interaction_guild.voice_client,
         )
 
         if player is None:
