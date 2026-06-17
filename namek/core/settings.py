@@ -107,16 +107,14 @@ ANTI_ALIAS_TOLERANCE: int = 40
 
 STATUS_COOLDOWN: float = 600.0
 ALLOWED_MUSIC_SOURCES: set[str] = {
-    "www.youtube.com",
-    "www.music.youtube.com",
-    "youtube.com",
     "music.youtube.com",
+    "www.music.youtube.com",
+    "www.youtube.com",
+    "youtu.be",
+    "youtube.com",
     "soundcloud.com",
     "www.soundcloud.com",
-    "music.apple.com",
-    "www.music.apple.com",
-    "youtu.be",
-    "www.youtu.be",
+    "bandcamp.com",
 }
 
 MAIN_COLOUR: Colour = discord.Colour.blue()
