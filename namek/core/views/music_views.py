@@ -39,7 +39,7 @@ class PlayLayoutView(BaseLayoutView):
         song_title: str,
         song_author: str,
         duration: str,
-        media_file: File,
+        media_file: None | File,
         thumbnail_url: None | str,
     ) -> None:
         super().__init__(timeout=None)
@@ -59,12 +59,13 @@ class PlayLayoutView(BaseLayoutView):
             ),
             **_section_kwargs,
         )
-        media_section = discord.ui.MediaGallery["PlayLayoutView"](
-            discord.MediaGalleryItem(media=media_file),
-        )
-
         self.container.add_item(title_section)
-        self.container.add_item(media_section)
+
+        if media_file:
+            media_section = discord.ui.MediaGallery["PlayLayoutView"](
+                discord.MediaGalleryItem(media=media_file),
+            )
+            self.container.add_item(media_section)
 
     async def interaction_check(self, interaction: Interaction[Bot]) -> bool:
         channel = await vc_check(interaction)

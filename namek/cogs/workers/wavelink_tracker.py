@@ -68,11 +68,21 @@ class WavelinkTracker(
             except discord.errors.NotFound:
                 pass
 
-        song_media = await make_song_media(
-            payload.track.title,
-            payload.track.author,
-            payload.player.client.loop,
-        )
+        try:
+            song_media = await make_song_media(
+                payload.track.title,
+                payload.track.author,
+                payload.player.client.loop,
+            )
+        except Exception:
+            song_media = None
+            _logger.exception(
+                'Failed to create song media for song title: "%s" & author: "%s"',
+                payload.track.title,
+                payload.track.author,
+                stack_info=True,
+            )
+
         view = PlayLayoutView(
             player=player,
             song_title=title,
@@ -81,11 +91,18 @@ class WavelinkTracker(
             media_file=song_media,
             thumbnail_url=payload.track.artwork,
         )
-        message = await player.home_channel.send(
-            view=view,
-            file=song_media,
-            silent=True,
-        )
+
+        if song_media:
+            message = await player.home_channel.send(
+                view=view,
+                file=song_media,
+                silent=True,
+            )
+        else:
+            message = await player.home_channel.send(
+                view=view,
+                silent=True,
+            )
         player.song_message = message
         player.song_view = view
 
