@@ -93,6 +93,14 @@ class Bot(commands.Bot):
             Forcibly syncs the command tree of the bot.
 
         """
+        for cog in CogEnums:
+            if cog == CogEnums.DEV_COG:
+                self.tree.remove_command(
+                    cog, guild=discord.Object(SETTINGS.DEV_GUILD_ID)
+                )
+            else:
+                self.tree.remove_command(cog)
+
         if force_sync:
             _logger.info("Force syncing enabled.")
             await self._sync_handle()
