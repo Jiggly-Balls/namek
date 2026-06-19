@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, cast
 
+import discord
 import wavelink
 from discord.ext import commands
 
@@ -62,7 +63,10 @@ class WavelinkTracker(
             duration_text = f"**{seconds}**s"
 
         if player.song_message:
-            await player.song_message.delete()
+            try:
+                await player.song_message.delete()
+            except discord.errors.NotFound:
+                pass
 
         song_media = await make_song_media(
             payload.track.title,
