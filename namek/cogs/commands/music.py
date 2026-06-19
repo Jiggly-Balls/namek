@@ -66,7 +66,7 @@ class MusicCog(
             The discord interaction object.
 
         """
-        assert isinstance(interaction.channel, discord.TextChannel)
+        interaction_channel: TextChannel = cast("discord.TextChannel", interaction.channel)
 
         channel = await vc_check(interaction)
         if not channel:
@@ -74,7 +74,7 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        player = namek_player_factory(home_channel=interaction.channel)
+        player = namek_player_factory(home_channel=interaction_channel)
         await channel.connect(cls=player, self_deaf=True)
         await interaction.followup.send(
             embed=SuccessEmbed(
