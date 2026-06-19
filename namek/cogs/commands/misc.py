@@ -61,19 +61,26 @@ class MiscCog(
         if app_info.approximate_user_install_count:
             user_count += app_info.approximate_user_install_count
 
-        description = (
-            f"**Bot Latency:       **`{latency}`ms\n"
-            f"**Last Reconnect:    **{last_reconnect_relative}\n\n"
-            f"**Total Guild Count: **`{guild_count}`\n"
-            f"**Total User Count:  **`{user_count}`"
-        )
-
-        await interaction.followup.send(
-            embed=MainEmbed(
-                title="Namek Status",
-                description=description,
+        embed = (
+            MainEmbed(title="Bot Status")
+            .add_field(
+                name="Bot Latency",
+                value=f"`{latency}`ms",
+                inline=False,
+            )
+            .add_field(
+                name="Last Reconnect",
+                value=last_reconnect_relative,
+                inline=False,
+            )
+            .add_field(
+                name="Stats",
+                value=f"Present in `{guild_count}` guilds with over `{user_count}` users.",
+                inline=False,
             )
         )
+
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: Bot) -> None:
