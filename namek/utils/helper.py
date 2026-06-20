@@ -22,7 +22,11 @@ from namek.utils import ErrorEmbed
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
 
-    from discord import File, Interaction, InteractionCallbackResponse
+    from discord import (
+        File,
+        Interaction,
+        InteractionCallbackResponse,
+    )
     from discord.voice_client import VocalGuildChannel
 
     from namek.core import Bot
@@ -46,15 +50,15 @@ async def safe_defer(
 
 
 async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
-    assert isinstance(interaction.user, discord.Member)
+    interaction_user = cast("discord.Member", interaction.user)
 
-    if not (interaction.user.voice and interaction.user.voice.channel):
-        send_message_func = (
-            interaction.followup.send
-            if interaction.response.is_done()
-            else interaction.response.send_message
-        )
+    send_message_func = (
+        interaction.followup.send
+        if interaction.response.is_done()
+        else interaction.response.send_message
+    )
 
+    if not (interaction_user.voice and interaction_user.voice.channel):
         await send_message_func(
             embed=ErrorEmbed(
                 description="You need to be within a voice channel to use this command.",
@@ -62,7 +66,8 @@ async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
             ephemeral=True,
         )
         return None
-    return interaction.user.voice.channel
+
+    return interaction_user.voice.channel
 
 
 def _cleanup_text(text: str) -> str:
@@ -96,7 +101,8 @@ def _pil_media_handle(title: str, author: str) -> File:
 
     new_image_data: list[tuple[int, int, int, int]] = []
     pixel_data = image.get_flattened_data()
-    pixel_data = cast("tuple[tuple[int, ...], ...]", pixel_data)
+    if TYPE_CHECKING:
+        pixel_data = cast("tuple[tuple[int, ...], ...]", pixel_data)
 
     for r, g, b, a in pixel_data:
         if r == g == b == 0:
