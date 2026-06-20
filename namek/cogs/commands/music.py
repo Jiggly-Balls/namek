@@ -19,7 +19,7 @@ from namek.utils.extras import namek_player_factory
 from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
-    from discord import Guild, Interaction, Member, TextChannel
+    from discord import Guild, Interaction, TextChannel
 
     from namek.core import Bot
     from namek.utils.extras import NamekPlayer
@@ -66,7 +66,9 @@ class MusicCog(
             The discord interaction object.
 
         """
-        interaction_channel: TextChannel = cast("discord.TextChannel", interaction.channel)
+        interaction_channel: TextChannel = cast(
+            "discord.TextChannel", interaction.channel
+        )
 
         channel = await vc_check(interaction)
         if not channel:
@@ -94,13 +96,8 @@ class MusicCog(
 
         """
         interaction_guild: Guild = cast("discord.Guild", interaction.guild)
-        interaction_user: Member = cast("discord.Member", interaction.user)
 
-        if not (
-            interaction_user.voice
-            and interaction_user.voice.channel
-            and interaction_guild.voice_client
-        ):
+        if not interaction_guild.voice_client:
             await interaction.response.send_message(
                 embed=ErrorEmbed(
                     description="I'm not in a voice channel to disconnect.",
@@ -141,6 +138,7 @@ class MusicCog(
         interaction_channel: TextChannel = cast(
             "discord.TextChannel", interaction.channel
         )
+        interaction_user = cast("discord.Member", interaction.user)
 
         if interaction_guild.voice_client is None:
             channel = await vc_check(interaction)
@@ -157,6 +155,28 @@ class MusicCog(
                 ),
             )
             player.home_channel = interaction_channel
+
+        voice_client = cast(
+            "discord.VoiceProtocol", interaction_guild.voice_client
+        )
+        voice_client_channel = cast(
+            "discord.VoiceChannel", voice_client.channel
+        )
+        interaction_user_voice = cast(
+            "discord.VoiceState", interaction_user.voice
+        )
+        interaction_user_voice_channel = cast(
+            "discord.VoiceChannel", interaction_user_voice.channel
+        )
+
+        if voice_client_channel.id != interaction_user_voice_channel.id:
+            await interaction.followup.send(
+                embed=ErrorEmbed(
+                    description="You need to be in the same voice channel as the bot to use this command.",
+                ),
+                ephemeral=True,
+            )
+            return
 
         await safe_defer(interaction)
 
