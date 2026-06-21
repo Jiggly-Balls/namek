@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import discord
 from discord import ButtonStyle
@@ -120,8 +120,10 @@ class PlayLayoutView(BaseLayoutView):
         if not channel or not interaction.message:
             return
 
-        assert interaction.guild
-        assert interaction.guild.voice_client
+        interaction_guild = cast("discord.Guild", interaction.guild)
+        interaction_guild_voice_client = cast(
+            "discord.VoiceProtocol", interaction_guild.voice_client
+        )
 
         if not self.player.connected:
             await interaction.followup.send(
@@ -134,7 +136,7 @@ class PlayLayoutView(BaseLayoutView):
 
         await self.player.song_message.delete()
         await self.player.pause(True)
-        await interaction.guild.voice_client.disconnect(force=False)
+        await interaction_guild_voice_client.disconnect(force=False)
 
         await interaction.followup.send(
             embed=MainEmbed(
