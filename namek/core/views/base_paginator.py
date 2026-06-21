@@ -9,6 +9,7 @@ from namek.core.views import BaseView
 from namek.utils.helper import safe_defer
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from typing import Any
 
     from discord import Embed, Interaction, Member, User
@@ -25,7 +26,7 @@ class BasePaginator(BaseView):
     def __init__(
         self,
         interaction: Interaction[Bot],
-        pages: list[BaseLayoutView | Embed],
+        pages: Sequence[BaseLayoutView | Embed],
         author: int | User | Member | None = None,
         timeout: None | float = 180.0,
         disable_on_timeout: bool = True,
@@ -39,7 +40,7 @@ class BasePaginator(BaseView):
         )
 
         self.interaction: Interaction[Bot] = interaction
-        self.pages: list[BaseLayoutView | Embed] = pages
+        self.pages: Sequence[BaseLayoutView | Embed] = pages
         self.index: int = 0
 
     def _build_kwargs(self) -> dict[str, Any]:
