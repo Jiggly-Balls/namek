@@ -8,7 +8,7 @@ from discord import ButtonStyle
 
 from namek.core.settings import EMOJIS
 from namek.core.views import BaseLayoutView
-from namek.core.views.base_paginator import BasePaginator
+from namek.core.views.base_paginator import BasePaginator, BasePaginatorPage
 from namek.utils import ErrorEmbed, MainEmbed
 from namek.utils.helper import vc_check
 
@@ -234,11 +234,14 @@ class PlayLayoutView(BaseLayoutView):
     ) -> None: ...
 
 
-class _QueueListPage(BaseLayoutView):
-    container: Container[_QueueListPage] = discord.ui.Container()
-
-    def __init__(self, songs: tuple[str, ...]) -> None:
-        super().__init__()
+class _QueueListPage(BasePaginatorPage):
+    def __init__(
+        self,
+        songs: tuple[str, ...],
+        paginator_reference: QueueListPaginator,
+        author: int,
+    ) -> None:
+        super().__init__(paginator_reference, author=author)
 
         for song in songs:
             self.container.add_item(discord.ui.TextDisplay(song))
@@ -255,6 +258,7 @@ class QueueListPaginator(BasePaginator):
         songs: Sequence[str],
         items_per_page: int,
     ) -> None:
+        self.author: int = author
         pages = self._build_pages(songs, items_per_page)
 
         super().__init__(interaction=interaction, pages=pages, author=author)
@@ -265,6 +269,6 @@ class QueueListPaginator(BasePaginator):
         song_list: list[_QueueListPage] = []
 
         for page in itertools.batched(songs, items_per_page):
-            song_list.append(_QueueListPage(page))  # noqa: PERF401
+            song_list.append(_QueueListPage(page, self, self.author))  # noqa: PERF401
 
         return song_list
