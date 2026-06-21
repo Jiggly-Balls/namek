@@ -159,9 +159,7 @@ class Bot(commands.Bot):
                     continue
 
                 relative_path = python_file.relative_to(base_dir.parent)
-                module_name = (
-                    str(relative_path).replace(os.sep, ".").replace(".py", "")
-                )
+                module_name = str(relative_path).replace(os.sep, ".").replace(".py", "")
 
                 try:
                     await self.load_extension(module_name)
@@ -262,9 +260,7 @@ class Bot(commands.Bot):
             setattr(EMOJIS, emoji_name, emoji)
 
         application_emoji_set = {emoji.name.upper() for emoji in emojis}
-        local_emoji_map = {
-            asset.stem.upper(): asset for asset in path.iterdir()
-        }
+        local_emoji_map = {asset.stem.upper(): asset for asset in path.iterdir()}
 
         missing_emojis = application_emoji_set ^ set(local_emoji_map)
         if not missing_emojis:

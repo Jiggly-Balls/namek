@@ -49,9 +49,9 @@ class PlayLayoutView(BaseLayoutView):
 
         _section_kwargs: dict[str, Any] = {}
         if thumbnail_url:
-            _section_kwargs["accessory"] = discord.ui.Thumbnail[
-                "PlayLayoutView"
-            ](media=thumbnail_url)
+            _section_kwargs["accessory"] = discord.ui.Thumbnail["PlayLayoutView"](
+                media=thumbnail_url
+            )
 
         title_section = discord.ui.Section["PlayLayoutView"](
             discord.ui.TextDisplay(

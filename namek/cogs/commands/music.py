@@ -152,15 +152,9 @@ class MusicCog(
             )
             player.home_channel = interaction_channel
 
-        voice_client = cast(
-            "discord.VoiceProtocol", interaction_guild.voice_client
-        )
-        voice_client_channel = cast(
-            "discord.VoiceChannel", voice_client.channel
-        )
-        interaction_user_voice = cast(
-            "discord.VoiceState", interaction_user.voice
-        )
+        voice_client = cast("discord.VoiceProtocol", interaction_guild.voice_client)
+        voice_client_channel = cast("discord.VoiceChannel", voice_client.channel)
+        interaction_user_voice = cast("discord.VoiceState", interaction_user.voice)
         interaction_user_voice_channel = cast(
             "discord.VoiceChannel", interaction_user_voice.channel
         )
@@ -203,18 +197,13 @@ class MusicCog(
         player_instance.autoplay = wavelink.AutoPlayMode.enabled
 
         parsed_url = urlparse(query)
-        if (
-            parsed_url.scheme
-            and parsed_url.netloc not in ALLOWED_NETLOC_SOURCES
-        ):
+        if parsed_url.scheme and parsed_url.netloc not in ALLOWED_NETLOC_SOURCES:
             sources = (
-                ", ".join(ALLOWED_SOURCE_NAMES[:-1])
-                + f"or {ALLOWED_SOURCE_NAMES[-1]}"
+                ", ".join(ALLOWED_SOURCE_NAMES[:-1]) + f"or {ALLOWED_SOURCE_NAMES[-1]}"
             )
             embed = ErrorEmbed(
                 title="Error",
-                description="This source is not supported. "
-                f"Please use {sources}.",
+                description=f"This source is not supported. Please use {sources}.",
             )
             await interaction.followup.send(embed=embed)
             return

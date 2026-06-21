@@ -34,10 +34,7 @@ if TYPE_CHECKING:
 
 __all__ = ("make_song_media", "safe_defer", "vc_check")
 _ALLOWED_CHARS: str = (
-    string.ascii_letters
-    + string.punctuation
-    + string.whitespace
-    + "0123456789"
+    string.ascii_letters + string.punctuation + string.whitespace + "0123456789"
 )
 
 
@@ -157,9 +154,7 @@ async def make_song_media(
 
         if not all(char in _ALLOWED_CHARS for char in song_author):
             author_result = await translator.translate(song_author)
-            author_result_str = (
-                author_result.pronunciation or author_result.text
-            )
+            author_result_str = author_result.pronunciation or author_result.text
         else:
             author_result_str = song_author
 

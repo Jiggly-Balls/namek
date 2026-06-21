@@ -152,9 +152,7 @@ class BaseView(discord.ui.View):
         )
         channel = cast("TextChannel", channel)
 
-        frame = (
-            error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
-        )
+        frame = error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
 
         embed = ErrorEmbed(title="Error in View")
         embed.add_field(
@@ -304,9 +302,7 @@ class BaseLayoutView(discord.ui.LayoutView):
         )
         channel = cast("TextChannel", channel)
 
-        frame = (
-            error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
-        )
+        frame = error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
 
         embed = ErrorEmbed(title="Error in View")
         embed.add_field(

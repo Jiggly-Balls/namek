@@ -131,9 +131,7 @@ ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
     ),
 }
 ALLOWED_NETLOC_SOURCES: set[str] = {
-    netloc
-    for source in ALLOWED_STREAMING_SOURCES.values()
-    for netloc in source
+    netloc for source in ALLOWED_STREAMING_SOURCES.values() for netloc in source
 }
 ALLOWED_SOURCE_NAMES: tuple[str, ...] = tuple(ALLOWED_STREAMING_SOURCES)
 

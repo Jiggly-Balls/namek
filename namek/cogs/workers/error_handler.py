@@ -114,11 +114,7 @@ class ErrorHandler(
                 SETTINGS.BUG_REPORT_CHANNEL_ID,
             )
 
-            frame = (
-                error.__traceback__.tb_frame
-                if error.__traceback__
-                else "Unkown"
-            )
+            frame = error.__traceback__.tb_frame if error.__traceback__ else "Unkown"
             command_name = "Command not found"
             if interaction.command:
                 final_name = []
@@ -189,9 +185,7 @@ class ErrorHandler(
                 return
 
         elif isinstance(error, commands.errors.NotOwner):
-            error_embed.description = (
-                "This command is only available to owners!"
-            )
+            error_embed.description = "This command is only available to owners!"
             await ErrorHandler.send_response(
                 interaction=interaction,
                 embed=error_embed,
