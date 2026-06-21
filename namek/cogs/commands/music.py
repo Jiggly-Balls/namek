@@ -314,13 +314,15 @@ class MusicCog(
         player = cast("NamekPlayer | None", interaction_guild.voice_client)
         if player is None:
             embed = ErrorEmbed(description="I'm not playing any music currently.")
-            await interaction.followup.send(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         if not player.queue:
             embed = MainEmbed(description="The queue is currently empty.")
-            await interaction.followup.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
             return
+
+        await interaction.response.defer()
 
         song_pages: list[str] = [
             f"**{track.title}**\n— {track.author}" for track in player.queue
