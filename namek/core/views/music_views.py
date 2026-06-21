@@ -6,11 +6,12 @@ import discord
 from discord import ButtonStyle
 
 from namek.core.settings import EMOJIS
-from namek.core.views import BaseLayoutView
+from namek.core.views import BaseLayoutView, BasePaginator
 from namek.utils import ErrorEmbed, MainEmbed
 from namek.utils.helper import vc_check
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from typing import Any
 
     from discord import File, Interaction
@@ -226,3 +227,23 @@ class PlayLayoutView(BaseLayoutView):
         interaction: Interaction[Bot],
         button: Button[PlayLayoutView],
     ) -> None: ...
+
+
+class _QueueListPage(BaseLayoutView): ...
+
+
+class QueueListPaginator(BasePaginator):
+    def __init__(
+        self,
+        interaction: Interaction[Bot],
+        author: int,
+        songs: Sequence[str],
+        items_per_page: int,
+    ) -> None:
+        pages = self._build_pages(songs, items_per_page)
+
+        super().__init__(interaction=interaction, pages=pages, author=author)
+
+    def _build_pages(
+        self, songs: Sequence[str], items_per_page: int
+    ) -> list[_QueueListPage]: ...
