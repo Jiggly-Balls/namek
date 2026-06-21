@@ -19,7 +19,7 @@ from namek.utils.extras import namek_player_factory
 from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
-    from discord import Guild, Interaction, TextChannel
+    from discord import Interaction
 
     from namek.core import Bot
     from namek.utils.extras import NamekPlayer
@@ -66,9 +66,7 @@ class MusicCog(
             The discord interaction object.
 
         """
-        interaction_channel: TextChannel = cast(
-            "discord.TextChannel", interaction.channel
-        )
+        interaction_channel = cast("discord.TextChannel", interaction.channel)
 
         channel = await vc_check(interaction)
         if not channel:
@@ -95,7 +93,7 @@ class MusicCog(
             The discord interaction object.
 
         """
-        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
+        interaction_guild = cast("discord.Guild", interaction.guild)
 
         if not interaction_guild.voice_client:
             await interaction.response.send_message(
@@ -134,10 +132,8 @@ class MusicCog(
             The search query or URL to play.
 
         """
-        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
-        interaction_channel: TextChannel = cast(
-            "discord.TextChannel", interaction.channel
-        )
+        interaction_guild = cast("discord.Guild", interaction.guild)
+        interaction_channel = cast("discord.TextChannel", interaction.channel)
         interaction_user = cast("discord.Member", interaction.user)
 
         if interaction_guild.voice_client is None:
@@ -180,7 +176,7 @@ class MusicCog(
 
         await safe_defer(interaction)
 
-        player_instance: None | NamekPlayer = cast(
+        player_instance = cast(
             "None | NamekPlayer",
             interaction_guild.voice_client,
         )
@@ -273,7 +269,7 @@ class MusicCog(
             The discord interaction object.
 
         """
-        interaction_guild: Guild = cast("discord.Guild", interaction.guild)
+        interaction_guild = cast("discord.Guild", interaction.guild)
 
         await interaction.response.defer(ephemeral=True)
 
@@ -285,7 +281,7 @@ class MusicCog(
             )
             return
 
-        player: None | NamekPlayer = cast(
+        player = cast(
             "None | NamekPlayer",
             interaction_guild.voice_client,
         )
