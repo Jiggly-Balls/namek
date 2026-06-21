@@ -35,8 +35,7 @@ logger = logging.getLogger(__name__)
 
 class BaseView(discord.ui.View):
     """
-    A custom base view which extends `discord.ui.View`
-    to provide more inbuilt features.
+    A custom base view which extends `discord.ui.View` to provide more inbuilt features.
 
     Parameters
     ----------
@@ -186,8 +185,7 @@ class BaseView(discord.ui.View):
 
 class BaseLayoutView(discord.ui.LayoutView):
     """
-    A custom base view which extends `discord.ui.LayoutView`
-    to provide more inbuilt features.
+    A custom base view which extends `discord.ui.LayoutView` to provide more inbuilt features.
 
     Parameters
     ----------
