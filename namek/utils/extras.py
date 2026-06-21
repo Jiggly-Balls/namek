@@ -14,37 +14,23 @@ if TYPE_CHECKING:
 
     from namek.core.views.music_views import PlayLayoutView
 
-    class NamekPlayer(wavelink.Player):
-        home_channel: TextChannel = MISSING
-        song_message: Message = MISSING
-        song_view: PlayLayoutView = MISSING
 
-        def __init__(
-            self,
-            client: Client = MISSING,
-            channel: Connectable = MISSING,
-            *,
-            nodes: list[Node] | None = None,
-            **kwargs: Any,
-        ) -> None:
-            super().__init__(client=client, channel=channel, nodes=nodes)
+__all__ = ("NamekPlayer",)
 
 
-__all__ = ("namek_player_factory",)
+class NamekPlayer(wavelink.Player):
+    """The custom wavelink player subclass."""
 
+    def __init__(
+        self,
+        client: Client = MISSING,
+        channel: Connectable = MISSING,
+        *,
+        nodes: list[Node] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(client=client, channel=channel, nodes=nodes)
 
-def namek_player_factory(
-    *,
-    home_channel: TextChannel = MISSING,
-    song_message: Message = MISSING,
-    song_view: PlayLayoutView = MISSING,
-) -> type[NamekPlayer]:
-    return type(
-        "NamekPlayer",
-        (wavelink.Player,),
-        {
-            "home_channel": home_channel,
-            "song_message": song_message,
-            "song_view": song_view,
-        },
-    )  # pyright: ignore[reportReturnType]
+        self.home_channel: TextChannel = MISSING
+        self.song_message: Message = MISSING
+        self.song_view: PlayLayoutView = MISSING
