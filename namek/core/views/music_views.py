@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 from typing import TYPE_CHECKING, cast
 
 import discord
@@ -21,7 +22,10 @@ if TYPE_CHECKING:
     from namek.utils.extras import NamekPlayer
 
 
-__all__ = ("PlayLayoutView",)
+__all__ = (
+    "PlayLayoutView",
+    "QueueListPaginator",
+)
 
 
 class PlayLayoutView(BaseLayoutView):
@@ -229,7 +233,17 @@ class PlayLayoutView(BaseLayoutView):
     ) -> None: ...
 
 
-class _QueueListPage(BaseLayoutView): ...
+class _QueueListPage(BaseLayoutView):
+    container: Container[_QueueListPage] = discord.ui.Container()
+
+    def __init__(self, songs: tuple[str, ...]) -> None:
+        super().__init__()
+
+        for song in songs:
+            self.container.add_item(discord.ui.TextDisplay(song))
+            self.container.add_item(
+                discord.ui.Separator(spacing=discord.SeparatorSpacing.small)
+            )
 
 
 class QueueListPaginator(BasePaginator):
@@ -246,4 +260,10 @@ class QueueListPaginator(BasePaginator):
 
     def _build_pages(
         self, songs: Sequence[str], items_per_page: int
-    ) -> list[_QueueListPage]: ...
+    ) -> list[_QueueListPage]:
+        song_list: list[_QueueListPage] = []
+
+        for page in itertools.batched(songs, items_per_page):
+            song_list.append(_QueueListPage(page))  # noqa: PERF401
+
+        return song_list
