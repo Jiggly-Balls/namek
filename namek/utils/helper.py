@@ -47,6 +47,20 @@ async def safe_defer(
 
 
 async def vc_check(interaction: Interaction[Bot]) -> None | VocalGuildChannel:
+    """
+    Checks if the original user is present in a voice channel while using this command.
+
+    Paramters
+    ---------
+    interaction : Interaction[Bot]
+        The discord interaction object.
+
+    Returns
+    -------
+    None | VocalGuildChannel
+        Returns ``None`` if the user is not present in a voice channel, ``VocalGuildChannel`` otherwise.
+
+    """
     interaction_user = cast("discord.Member", interaction.user)
 
     send_message_func = (
@@ -145,6 +159,19 @@ async def make_song_media(
     song_author: str,
     event_loop: AbstractEventLoop,
 ) -> File:
+    """
+    Creates and returns an image of the song's details.
+
+    Parameters
+    ----------
+    song_title : str
+        The title of the song.
+    song_author : str
+        The author of the song
+    event_loop : AbstractEventLoop
+        The bot's event loop to run the media creation.
+
+    """
     async with googletrans.Translator() as translator:
         if not all(char in _ALLOWED_CHARS for char in song_title):
             title_result = await translator.translate(song_title)
