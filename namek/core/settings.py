@@ -64,6 +64,7 @@ class _Emojis:
     def __init__(self) -> None:
         self.AUTOPLAY_DISABLED: Emoji = MISSING
         self.AUTOPLAY_ENABLED: Emoji = MISSING
+        self.DELETE: Emoji = MISSING
         self.DISCONNECT: Emoji = MISSING
         self.FILTER: Emoji = MISSING
         self.FIRST: Emoji = MISSING
