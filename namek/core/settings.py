@@ -66,6 +66,8 @@ class _Emojis:
         self.AUTOPLAY_ENABLED: Emoji = MISSING
         self.DISCONNECT: Emoji = MISSING
         self.FILTER: Emoji = MISSING
+        self.FIRST: Emoji = MISSING
+        self.LAST: Emoji = MISSING
         self.NEXT: Emoji = MISSING
         self.PLAY: Emoji = MISSING
         self.PAUSE: Emoji = MISSING
