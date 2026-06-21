@@ -7,7 +7,8 @@ import discord
 from discord import ButtonStyle
 
 from namek.core.settings import EMOJIS
-from namek.core.views import BaseLayoutView, BasePaginator
+from namek.core.views import BaseLayoutView
+from namek.core.views.base_paginator import BasePaginator
 from namek.utils import ErrorEmbed, MainEmbed
 from namek.utils.helper import vc_check
 
