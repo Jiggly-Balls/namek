@@ -14,6 +14,7 @@ from namek.core.settings import (
     ALLOWED_SOURCE_NAMES,
     EMOJIS,
 )
+from namek.core.views.music_views import QueueListPaginator
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from namek.utils.extras import NamekPlayer
 from namek.utils.helper import safe_defer, vc_check
@@ -308,6 +309,29 @@ class MusicCog(
             The discord interaction object.
 
         """
+        interaction_guild = cast("discord.Guild", interaction.guild)
+
+        player = cast("NamekPlayer | None", interaction_guild.voice_client)
+        if player is None:
+            embed = ErrorEmbed(description="I'm not playing any music currently.")
+            await interaction.followup.send(embed=embed)
+            return
+
+        if not player.queue:
+            embed = MainEmbed(description="The queue is currently empty.")
+            await interaction.followup.send(embed=embed)
+            return
+
+        song_pages: list[str] = [
+            f"**{track.title}**\n— {track.author}" for track in player.queue
+        ]
+        paginator = QueueListPaginator(
+            interaction=interaction,
+            author=interaction.user.id,
+            songs=song_pages,
+            items_per_page=7,
+        )
+        await paginator.start()
 
 
 async def setup(bot: Bot) -> None:
