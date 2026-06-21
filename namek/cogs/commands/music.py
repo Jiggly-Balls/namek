@@ -15,14 +15,13 @@ from namek.core.settings import (
     EMOJIS,
 )
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
-from namek.utils.extras import namek_player_factory
+from namek.utils.extras import NamekPlayer
 from namek.utils.helper import safe_defer, vc_check
 
 if TYPE_CHECKING:
     from discord import Interaction
 
     from namek.core import Bot
-    from namek.utils.extras import NamekPlayer
 
 
 _logger = logging.getLogger(__name__)
@@ -74,8 +73,8 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        player = namek_player_factory(home_channel=interaction_channel)
-        await channel.connect(cls=player, self_deaf=True)
+        player = await channel.connect(cls=NamekPlayer, self_deaf=True)
+        player.home_channel = interaction_channel
         await interaction.followup.send(
             embed=SuccessEmbed(
                 description=f"Successfully joined `{channel.name}` voice channel.",
@@ -143,8 +142,7 @@ class MusicCog(
 
             await interaction.response.defer()
 
-            player = namek_player_factory()
-            await channel.connect(cls=player, self_deaf=True)
+            player = await channel.connect(cls=NamekPlayer, self_deaf=True)
             await interaction.followup.send(
                 embed=SuccessEmbed(
                     description=f"Successfully joined `{channel.name}` voice channel.",
@@ -199,17 +197,16 @@ class MusicCog(
         parsed_url = urlparse(query)
         if parsed_url.scheme and parsed_url.netloc not in ALLOWED_NETLOC_SOURCES:
             sources = (
-                ", ".join(ALLOWED_SOURCE_NAMES[:-1]) + f"or {ALLOWED_SOURCE_NAMES[-1]}"
+                ", ".join(ALLOWED_SOURCE_NAMES[:-1]) + f" or {ALLOWED_SOURCE_NAMES[-1]}"
             )
             embed = ErrorEmbed(
-                title="Error",
                 description=f"This source is not supported. Please use {sources}.",
             )
             await interaction.followup.send(embed=embed)
             return
 
         try:
-            tracks: wavelink.Search = await wavelink.Playable.search(query)
+            tracks = await wavelink.Playable.search(query)
         except wavelink.exceptions.LavalinkLoadException:
             await interaction.followup.send(
                 embed=ErrorEmbed(
