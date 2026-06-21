@@ -324,9 +324,15 @@ class MusicCog(
 
         await interaction.response.defer()
 
-        song_pages: list[str] = [
-            f"**{track.title}**\n— {track.author}" for track in player.queue
-        ]
+        song_pages: list[str] = []
+
+        for index, track in enumerate(player.queue, start=1):
+            if track.uri:
+                song = f"### `{index}.` [{track.title}]({track.uri})\n— _{track.author}_"
+            else:
+                song = f"### `{index}.` {track.title}\n— _{track.author}_"
+            song_pages.append(song)
+
         paginator = QueueListPaginator(
             interaction=interaction,
             author=interaction.user.id,
