@@ -249,6 +249,7 @@ class _QueueListPage(BasePaginatorPage):
                 discord.ui.Separator(spacing=discord.SeparatorSpacing.small)
             )
 
+
 class QueueListPaginator(BasePaginator):
     def __init__(
         self,
