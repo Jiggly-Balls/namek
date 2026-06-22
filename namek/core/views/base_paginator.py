@@ -55,17 +55,15 @@ class BasePaginatorPage(BaseLayoutView):
     async def previous(
         self, interaction: Interaction[Bot], button: Button[Self]
     ) -> None:
-        self.parent_paginator.index -= 1
-        if self.parent_paginator.index < 0:
-            self.parent_paginator.index = len(self.parent_paginator.pages)
+        paginator = self.parent_paginator
+        paginator.index = (paginator.index - 1) % len(paginator.pages)
 
         await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
 
     @action_row.button(emoji=EMOJIS.NEXT)
     async def next(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
-        self.parent_paginator.index += 1
-        if self.parent_paginator.index > len(self.parent_paginator.pages) - 1:
-            self.parent_paginator.index = 0
+        paginator = self.parent_paginator
+        paginator.index = (paginator.index + 1) % len(paginator.pages)
 
         await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
 
