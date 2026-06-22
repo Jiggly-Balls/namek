@@ -138,6 +138,6 @@ ALLOWED_NETLOC_SOURCES: set[str] = {
 }
 ALLOWED_SOURCE_NAMES: tuple[str, ...] = tuple(ALLOWED_STREAMING_SOURCES)
 
-MAIN_COLOUR: Colour = discord.Colour.blue()
+MAIN_COLOUR: Colour = discord.Colour(0xFF6C00)
 ERROR_COLOUR: Colour = discord.Colour.red()
 SUCCESS_COLOUR: Colour = discord.Colour.green()
