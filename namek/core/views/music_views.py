@@ -29,6 +29,7 @@ __all__ = (
 )
 
 
+@final
 class PlayLayoutView(BaseLayoutView):
     """
     A music view class for any new song about to be played.
@@ -276,13 +277,13 @@ class QueueListPaginator(BasePaginator):
         song_list: list[_QueueListPage] = []
 
         for page in itertools.batched(songs, items_per_page):
-            song_list.append(
+            song_list.append(  # noqa: PERF401
                 _QueueListPage(
                     songs=page,
                     paginator_reference=self,
                     original_response=self.original_response,
                     author=self.author,
                 )
-            )  # noqa: PERF401
+            )
 
         return song_list
