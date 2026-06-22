@@ -324,6 +324,7 @@ class MusicCog(
 
         await interaction.response.defer()
 
+        original_response = await interaction.original_response()
         song_pages: list[str] = []
 
         for index, track in enumerate(player.queue, start=1):
@@ -335,6 +336,7 @@ class MusicCog(
 
         paginator = QueueListPaginator(
             interaction=interaction,
+            original_response=original_response,
             author=interaction.user.id,
             songs=song_pages,
             items_per_page=7,

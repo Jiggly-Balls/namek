@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, final
 
 import discord
 from discord import ButtonStyle
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from typing import Any
 
-    from discord import File, Interaction
+    from discord import File, Interaction, InteractionMessage
     from discord.ui import ActionRow, Button, Container
 
     from namek.core import Bot
@@ -234,11 +234,13 @@ class PlayLayoutView(BaseLayoutView):
     ) -> None: ...
 
 
+@final
 class _QueueListPage(BasePaginatorPage):
     def __init__(
         self,
         songs: tuple[str, ...],
         paginator_reference: QueueListPaginator,
+        original_response: InteractionMessage,
         author: int,
     ) -> None:
         super().__init__(paginator_reference, author=author)
@@ -249,16 +251,21 @@ class _QueueListPage(BasePaginatorPage):
                 discord.ui.Separator(spacing=discord.SeparatorSpacing.small)
             )
 
+        self.message = original_response
 
+
+@final
 class QueueListPaginator(BasePaginator):
     def __init__(
         self,
         interaction: Interaction[Bot],
+        original_response: InteractionMessage,
         author: int,
         songs: Sequence[str],
         items_per_page: int,
     ) -> None:
         self.author: int = author
+        self.original_response = original_response
         pages = self._build_pages(songs, items_per_page)
 
         super().__init__(interaction=interaction, pages=pages, author=author)
@@ -269,6 +276,13 @@ class QueueListPaginator(BasePaginator):
         song_list: list[_QueueListPage] = []
 
         for page in itertools.batched(songs, items_per_page):
-            song_list.append(_QueueListPage(page, self, self.author))  # noqa: PERF401
+            song_list.append(
+                _QueueListPage(
+                    songs=page,
+                    paginator_reference=self,
+                    original_response=self.original_response,
+                    author=self.author,
+                )
+            )  # noqa: PERF401
 
         return song_list
