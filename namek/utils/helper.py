@@ -101,7 +101,7 @@ def _pil_media_handle(title: str, author: str, duration: str) -> File:
             title,
             author,
         )
-        raise
+        raise Exception()
 
     background = Image.open(OTHER_DIR / DEFAULT_GRADIENT).convert("RGBA")
     background = background.resize(IMAGE_SIZE)  # pyright: ignore[reportUnknownMemberType]
