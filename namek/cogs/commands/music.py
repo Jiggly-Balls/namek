@@ -76,6 +76,7 @@ class MusicCog(
             await interaction.response.send_message(
                 embed=ErrorEmbed(description="I am already present in a voice channel.")
             )
+            return
 
         await interaction.response.defer()
 
