@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 import discord
 
 from namek.core.settings import EMOJIS
-from namek.core.views import BaseLayoutView, BaseView
+from namek.core.views import BaseLayoutView
 from namek.utils.helper import safe_defer
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from typing import Any, Self
+    from typing import Self
 
-    from discord import Embed, Interaction, Member, User
+    from discord import Interaction, Member, User
     from discord.ui import ActionRow, Button, Container
 
     from namek.core import Bot
@@ -47,9 +47,10 @@ class BasePaginatorPage(BaseLayoutView):
 
     @action_row.button(emoji=EMOJIS.FIRST)
     async def first(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
-        self.parent_paginator.index = 0
+        paginator = self.parent_paginator
+        paginator.index = 0
 
-        await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
+        await interaction.response.edit_message(view=paginator.pages[paginator.index])
 
     @action_row.button(emoji=EMOJIS.PREVIOUS)
     async def previous(
@@ -58,54 +59,37 @@ class BasePaginatorPage(BaseLayoutView):
         paginator = self.parent_paginator
         paginator.index = (paginator.index - 1) % len(paginator.pages)
 
-        await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
+        await interaction.response.edit_message(view=paginator.pages[paginator.index])
 
     @action_row.button(emoji=EMOJIS.NEXT)
     async def next(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
         paginator = self.parent_paginator
         paginator.index = (paginator.index + 1) % len(paginator.pages)
 
-        await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
+        await interaction.response.edit_message(view=paginator.pages[paginator.index])
 
     @action_row.button(emoji=EMOJIS.LAST)
     async def last(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
-        self.parent_paginator.index = len(self.parent_paginator.pages) - 1
+        paginator = self.parent_paginator
+        paginator.index = len(self.parent_paginator.pages) - 1
 
-        await interaction.response.edit_message(**self.parent_paginator.build_kwargs())
+        await interaction.response.edit_message(view=paginator.pages[paginator.index])
 
 
-class BasePaginator(BaseView):
+class BasePaginator:
     def __init__(
         self,
         interaction: Interaction[Bot],
-        pages: Sequence[BasePaginatorPage | Embed],
+        pages: Sequence[BasePaginatorPage],
         author: int | User | Member | None = None,
         timeout: None | float = 180.0,
         disable_on_timeout: bool = True,
         stop_on_timeout: bool = True,
     ) -> None:
-        super().__init__(
-            author=author,
-            timeout=timeout,
-            disable_on_timeout=disable_on_timeout,
-            stop_on_timeout=stop_on_timeout,
-        )
-
         self.interaction: Interaction[Bot] = interaction
-        self.pages: Sequence[BaseLayoutView | Embed] = pages
+        self.pages: Sequence[BaseLayoutView] = pages
         self.index: int = 0
-
-    def build_kwargs(self) -> dict[str, Any]:
-        kwargs: dict[str, Any] = {}
-
-        page = self.pages[self.index]
-        if isinstance(page, discord.Embed):
-            kwargs["embed"] = page
-        else:
-            kwargs["view"] = page
-
-        return kwargs
 
     async def start(self) -> None:
         await safe_defer(self.interaction)
-        await self.interaction.followup.send(**self.build_kwargs())
+        await self.interaction.followup.send(view=self.pages[self.index])
