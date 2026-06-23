@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import discord
 
 from namek.core.settings import EMOJIS
-from namek.core.views import BaseLayoutView
+from namek.core.views.base_views import BaseLayoutView
 from namek.utils.helper import safe_defer
 
 if TYPE_CHECKING:

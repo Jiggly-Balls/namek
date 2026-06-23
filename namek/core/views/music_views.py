@@ -6,9 +6,8 @@ from typing import TYPE_CHECKING, cast, final
 import discord
 from discord import ButtonStyle
 
-from namek.core.settings import EMOJIS
-from namek.core.views import BaseLayoutView
-from namek.core.views.base_paginator import BasePaginator, BasePaginatorPage
+from namek.core.settings import EMOJIS, MAIN_COLOUR
+from namek.core.views import BaseLayoutView, BasePaginator, BasePaginatorPage
 from namek.utils import ErrorEmbed, MainEmbed
 from namek.utils.helper import vc_check
 
@@ -36,7 +35,9 @@ class PlayLayoutView(BaseLayoutView):
     This view contains various information such as song title, author, thumbnail, etc.
     """
 
-    container: Container[PlayLayoutView] = discord.ui.Container()
+    container: Container[PlayLayoutView] = discord.ui.Container(
+        accent_colour=MAIN_COLOUR
+    )
     row1: ActionRow[PlayLayoutView] = discord.ui.ActionRow()
     row2: ActionRow[PlayLayoutView] = discord.ui.ActionRow()
 
@@ -253,6 +254,7 @@ class _QueueListPage(BasePaginatorPage):
             )
 
         self.message = original_response
+        self.container.accent_colour = MAIN_COLOUR
 
 
 @final
