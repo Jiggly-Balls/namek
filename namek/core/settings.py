@@ -16,7 +16,6 @@ __all__ = (
     "ALLOWED_STREAMING_SOURCES",
     "ANTI_ALIAS_TOLERANCE",
     "ASSET_DIR",
-    "AUTHOR_FONT",
     "AUTHOR_FONT_SIZE",
     "BACKGROUND_COLOUR",
     "BASE_DIR",
@@ -27,6 +26,7 @@ __all__ = (
     "EMOJIS_DIR",
     "ERROR_COLOUR",
     "FONTS_DIR",
+    "FOOTER_FONT",
     "GRAPHICS_DIR",
     "IMAGE_SIZE",
     "MAIN_COLOUR",
@@ -100,7 +100,7 @@ TITLE_FONT: FreeTypeFont = ImageFont.truetype(
     FONTS_DIR / DEFAULT_FONT,
     TITLE_FONT_SIZE,
 )
-AUTHOR_FONT: FreeTypeFont = ImageFont.truetype(
+FOOTER_FONT: FreeTypeFont = ImageFont.truetype(
     FONTS_DIR / DEFAULT_FONT,
     AUTHOR_FONT_SIZE,
 )
