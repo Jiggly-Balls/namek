@@ -219,6 +219,7 @@ class Bot(commands.Bot):
             uri=uri,
             password=password,
             retries=retries,
+            inactive_channel_tokens=None,
         )
 
         try:
