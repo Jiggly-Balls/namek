@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import logging
 import string
 from typing import TYPE_CHECKING, cast
 
@@ -33,6 +34,7 @@ if TYPE_CHECKING:
 
 
 __all__ = ("make_song_media", "safe_defer", "vc_check")
+_logger = logging.getLogger(__name__)
 _ALLOWED_CHARS: str = (
     string.ascii_letters + string.punctuation + string.whitespace + "0123456789"
 )
@@ -90,6 +92,16 @@ def _cleanup_text(text: str) -> str:
 
 
 def _pil_media_handle(title: str, author: str, duration: str) -> File:
+    # Temporary until i find out why a list is getting passed here for fuck sake
+    # even though the entire program is type safe.
+
+    if isinstance(title, list) or isinstance(author, list):
+        _logger.exception(
+            "Got list instead of string for title: %s & author: %s",
+            title,
+            author,
+        )
+
     background = Image.open(OTHER_DIR / DEFAULT_GRADIENT).convert("RGBA")
     background = background.resize(IMAGE_SIZE)  # pyright: ignore[reportUnknownMemberType]
     image = Image.new("RGBA", size=IMAGE_SIZE, color=BACKGROUND_COLOUR)
