@@ -28,6 +28,7 @@ class StatusHandler(
 
     def __init__(self, bot: Bot) -> None:
         super().__init__(_logger)
+
         self.bot: Bot = bot
         self.status: Iterator[str] = MISSING
 

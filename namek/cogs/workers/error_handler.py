@@ -43,6 +43,7 @@ class ErrorHandler(
 
     def __init__(self, bot: Bot) -> None:
         super().__init__(_logger)
+
         self.bot: Bot = bot
         self.default_error_handler: DefaultErrorHandler = (
             app_commands.CommandTree.on_error

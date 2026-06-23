@@ -53,6 +53,7 @@ class MusicCog(
 
         """
         super().__init__(logger=_logger)
+
         self.bot: Bot = bot
 
     @app_commands.command()
