@@ -113,25 +113,26 @@ ANTI_ALIAS_TOLERANCE: int = 40
 STATUS_COOLDOWN: float = 600.0
 
 ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
-    "Youtube / Youtube Music": (
+    "youtube": (
         "music.youtube.com",
         "www.music.youtube.com",
         "www.youtube.com",
         "youtu.be",
         "youtube.com",
     ),
-    "Sound Cloud": (
+    "soundcloud": (
         "soundcloud.com",
         "www.soundcloud.com",
     ),
-    "Bandcamp": (
+    "bandcamp": (
         "bandcamp.com",
         "www.bandcamp.com",
     ),
-    "Vimeo": (
+    "vimeo": (
         "vimeo.com",
         "www.vimeo.com",
     ),
+    "niconico": ("nicovideo.jp", "www.nicovideo.jp,"),
 }
 ALLOWED_NETLOC_SOURCES: set[str] = {
     netloc for source in ALLOWED_STREAMING_SOURCES.values() for netloc in source
