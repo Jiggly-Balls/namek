@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import discord
 
@@ -78,6 +78,13 @@ class BasePaginatorPage(BaseLayoutView):
         paginator.index = (paginator.index - 1) % len(paginator.pages)
 
         await interaction.response.edit_message(view=paginator.pages[paginator.index])
+
+    @action_row.button(emoji=EMOJIS.DELETE)
+    async def delete(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
+        interaction_message = cast("discord.Message", interaction.message)
+
+        await interaction.response.defer()
+        await interaction.followup.delete_message(interaction_message.id)
 
     @action_row.button(emoji=EMOJIS.NEXT)
     async def next(self, interaction: Interaction[Bot], button: Button[Self]) -> None:
