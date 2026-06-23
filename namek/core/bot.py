@@ -238,24 +238,6 @@ class Bot(commands.Bot):
                 stack_info=True,
             )
 
-        try:
-            connected_node = wavelink.Pool.get_node()
-        except wavelink.InvalidNodeException:
-            _logger.warning("Could not fetch any nodes")
-            return
-
-        try:
-            node_info = await connected_node.fetch_info()
-        except wavelink.LavalinkException as error:
-            _logger.warning(
-                "[STATUS CODE %s] Could not fetch node info. Reason: %s",
-                error.status,
-                error.error,
-            )
-            return
-
-        self.available_streaming_sources = node_info.source_managers
-
     async def init_emojis(self, *, path: Path) -> None:
         """
         Initializes the emojis into discord API.
