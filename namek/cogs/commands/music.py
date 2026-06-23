@@ -10,8 +10,6 @@ from discord import app_commands
 
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import (
-    ALLOWED_NETLOC_SOURCES,
-    ALLOWED_SOURCE_NAMES,
     EMOJIS,
 )
 from namek.core.views.music_views import QueueListPaginator
@@ -197,9 +195,13 @@ class MusicCog(
         player_instance.autoplay = wavelink.AutoPlayMode.enabled
 
         parsed_url = urlparse(query)
-        if parsed_url.scheme and parsed_url.netloc not in ALLOWED_NETLOC_SOURCES:
+        if parsed_url.scheme and parsed_url.netloc not in self.bot.available_netloc:
+            titles = (
+                string.title() for string in self.bot.available_streaming_sources[:-1]
+            )
             sources = (
-                ", ".join(ALLOWED_SOURCE_NAMES[:-1]) + f" or {ALLOWED_SOURCE_NAMES[-1]}"
+                ", ".join(titles)
+                + f" or {self.bot.available_streaming_sources[-1].title()}"
             )
             embed = ErrorEmbed(
                 description=f"This source is not supported. Please use {sources}.",
