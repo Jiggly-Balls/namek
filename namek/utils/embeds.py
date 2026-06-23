@@ -7,7 +7,15 @@ from discord import Embed
 from namek.core.settings import ERROR_COLOUR, MAIN_COLOUR, SUCCESS_COLOUR
 
 if TYPE_CHECKING:
-    from typing import Any
+    import datetime
+    from typing import NotRequired, TypedDict, Unpack
+
+    from discord.types.embed import EmbedType
+
+    class EmbedKwargs(TypedDict):
+        type: NotRequired[EmbedType]
+        timestamp: NotRequired[None | datetime.datetime]
+
 
 __all__ = (
     "ErrorEmbed",
@@ -25,7 +33,7 @@ class MainEmbed(Embed):
         title: None | str = None,
         description: None | str = None,
         url: None | str = None,
-        **kwargs: Any,
+        **kwargs: Unpack[EmbedKwargs],
     ) -> None:
         super().__init__(
             colour=MAIN_COLOUR,
@@ -45,7 +53,7 @@ class ErrorEmbed(Embed):
         title: None | str = None,
         description: None | str = None,
         url: None | str = None,
-        **kwargs: Any,
+        **kwargs: Unpack[EmbedKwargs],
     ) -> None:
         super().__init__(
             colour=ERROR_COLOUR,
@@ -65,7 +73,7 @@ class SuccessEmbed(Embed):
         title: None | str = None,
         description: None | str = None,
         url: None | str = None,
-        **kwargs: Any,
+        **kwargs: Unpack[EmbedKwargs],
     ) -> None:
         super().__init__(
             colour=SUCCESS_COLOUR,
