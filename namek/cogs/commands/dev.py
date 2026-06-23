@@ -4,6 +4,7 @@ import logging
 from typing import TYPE_CHECKING, cast
 
 import discord
+import wavelink
 from discord import app_commands
 
 from namek.cogs import BaseGroupCog, CogEnums
@@ -41,7 +42,15 @@ class DevCog(
 
     @app_commands.command()
     async def sync(self, interaction: Interaction[Bot]) -> None:
-        """Developer command to sync the bot's slash commands with discord."""
+        """
+        Developer command to sync the bot's slash commands with discord.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
         await interaction.response.defer()
 
         global_synced = await self.bot.tree.sync()
@@ -69,6 +78,36 @@ class DevCog(
                 f"and `{len(guild_synced)}` dev commands. Restart your discord if you don't"
                 " see the changes.",
             ),
+        )
+
+    @app_commands.command(name="wavelink-reconnect")
+    async def wavelink_reconnect(self, interaction: Interaction[Bot]) -> None:
+        """
+        Developer command to sync the bot's slash commands with discord.
+
+        Parameters
+        ----------
+        interaction : Interaction[Bot]
+            The discord interaction object.
+
+        """
+        await interaction.response.defer()
+
+        _logger.info("Initiating wavelink node reconnect by %s", interaction.user.name)
+
+        node = wavelink.Pool.get_node()
+        await node.close(eject=True)
+        await self.bot.init_wavelink_node(
+            identifier=SETTINGS.LAVALINK_NAME,
+            uri=SETTINGS.LAVALINK_URI.get_secret_value(),
+            password=SETTINGS.LAVALINK_PASSWORD.get_secret_value(),
+            retries=SETTINGS.LAVALINK_RETRIES,
+        )
+
+        _logger.info("Finished wavelink node reconnect.")
+
+        await interaction.followup.send(
+            embed=MainEmbed(description="Successfully reconnected wavelink node.")
         )
 
 
