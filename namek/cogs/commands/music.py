@@ -66,10 +66,16 @@ class MusicCog(
 
         """
         interaction_channel = cast("discord.TextChannel", interaction.channel)
+        interaction_guild = cast("discord.Guild", interaction.guild)
 
         channel = await vc_check(interaction)
         if not channel:
             return
+
+        if interaction_guild.voice_client is not None:
+            await interaction.response.send_message(
+                embed=ErrorEmbed(description="I am already present in a voice channel.")
+            )
 
         await interaction.response.defer()
 
@@ -185,7 +191,7 @@ class MusicCog(
         if player_instance.home_channel != interaction.channel:
             await interaction.followup.send(
                 embed=ErrorEmbed(
-                    desciption=f"You can only play songs in {player_instance.home_channel.mention},"
+                    description=f"You can only play songs in {player_instance.home_channel.mention},"
                     " as the player has already started there."
                 ),
                 ephemeral=True,
