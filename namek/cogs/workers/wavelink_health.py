@@ -59,6 +59,7 @@ class WavelinkHealth(
             return
 
         self.bot.available_streaming_sources = node_info.source_managers
+        self.bot.available_streaming_sources.remove("http")
         for source in self.bot.available_streaming_sources:
             self.bot.available_netloc.extend(STREAM_SOURCES[source])
 
