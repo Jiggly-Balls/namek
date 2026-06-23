@@ -11,7 +11,6 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 __all__ = (
-    "ALLOWED_STREAMING_SOURCES",
     "ANTI_ALIAS_TOLERANCE",
     "ASSET_DIR",
     "AUTHOR_FONT_SIZE",
@@ -31,6 +30,7 @@ __all__ = (
     "OTHER_DIR",
     "SETTINGS",
     "STATUS_COOLDOWN",
+    "STREAM_SOURCES",
     "SUCCESS_COLOUR",
     "TITLE_FONT",
     "TITLE_FONT_SIZE",
@@ -110,7 +110,7 @@ ANTI_ALIAS_TOLERANCE: int = 40
 
 STATUS_COOLDOWN: float = 600.0
 
-ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
+STREAM_SOURCES: dict[str, tuple[str, ...]] = {
     "youtube": (
         "music.youtube.com",
         "www.music.youtube.com",
@@ -130,7 +130,24 @@ ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
         "vimeo.com",
         "www.vimeo.com",
     ),
-    "niconico": ("nicovideo.jp", "www.nicovideo.jp,"),
+    "niconico": (
+        "nicovideo.jp",
+        "www.nicovideo.jp,",
+    ),
+    "spotify": (
+        "open.spotify.com",
+        "www.open.spotify.com",
+        "spotify.com",
+        "www.spotify.com",
+    ),
+    "twitch": (
+        "twitch.tv",
+        "www.twitch.tv",
+    ),
+    "applemusic": (
+        "music.apple.com",
+        "www.music.apple.com",
+    ),
 }
 
 MAIN_COLOUR: Colour = discord.Colour(0xFFA900)
