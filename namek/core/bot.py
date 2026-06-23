@@ -67,19 +67,19 @@ class Bot(commands.Bot):
         _logger.info("Syncing application commands.")
 
         global_synced = await self.tree.sync()
-        guild_synced = await self.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
-        )
-
         _logger.info(
             "Successfully synced %s global commands.",
             len(global_synced),
         )
-        _logger.info(
-            "Successfully synced %s dev commands.",
-            len(guild_synced),
-        )
-        return
+
+        if SETTINGS.DEV_GUILD_ID is not None:
+            guild_synced = await self.tree.sync(
+                guild=discord.Object(SETTINGS.DEV_GUILD_ID),
+            )
+            _logger.info(
+                "Successfully synced %s dev commands.",
+                len(guild_synced),
+            )
 
     async def init_commands_sync(self, *, force_sync: bool) -> None:
         """
@@ -94,7 +94,7 @@ class Bot(commands.Bot):
 
         """
         for cog in CogEnums:
-            if cog == CogEnums.DEV_COG:
+            if cog == CogEnums.DEV_COG and SETTINGS.DEV_GUILD_ID is not None:
                 self.tree.remove_command(
                     cog, guild=discord.Object(SETTINGS.DEV_GUILD_ID)
                 )
@@ -120,14 +120,15 @@ class Bot(commands.Bot):
             )
             return
 
-        dev_app_commands: list[AppCommand] = await self.tree.fetch_commands(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
-        )
-        found_sync = any(command.name == "dev" for command in dev_app_commands)
-        if not found_sync:
-            _logger.info("Sync registered command not found.")
-            await self._sync_handle()
-            return
+        if SETTINGS.DEV_GUILD_ID is not None:
+            dev_app_commands: list[AppCommand] = await self.tree.fetch_commands(
+                guild=discord.Object(SETTINGS.DEV_GUILD_ID),
+            )
+            found_sync = any(command.name == "dev" for command in dev_app_commands)
+            if not found_sync:
+                _logger.info("Sync registered command not found.")
+                await self._sync_handle()
+                return
 
     async def init_extensions(
         self,
@@ -160,6 +161,13 @@ class Bot(commands.Bot):
 
                 relative_path = python_file.relative_to(base_dir.parent)
                 module_name = str(relative_path).replace(os.sep, ".").replace(".py", "")
+
+                if SETTINGS.DEV_GUILD_ID is None and "commands.dev" in module_name:
+                    _logger.warning(
+                        "DEV_GUILD_ID env variable is not set. Not loading extension: %s",
+                        module_name,
+                    )
+                    continue
 
                 try:
                     await self.load_extension(module_name)

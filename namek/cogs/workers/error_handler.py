@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 import discord
 from discord import Interaction, app_commands
 from discord.ext import commands
-from discord.utils import MISSING
 
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import SETTINGS
@@ -107,7 +106,7 @@ class ErrorHandler(
             file=sys.stderr,
         )
 
-        if SETTINGS.BUG_REPORT_CHANNEL_ID is not MISSING:
+        if SETTINGS.BUG_REPORT_CHANNEL_ID is not None:
             channel = interaction.client.get_channel(
                 SETTINGS.BUG_REPORT_CHANNEL_ID,
             ) or await interaction.client.fetch_channel(

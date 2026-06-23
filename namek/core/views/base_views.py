@@ -6,7 +6,6 @@ import traceback
 from typing import TYPE_CHECKING, cast
 
 import discord
-from discord.utils import MISSING
 
 from namek.core.settings import SETTINGS
 from namek.utils import ErrorEmbed
@@ -117,7 +116,7 @@ class BaseView(discord.ui.View):
         error: Exception,
         item: Item[Any],
     ) -> None:
-        if SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING:
+        if SETTINGS.BUG_REPORT_CHANNEL_ID is None:
             return await super().on_error(interaction, error, item)
 
         send_message_func = (
@@ -267,7 +266,7 @@ class BaseLayoutView(discord.ui.LayoutView):
         error: Exception,
         item: Item[Any],
     ) -> None:
-        if SETTINGS.BUG_REPORT_CHANNEL_ID is MISSING:
+        if SETTINGS.BUG_REPORT_CHANNEL_ID is None:
             return await super().on_error(interaction, error, item)
 
         send_message_func = (

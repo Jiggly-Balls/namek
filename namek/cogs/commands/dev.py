@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import discord
 from discord import app_commands
@@ -17,10 +17,11 @@ if TYPE_CHECKING:
 
 
 _logger = logging.getLogger(__name__)
+DEV_GUILD_ID: int = cast("int", SETTINGS.DEV_GUILD_ID)
 
 
 @app_commands.guild_only()
-@app_commands.guilds(SETTINGS.DEV_GUILD_ID)
+@app_commands.guilds(DEV_GUILD_ID)
 class DevCog(
     BaseGroupCog,
     name=CogEnums.DEV_COG,
@@ -45,7 +46,7 @@ class DevCog(
 
         global_synced = await self.bot.tree.sync()
         guild_synced = await self.bot.tree.sync(
-            guild=discord.Object(SETTINGS.DEV_GUILD_ID),
+            guild=discord.Object(DEV_GUILD_ID),
         )
 
         _logger.info(
