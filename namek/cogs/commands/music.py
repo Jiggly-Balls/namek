@@ -331,10 +331,15 @@ class MusicCog(
         song_pages: list[str] = []
 
         for index, track in enumerate(player.queue, start=1):
+            hours, rem = divmod(track.length // 1000, 3600)
+            minutes, seconds = divmod(rem, 60)
+            duration_text = f"{hours:02}:{minutes:02}:{seconds:02}"
             if track.uri:
-                song = f"### `{index}.` [{track.title}]({track.uri})\n— _{track.author}_"
+                song = f"### `{index}.` [{track.title}]({track.uri})\n— _{track.author}_ | {duration_text}"
             else:
-                song = f"### `{index}.` {track.title}\n— _{track.author}_"
+                song = (
+                    f"### `{index}.` {track.title}\n— _{track.author}_ | {duration_text}"
+                )
             song_pages.append(song)
 
         paginator = QueueListPaginator(
