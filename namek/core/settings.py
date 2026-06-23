@@ -11,8 +11,6 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 __all__ = (
-    "ALLOWED_NETLOC_SOURCES",
-    "ALLOWED_SOURCE_NAMES",
     "ALLOWED_STREAMING_SOURCES",
     "ANTI_ALIAS_TOLERANCE",
     "ASSET_DIR",
@@ -134,10 +132,6 @@ ALLOWED_STREAMING_SOURCES: dict[str, tuple[str, ...]] = {
     ),
     "niconico": ("nicovideo.jp", "www.nicovideo.jp,"),
 }
-ALLOWED_NETLOC_SOURCES: set[str] = {
-    netloc for source in ALLOWED_STREAMING_SOURCES.values() for netloc in source
-}
-ALLOWED_SOURCE_NAMES: tuple[str, ...] = tuple(ALLOWED_STREAMING_SOURCES)
 
 MAIN_COLOUR: Colour = discord.Colour(0xFFA900)
 ERROR_COLOUR: Colour = discord.Colour.red()
