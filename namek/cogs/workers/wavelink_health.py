@@ -53,7 +53,7 @@ class WavelinkHealth(
             return
         except wavelink.NodeException as error:
             _logger.warning(
-                "An error occured while making this request to Lavalink. Returned with status code: %s",
+                "[STATUS CODE %s] An error occured while making this request to Lavalink.",
                 error.status,
             )
             return
