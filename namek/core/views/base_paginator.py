@@ -25,6 +25,24 @@ __all__ = (
 
 
 class BasePaginatorPage(BaseLayoutView):
+    """
+    A custom base class containing the content for a particular paginator page.
+
+    Parameters
+    ----------
+    parent_paginator : BasePaginator
+        | The parent paginator instance of the page.
+    author : int | User | Member
+        | The user / member to which this pagination belongs to.
+    timeout : None | float
+        | In how many seconds the view will timeout.
+    disable_on_timeout
+        | If set to `True` it will disable all items in the view when it times out.
+    stop_on_timeout
+        | Stops the view from listening to any further events on timeout.
+
+    """
+
     container: Container[Self] = discord.ui.Container()
     action_row: ActionRow[Self] = discord.ui.ActionRow()
 
@@ -77,6 +95,26 @@ class BasePaginatorPage(BaseLayoutView):
 
 
 class BasePaginator:
+    """
+    A custom base paginator for handling multiple pages of content.
+
+    Parameters
+    ----------
+    interaction : Interaction[Bot]
+        | The interaction object.
+    pages : Sequence[BasePaginatorPage]
+        | A sequence of ``BasePaginatorPage`` instances to display from.
+    author : int | User | Member
+        | The user / member to which this pagination belongs to.
+    timeout : None | float
+        | In how many seconds the view will timeout.
+    disable_on_timeout
+        | If set to `True` it will disable all items in the view when it times out.
+    stop_on_timeout
+        | Stops the view from listening to any further events on timeout.
+
+    """
+
     def __init__(
         self,
         interaction: Interaction[Bot],

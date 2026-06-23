@@ -258,6 +258,8 @@ class _QueueListPage(BasePaginatorPage):
 
 @final
 class QueueListPaginator(BasePaginator):
+    """A paginator subclass for viewing queued songs from the player."""
+
     def __init__(
         self,
         interaction: Interaction[Bot],
