@@ -8,11 +8,14 @@ from discord.ext import commands
 
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import STREAM_SOURCES
+from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
     from wavelink import NodeDisconnectedEventPayload, NodeReadyEventPayload
 
     from namek.core import Bot
+    from namek.utils.extras import NamekPlayer
+
 
 _logger = logging.getLogger(__name__)
 
@@ -72,6 +75,15 @@ class WavelinkHealth(
             'Wavelink Node "%s" has disconnected.',
             payload.node.identifier,
         )
+
+    @commands.Cog.listener()
+    async def on_wavelink_inactive_player(self, player: NamekPlayer) -> None:
+        await player.home_channel.send(
+            embed=ErrorEmbed(
+                description=f"The player has been inactive for `{player.inactive_timeout}` seconds. Goodbye!"
+            )
+        )
+        await player.disconnect()
 
 
 async def setup(bot: Bot) -> None:
