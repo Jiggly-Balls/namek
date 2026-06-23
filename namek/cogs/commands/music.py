@@ -74,7 +74,8 @@ class MusicCog(
 
         if interaction_guild.voice_client is not None:
             await interaction.response.send_message(
-                embed=ErrorEmbed(description="I am already present in a voice channel.")
+                embed=ErrorEmbed(description="I am already present in a voice channel."),
+                ephemeral=True,
             )
             return
 
