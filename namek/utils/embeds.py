@@ -9,7 +9,11 @@ from namek.core.settings import ERROR_COLOUR, MAIN_COLOUR, SUCCESS_COLOUR
 if TYPE_CHECKING:
     from typing import Any
 
-__all__ = ("ErrorEmbed", "MainEmbed", "SuccessEmbed")
+__all__ = (
+    "ErrorEmbed",
+    "MainEmbed",
+    "SuccessEmbed",
+)
 
 
 class MainEmbed(Embed):

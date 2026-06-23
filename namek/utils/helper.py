@@ -33,7 +33,11 @@ if TYPE_CHECKING:
     from namek.core import Bot
 
 
-__all__ = ("make_song_media", "safe_defer", "vc_check")
+__all__ = (
+    "make_song_media",
+    "safe_defer",
+    "vc_check",
+)
 _logger = logging.getLogger(__name__)
 _ALLOWED_CHARS: str = (
     string.ascii_letters + string.punctuation + string.whitespace + "0123456789"
