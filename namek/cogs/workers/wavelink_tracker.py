@@ -17,6 +17,7 @@ from namek.utils.helper import make_song_media
 if TYPE_CHECKING:
     from asyncio import Lock
 
+    from discord import Member, VoiceState
     from wavelink import (
         TrackEndEventPayload,
         TrackStartEventPayload,
@@ -165,6 +166,19 @@ class WavelinkTracker(
                 await player.home_channel.send(
                     embeds=[track_end_embed, post_end_embed],
                 )
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(
+        self, member: Member, before: VoiceState, after: VoiceState
+    ) -> None:
+        if member.id != self.bot.user.id or after.channel is None:  # pyright: ignore[reportOptionalMemberAccess]
+            return
+
+        try:
+            del self.state_switch_lock[member.guild.id]
+        except KeyError:
+            pass
+
 
 async def setup(bot: Bot) -> None:
     await bot.add_cog(WavelinkTracker(bot))
