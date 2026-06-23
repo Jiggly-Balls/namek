@@ -62,6 +62,7 @@ class Bot(commands.Bot):
             chunk_guilds_at_startup=False,
         )
         self.last_reconnect: datetime.datetime = MISSING
+        self.available_streaming_sources: list[str] = MISSING
 
     async def _sync_handle(self) -> None:
         _logger.info("Syncing application commands.")
@@ -236,6 +237,24 @@ class Bot(commands.Bot):
                 "Please check that your Lavalink version is version 4.",
                 stack_info=True,
             )
+
+        try:
+            connected_node = wavelink.Pool.get_node()
+        except wavelink.InvalidNodeException:
+            _logger.warning("Could not fetch any nodes")
+            return
+
+        try:
+            node_info = await connected_node.fetch_info()
+        except wavelink.LavalinkException as error:
+            _logger.warning(
+                "[STATUS CODE %s] Could not fetch node info. Reason: %s",
+                error.status,
+                error.error,
+            )
+            return
+
+        self.available_streaming_sources = node_info.source_managers
 
     async def init_emojis(self, *, path: Path) -> None:
         """
