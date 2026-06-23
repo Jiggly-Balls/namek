@@ -232,7 +232,7 @@ class ErrorHandler(
                 " Please contact the bot owners to resync the commands."
             )
         else:
-            await self.throw_err(interaction=interaction, error=error)
+            await ErrorHandler.throw_err(interaction=interaction, error=error)
 
 
 async def setup(bot: Bot) -> None:
