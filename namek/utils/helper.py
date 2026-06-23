@@ -10,9 +10,9 @@ from PIL import Image, ImageDraw
 
 from namek.core.settings import (
     ANTI_ALIAS_TOLERANCE,
-    AUTHOR_FONT,
     BACKGROUND_COLOUR,
     DEFAULT_GRADIENT,
+    FOOTER_FONT,
     IMAGE_SIZE,
     OTHER_DIR,
     TITLE_FONT,
@@ -89,7 +89,7 @@ def _cleanup_text(text: str) -> str:
     return new_text
 
 
-def _pil_media_handle(title: str, author: str) -> File:
+def _pil_media_handle(title: str, author: str, duration: str) -> File:
     background = Image.open(OTHER_DIR / DEFAULT_GRADIENT).convert("RGBA")
     background = background.resize(IMAGE_SIZE)  # pyright: ignore[reportUnknownMemberType]
     image = Image.new("RGBA", size=IMAGE_SIZE, color=BACKGROUND_COLOUR)
@@ -106,8 +106,14 @@ def _pil_media_handle(title: str, author: str) -> File:
     draw.text(
         (15, 75),
         text=f"— {author}",
-        font=AUTHOR_FONT,
+        font=FOOTER_FONT,
         fill=colour_target,
+    )
+    draw.text(
+        (IMAGE_SIZE[0] // 2 - (len(duration) * 6), 100),
+        text=f"—{duration}—",
+        font=FOOTER_FONT,
+        fill="black",
     )
 
     new_image_data: list[tuple[int, int, int, int]] = []
@@ -157,6 +163,7 @@ def _pil_media_handle(title: str, author: str) -> File:
 async def make_song_media(
     song_title: str,
     song_author: str,
+    song_duration: str,
     event_loop: AbstractEventLoop,
 ) -> File:
     """
@@ -189,10 +196,7 @@ async def make_song_media(
     normalized_author = author_result_str or _cleanup_text(song_author)
 
     media_file = await event_loop.run_in_executor(
-        None,
-        _pil_media_handle,
-        normalized_title,
-        normalized_author,
+        None, _pil_media_handle, normalized_title, normalized_author, song_duration
     )
 
     return media_file

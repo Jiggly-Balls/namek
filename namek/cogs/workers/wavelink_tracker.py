@@ -55,12 +55,7 @@ class WavelinkTracker(
 
         hours, rem = divmod(payload.track.length // 1000, 3600)
         minutes, seconds = divmod(rem, 60)
-        if hours:
-            duration_text = f"**{hours}**h **{minutes}**m **{seconds}**s"
-        elif minutes:
-            duration_text = f"**{minutes}**m **{seconds}**s"
-        else:
-            duration_text = f"**{seconds}**s"
+        duration_text = f"{hours:02}:{minutes:02}:{seconds:02}"
 
         if player.song_message:
             try:
@@ -70,9 +65,10 @@ class WavelinkTracker(
 
         try:
             song_media = await make_song_media(
-                payload.track.title,
-                payload.track.author,
-                payload.player.client.loop,
+                song_title=payload.track.title,
+                song_author=payload.track.author,
+                song_duration=duration_text,
+                event_loop=payload.player.client.loop,
             )
         except Exception:
             song_media = None
@@ -87,7 +83,6 @@ class WavelinkTracker(
             player=player,
             song_title=title,
             song_author=artist,
-            duration=duration_text,
             media_file=song_media,
             thumbnail_url=payload.track.artwork,
         )

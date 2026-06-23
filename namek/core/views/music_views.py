@@ -46,7 +46,6 @@ class PlayLayoutView(BaseLayoutView):
         player: NamekPlayer,
         song_title: str,
         song_author: str,
-        duration: str,
         media_file: None | File,
         thumbnail_url: None | str,
     ) -> None:
