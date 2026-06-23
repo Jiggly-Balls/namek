@@ -46,7 +46,7 @@ class WavelinkTracker(
         # This is to prevent race condition where an embed is sent to the channel but
         # the player is unable to play it, causing track end event to trigger before
         # track start can fully finish registering the message object, which in turn
-        # causes the track end event unable to delete the failed embed song.
+        # causes the track end event unable to delete the failed embed song message.
 
     @commands.Cog.listener()
     async def on_wavelink_track_start(self, payload: TrackStartEventPayload) -> None:
