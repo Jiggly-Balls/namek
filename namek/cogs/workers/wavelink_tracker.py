@@ -32,6 +32,8 @@ class WavelinkTracker(
     def __init__(self, bot: Bot) -> None:
         super().__init__(logger=_logger)
 
+        self.bot: Bot = bot
+
     @commands.Cog.listener()
     async def on_wavelink_track_start(
         self,
