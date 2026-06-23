@@ -63,6 +63,7 @@ class Bot(commands.Bot):
         )
         self.last_reconnect: datetime.datetime = MISSING
         self.available_streaming_sources: list[str] = MISSING
+        self.available_netloc: list[str] = []
 
     async def _sync_handle(self) -> None:
         _logger.info("Syncing application commands.")
