@@ -7,6 +7,7 @@ import wavelink
 from discord.ext import commands
 
 from namek.cogs import BaseGroupCog, CogEnums
+from namek.core.settings import ALLOWED_STREAMING_SOURCES
 
 if TYPE_CHECKING:
     from wavelink import NodeDisconnectedEventPayload, NodeReadyEventPayload
@@ -58,6 +59,8 @@ class WavelinkHealth(
             return
 
         self.bot.available_streaming_sources = node_info.source_managers
+        for source in self.bot.available_streaming_sources:
+            self.bot.available_netloc.extend(ALLOWED_STREAMING_SOURCES[source])
 
     @commands.Cog.listener()
     async def on_wavelink_node_disconnected(
