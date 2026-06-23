@@ -83,7 +83,7 @@ class DevCog(
     @app_commands.command(name="wavelink-reconnect")
     async def wavelink_reconnect(self, interaction: Interaction[Bot]) -> None:
         """
-        Developer command to sync the bot's slash commands with discord.
+        If the wavelink nodes are facing issue, you can manually reconnect them via this command.
 
         Parameters
         ----------
