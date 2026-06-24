@@ -1,0 +1,21 @@
+services:
+  bot:
+    container_name: Namek-Bot
+    build:
+      dockerfile: Dockerfile
+    env_file: .env
+    init: true
+    restart: unless-stopped
+    mem_limit: 256m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - lavalink
+
+networks:
+  lavalink:
+    external: true
+    name: lavalink
