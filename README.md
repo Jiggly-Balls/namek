@@ -16,14 +16,13 @@ You are required to set up an `application.yml` file at the root of the project.
 The easiest way to set up and configure it is via [Docker](https://docs.docker.com/engine/install/).
 You can find the sample `application.yml` file [here](https://lavalink.dev/configuration/config/file.html) to configure it.
 
+If you're using Lavalink on Docker, set `LAVALINK_URI="http://lavalink:2333"` in your `.env` file.
+
 ## Configuring the Environment File
 
 Create an `.env` file and copy and paste the contents of `.env.example` file into it.
 
 Obtain your Discord bot token from the [developer portal](https://discord.com/developers/home) and paste it into the `BOT_TOKEN` attribute.
-
-You can copy the discord ID of the members you want to give owner access to. 
-
 
 ## Building the Bot
 
