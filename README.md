@@ -70,3 +70,13 @@ namek
 │   └───views       - All view subclasses that get used in commands.
 └────utils          - Helper functions / classes.
 ```
+
+### License
+
+This project is licensed under MIT; check the LICENSE file for more details.
+
+All the emoji images & font files are licensed under Apache 2.0 (no attribution required; commercial use is allowed).
+
+### Credits
+
+- [Maha](https://github.com/CodesMaha) for proofreading.
