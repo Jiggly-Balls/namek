@@ -5,7 +5,7 @@ An open-source music bot for Discord with Lavalink.
 ## Table of Contents
 - [Setting up Lavalink](#setting-up-lavalink-server)
 - [Building the Bot](#building-the-bot)
-  - [Building with Python & uv](#building-with-python-&-uv)
+  - [Building with Python & uv](#building-with-python-and-uv)
   - [Building with Docker](#building-with-docker)
 
 ## Setting up Lavalink Server
@@ -20,7 +20,7 @@ You can find the sample `application.yml` file [here](https://lavalink.dev/confi
 
 To run the bot, you can either run it via your Python system and [uv](https://docs.astral.sh/uv/) or via [Docker](https://docs.docker.com/engine/install/).
 
-### Building with Python & uv
+### Building with Python and uv
 
 You will first have to set up uv in your local dev environment.
 You can check the installation instructions [here](https://docs.astral.sh/uv/getting-started/installation/).
