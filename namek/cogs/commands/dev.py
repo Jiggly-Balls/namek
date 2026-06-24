@@ -10,6 +10,7 @@ from discord import app_commands
 from namek.cogs import BaseGroupCog, CogEnums
 from namek.core.settings import SETTINGS
 from namek.utils import MainEmbed
+from namek.utils.helper import owner_only
 
 if TYPE_CHECKING:
     from discord import Interaction
@@ -41,6 +42,7 @@ class DevCog(
         self.bot: Bot = bot
 
     @app_commands.command()
+    @owner_only()
     async def sync(self, interaction: Interaction[Bot]) -> None:
         """
         Developer command to sync the bot's slash commands with discord.
@@ -81,6 +83,7 @@ class DevCog(
         )
 
     @app_commands.command(name="wavelink-reconnect")
+    @owner_only()
     async def wavelink_reconnect(self, interaction: Interaction[Bot]) -> None:
         """
         If the wavelink nodes are facing issue, you can manually reconnect them via this command.

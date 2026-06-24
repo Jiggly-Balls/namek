@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import io
 import logging
 import string
@@ -22,6 +23,8 @@ from namek.utils import ErrorEmbed
 
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
+    from collections.abc import Awaitable, Callable
+    from typing import Any
 
     from discord import (
         File,
@@ -35,6 +38,7 @@ if TYPE_CHECKING:
 
 __all__ = (
     "make_song_media",
+    "owner_only",
     "safe_defer",
     "vc_check",
 )
@@ -217,3 +221,30 @@ async def make_song_media(
     )
 
     return media_file
+
+
+def owner_only[**P, R, T]() -> Callable[..., Any]:
+    """A decorator for disallowing non-owners to use certain command."""
+
+    def decorator(
+        func: Callable[P, Awaitable[None | T]],
+    ) -> Callable[P, Awaitable[None | T]]:
+        @functools.wraps(func)
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> None | T:
+            interaction: Interaction[Bot] = cast("Interaction[Bot]", args[1])
+
+            if (
+                interaction.client.owner_ids
+                and interaction.user.id not in interaction.client.owner_ids
+            ):
+                await interaction.response.send_message(
+                    embed=ErrorEmbed(description="Only owners can use this command."),
+                    ephemeral=True,
+                )
+                return None
+
+            return await func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
