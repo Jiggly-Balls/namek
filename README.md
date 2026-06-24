@@ -20,7 +20,7 @@ If you're using Lavalink on Docker, set `LAVALINK_URI="http://lavalink:2333"` in
 
 ## Configuring the Environment File
 
-Create an `.env` file and copy and paste the contents of `.env.example` file into it.
+Create an `.env` file at the root of the project and copy and paste the contents of `.env.example` file into it.
 
 Obtain your Discord bot token from the [developer portal](https://discord.com/developers/home) and paste it into the `BOT_TOKEN` attribute.
 
