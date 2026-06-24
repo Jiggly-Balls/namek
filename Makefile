@@ -9,5 +9,8 @@ ruff:
 check:
 	uv run --dev basedpyright .
 
-start:
+dev:
 	uv run python -m namek
+
+docker:
+	docker compose up -d --build
