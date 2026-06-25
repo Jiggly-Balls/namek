@@ -9,9 +9,7 @@ import wavelink
 from discord import app_commands
 
 from namek.cogs import BaseGroupCog, CogEnums
-from namek.core.settings import (
-    EMOJIS,
-)
+from namek.core.settings import EMOJIS
 from namek.core.views.music_views import QueueListPaginator
 from namek.utils import ErrorEmbed, MainEmbed, SuccessEmbed
 from namek.utils.extras import NamekPlayer
