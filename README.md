@@ -27,7 +27,27 @@ If you're using Lavalink on Docker, set `LAVALINK_URI="http://lavalink:2333"` in
 
 Create an `.env` file at the root of the project and copy and paste the contents of `.env.example` file into it.
 
-Obtain your Discord bot token from the [developer portal](https://discord.com/developers/home) and paste it into the `BOT_TOKEN` attribute.
+**BOT_TOKEN**
+- Obtain your Discord bot token from the [developer portal](https://discord.com/developers/home).
+
+**OWNER_IDS**
+- The list of user IDs to give owner permission to the bot. This includes all the dev commands.
+
+**LAVALINK_NAME**
+- The name given to the connected node to Lavalink.
+
+**LAVALINK_URI**
+- The URI of where the Lavaink instance is hosted at.
+  Set it's value to `"http://lavalink:2333"` if you're running the bot and the lavalink instance on docker.
+
+**LAVALINK_PASSWORD**
+- Password to the Lavalink instance.
+
+**LAVALINK_TRACK_CACHE**
+- Experimental track cache. Takes an integer for number of tracks to cache.
+
+**LAVALINK_RETRIES**
+- Number of exponential retries to perform on every failed connection to Lavalink. 
 
 ## Building the Bot
 
