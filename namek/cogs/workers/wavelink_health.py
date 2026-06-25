@@ -62,7 +62,10 @@ class WavelinkHealth(
             return
 
         self.bot.available_streaming_sources = node_info.source_managers
-        self.bot.available_streaming_sources.remove("http")
+        try:
+            self.bot.available_streaming_sources.remove("http")
+        except ValueError:
+            pass
         for source in self.bot.available_streaming_sources:
             self.bot.available_netloc.extend(STREAM_SOURCES[source])
 
