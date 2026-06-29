@@ -1,10 +1,10 @@
-.PHONY: ruff check run
+.PHONY: ruff check dev docker
 
 all: ruff
 
 ruff:
 	uv run --dev ruff format
-	uv run --dev  ruff check --fix --unsafe-fixes
+	uv run --dev ruff check --fix --unsafe-fixes
 
 check:
 	uv run --dev basedpyright .
