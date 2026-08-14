@@ -5,7 +5,7 @@ An open-source music bot for Discord with Lavalink.
 ## Table of Contents
 
 - [Setting up Lavalink](#setting-up-lavalink-server)
-- [Configuring the Environment File](configuring-the-environment-file)
+- [Configuring the Environment File](#configuring-the-environment-file)
 - [Building the Bot](#building-the-bot)
   - [Building with Python & uv](#building-with-python-and-uv)
   - [Building with Docker](#building-with-docker)
